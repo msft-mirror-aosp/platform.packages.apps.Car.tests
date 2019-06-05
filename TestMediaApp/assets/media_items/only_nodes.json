@@ -20,15 +20,6 @@
     {
       "FLAGS": "browsable",
       "PLAYABLE_HINT": "GRID",
-      "METADATA": {
-        "MEDIA_ID": "only_nodes art nodes",
-        "DISPLAY_TITLE": "Album Art"
-      },
-      "INCLUDE":"media_items/album_art/art_nodes.json"
-    },
-    {
-      "FLAGS": "browsable",
-      "PLAYABLE_HINT": "GRID",
       "BROWSABLE_HINT": "LIST",
       "METADATA": {
         "MEDIA_ID": "only_nodes rabbit hole",

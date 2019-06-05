@@ -70,27 +70,12 @@
         }
       ]
     },
-    {
-      "FLAGS": "playable",
-      "METADATA": {
-        "MEDIA_ID": "simple_leaves error code",
-        "DISPLAY_TITLE": "Parental Control error code at 1s",
-        "DURATION": 10000
-      },
-      "EVENTS": [
-        { "STATE": "PLAYING", "POST_DELAY_MS": 0 },
-        {
-          "STATE": "ERROR",
-          "ERROR_CODE": "PARENTAL_CONTROL_RESTRICTED",
-          "POST_DELAY_MS": 1000
-        }
-      ]
-    },
+
     {
       "FLAGS": "playable",
       "METADATA": {
         "MEDIA_ID": "simple_leaves premium required",
-        "DISPLAY_TITLE": "Paid account required at 1s",
+        "DISPLAY_TITLE": "Paid account required at 2s",
         "DURATION": 50000
       },
       "EVENTS": [
@@ -101,7 +86,7 @@
           "ERROR_MESSAGE": "A premium account is needed to play this track completely...",
           "ACTION_LABEL": "Upgrade now",
           "INTENT": "PREFS",
-          "POST_DELAY_MS": 1000
+          "POST_DELAY_MS": 2000
         }
       ]
     }

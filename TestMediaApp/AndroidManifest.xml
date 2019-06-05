@@ -28,12 +28,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/TestMediaAppTheme" >
-
-        <provider
-            android:name=".TmaAssetProvider"
-            android:exported="true"
-            android:authorities="com.android.car.media.testmediaapp.assets"/>
-
         <service
             android:name=".TmaBrowser"
             android:exported="true"

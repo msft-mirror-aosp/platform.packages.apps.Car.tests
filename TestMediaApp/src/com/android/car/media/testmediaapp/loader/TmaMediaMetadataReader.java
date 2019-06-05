@@ -53,14 +53,10 @@ import static com.android.car.media.testmediaapp.loader.TmaLoaderUtils.enumNames
 import android.support.v4.media.MediaMetadataCompat;
 import android.util.Log;
 
-import com.android.car.media.testmediaapp.TmaAssetProvider;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.EnumSet;
 import java.util.Map;
-import java.util.Set;
 
 
 class TmaMediaMetadataReader {
@@ -129,12 +125,9 @@ class TmaMediaMetadataReader {
     }
 
     private final Map<String, MetadataKey> mMetadataKeys;
-    private final Set<MetadataKey> mUriKeys;
 
     private TmaMediaMetadataReader() {
         mMetadataKeys = enumNamesToValues(MetadataKey.values());
-        mUriKeys = EnumSet.of(MetadataKey.ART_URI, MetadataKey.ALBUM_ART_URI,
-                MetadataKey.DISPLAY_ICON_URI, MetadataKey.MEDIA_URI);
     }
 
 
@@ -148,11 +141,7 @@ class TmaMediaMetadataReader {
                         builder.putLong(key.mLongName, object.getLong(jsonKey));
                         break;
                     case TEXT:
-                        String value = object.getString(jsonKey);
-                        if (mUriKeys.contains(key)) {
-                            value = TmaAssetProvider.buildUriString(value);
-                        }
-                        builder.putString(key.mLongName, value);
+                        builder.putString(key.mLongName, object.getString(jsonKey));
                         break;
                     case BITMAP:
                     case RATING:
