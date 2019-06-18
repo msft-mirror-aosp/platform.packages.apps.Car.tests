@@ -16,6 +16,9 @@
 
 package com.android.car.media.testmediaapp;
 
+import androidx.annotation.Nullable;
+
+import static android.support.v4.media.MediaBrowserCompat.MediaItem.FLAG_PLAYABLE;
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION;
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID;
 
@@ -26,9 +29,11 @@ import static com.android.car.media.common.MediaConstants.CONTENT_STYLE_PLAYABLE
 
 import android.os.Bundle;
 import android.support.v4.media.MediaBrowserCompat.MediaItem;
+import android.support.v4.media.MediaBrowserCompat.MediaItem.Flags;
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.MediaSessionCompat.QueueItem;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,6 +41,8 @@ import java.util.List;
 
 /** Our internal representation of media items. */
 public class TmaMediaItem {
+
+    private static final String CUSTOM_ACTION_PREFIX = "com.android.car.media.testmediaapp.";
 
     /** The name of each entry is the value used in the json file. */
     public enum ContentStyle {
@@ -48,6 +55,24 @@ public class TmaMediaItem {
         }
     }
 
+    public enum TmaCustomAction {
+        HEART_PLUS_PLUS(CUSTOM_ACTION_PREFIX + "heart_plus_plus", R.string.heart_plus_plus,
+                R.drawable.ic_heart_plus_plus),
+        HEART_LESS_LESS(CUSTOM_ACTION_PREFIX + "heart_less_less", R.string.heart_less_less,
+                R.drawable.ic_heart_less_less);
+
+        final String mId;
+        final int mNameId;
+        final int mIcon;
+
+        TmaCustomAction(String id, int name, int icon) {
+            mId = id;
+            mNameId = name;
+            mIcon = icon;
+        }
+
+    }
+
     private final @MediaItem.Flags int mFlags;
     private final MediaMetadataCompat mMediaMetadata;
     private final ContentStyle mPlayableStyle;
@@ -55,41 +80,87 @@ public class TmaMediaItem {
 
     /** Read only list. */
     final List<TmaMediaItem> mChildren;
+    /** Read only list. */
+    private final List<TmaMediaItem> mPlayableChildren;
+    /** Read only list. */
+    final List<TmaCustomAction> mCustomActions;
     /** Read only list. Events triggered when starting the playback. */
     final List<TmaMediaEvent> mMediaEvents;
     /** References another json file where to get extra children from. */
     final String mInclude;
 
+    private @Nullable TmaMediaItem mParent;
+    int mHearts;
 
-    public TmaMediaItem(@MediaItem.Flags int flags, ContentStyle playableStyle,
-            ContentStyle browsableStyle, MediaMetadataCompat metadata,
-            List<TmaMediaEvent> mediaEvents, List<TmaMediaItem> children, String include) {
+
+    public TmaMediaItem(@Flags int flags, ContentStyle playableStyle, ContentStyle browsableStyle,
+            MediaMetadataCompat metadata, List<TmaCustomAction> customActions,
+            List<TmaMediaEvent> mediaEvents,
+            List<TmaMediaItem> children, String include) {
         mFlags = flags;
         mPlayableStyle = playableStyle;
         mBrowsableStyle = browsableStyle;
         mMediaMetadata = metadata;
+        mCustomActions = Collections.unmodifiableList(customActions);
         mChildren = Collections.unmodifiableList(children);
         mMediaEvents = Collections.unmodifiableList(mediaEvents);
         mInclude = include;
+        List<TmaMediaItem> playableChildren = new ArrayList<>(children.size());
+        for (TmaMediaItem child: mChildren) {
+            child.setParent(this);
+            if ((child.mFlags & FLAG_PLAYABLE) != 0) {
+                playableChildren.add(child);
+            }
+        }
+        mPlayableChildren = Collections.unmodifiableList(playableChildren);
     }
 
-    public String getMediaId() {
+    private void setParent(@Nullable TmaMediaItem parent) {
+        mParent = parent;
+    }
+
+    @Nullable
+    TmaMediaItem getParent() {
+        return mParent;
+    }
+
+    TmaMediaItem getPlayableByIndex(long index) {
+        return mPlayableChildren.get((int)index);
+    }
+
+    @Nullable
+    TmaMediaItem getPrevious() {
+        if (mParent == null) return null;
+        List<TmaMediaItem> queueItems = mParent.mPlayableChildren;
+        int myIndex = queueItems.indexOf(this);
+        return (myIndex > 0) ? queueItems.get(myIndex - 1) : null;
+    }
+
+    @Nullable
+    TmaMediaItem getNext() {
+        if (mParent == null) return null;
+        List<TmaMediaItem> queueItems = mParent.mPlayableChildren;
+        int myIndex = queueItems.indexOf(this);
+        return (myIndex < queueItems.size() - 1) ? queueItems.get(myIndex + 1) : null;
+    }
+
+    String getMediaId() {
         return mMediaMetadata.getString(METADATA_KEY_MEDIA_ID);
     }
 
     /** Returns -1 if the duration key is unspecified or <= 0. */
-    public long getDuration() {
+    long getDuration() {
         long result = mMediaMetadata.getLong(METADATA_KEY_DURATION);
         if (result <= 0) return -1;
         return result;
     }
 
-    public TmaMediaItem append(List<TmaMediaItem> children) {
+    TmaMediaItem append(List<TmaMediaItem> children) {
         List<TmaMediaItem> allChildren = new ArrayList<>(mChildren.size() + children.size());
         allChildren.addAll(mChildren);
         allChildren.addAll(children);
         return new TmaMediaItem(mFlags, mPlayableStyle, mBrowsableStyle, mMediaMetadata,
-                mMediaEvents, allChildren, null);
+                mCustomActions, mMediaEvents, allChildren, null);
     }
 
     void updateSessionMetadata(MediaSessionCompat session) {
@@ -98,6 +169,25 @@ public class TmaMediaItem {
 
     MediaItem toMediaItem() {
         return new MediaItem(buildDescription(), mFlags);
+    }
+
+    List<QueueItem> buildQueue() {
+        int count = mPlayableChildren.size();
+        List<QueueItem> queue = new ArrayList<>(count);
+        for (int i = 0 ; i < count; i++) {
+            TmaMediaItem child = mPlayableChildren.get(i);
+            queue.add(new QueueItem(child.buildDescription(), i));
+        }
+        return queue;
+    }
+
+    /** Returns the id of the item in the queue. */
+    long getQueueId() {
+        if (mParent != null) {
+            int index = mParent.mPlayableChildren.indexOf(this);
+            if (index >= 0) return index;
+        }
+        return MediaSessionCompat.QueueItem.UNKNOWN_ID;
     }
 
     private MediaDescriptionCompat buildDescription() {

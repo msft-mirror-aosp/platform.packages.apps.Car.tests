@@ -23,15 +23,15 @@ import static com.android.car.media.testmediaapp.TmaMediaEvent.INSTANT_PLAYBACK;
 import static com.android.car.media.testmediaapp.loader.TmaLoaderUtils.enumNamesToValues;
 import static com.android.car.media.testmediaapp.loader.TmaLoaderUtils.getArray;
 import static com.android.car.media.testmediaapp.loader.TmaLoaderUtils.getEnum;
+import static com.android.car.media.testmediaapp.loader.TmaLoaderUtils.getEnumArray;
 import static com.android.car.media.testmediaapp.loader.TmaLoaderUtils.getString;
 
-import android.support.v4.media.MediaMetadataCompat;
-import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 
 import com.android.car.media.testmediaapp.TmaMediaEvent;
+import com.android.car.media.testmediaapp.TmaMediaItem.TmaCustomAction;
 import com.android.car.media.testmediaapp.TmaMediaItem;
 import com.android.car.media.testmediaapp.TmaMediaItem.ContentStyle;
 
@@ -57,6 +57,7 @@ class TmaMediaItemReader {
         METADATA,
         CHILDREN,
         INCLUDE,
+        CUSTOM_ACTIONS,
         EVENTS
     }
 
@@ -73,18 +74,20 @@ class TmaMediaItemReader {
     private final TmaMediaEventReader mMediaEventReader;
     private final Map<String, Integer> mFlags = new HashMap<>(2);
     private final Map<String, ContentStyle> mContentStyles;
+    private final Map<String, TmaCustomAction> mCustomActions;
 
     private TmaMediaItemReader() {
         mMediaMetadataReader = TmaMediaMetadataReader.getInstance();
         mMediaEventReader = TmaMediaEventReader.getInstance();
         mContentStyles = enumNamesToValues(ContentStyle.values());
+        mCustomActions = enumNamesToValues(TmaMediaItem.TmaCustomAction.values());
 
         mFlags.put("browsable", FLAG_BROWSABLE);
         mFlags.put("playable", FLAG_PLAYABLE);
     }
 
     @Nullable
-    public TmaMediaItem fromJson(@Nullable JSONObject json) {
+    TmaMediaItem fromJson(@Nullable JSONObject json) {
         if (json == null) return null;
         try {
             // Media events
@@ -107,11 +110,11 @@ class TmaMediaItemReader {
             }
 
 
-            return new TmaMediaItem(
-                    TmaLoaderUtils.parseFlags(getString(json, Keys.FLAGS), mFlags),
+            return new TmaMediaItem(TmaLoaderUtils.parseFlags(getString(json, Keys.FLAGS), mFlags),
                     getEnum(json, Keys.PLAYABLE_HINT, mContentStyles, ContentStyle.NONE),
                     getEnum(json, Keys.BROWSABLE_HINT, mContentStyles, ContentStyle.NONE),
                     mMediaMetadataReader.fromJson(json.getJSONObject(Keys.METADATA.name())),
+                    getEnumArray(json, Keys.CUSTOM_ACTIONS, mCustomActions),
                     mediaEvents, mediaItems, getString(json, Keys.INCLUDE));
         } catch (JSONException e) {
             Log.e(TAG, "Json failure: " + e);
