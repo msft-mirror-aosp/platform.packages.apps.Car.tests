@@ -25,6 +25,7 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.media.MediaBrowserServiceCompat;
 
 import com.android.car.media.testmediaapp.loader.TmaLoader;
@@ -48,6 +49,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
 
     private static final String MEDIA_SESSION_TAG = "TEST_MEDIA_SESSION";
     private static final String ROOT_ID = "_ROOT_ID_";
+    private static final String SEARCH_SUPPORTED = "android.media.browse.SEARCH_SUPPORTED";
 
     private TmaPrefs mPrefs;
     private Handler mHandler;
@@ -55,6 +57,8 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     private TmaLibrary mLibrary;
     private TmaPlayer mPlayer;
 
+    private BrowserRoot mRoot;
+    private String mLastLoadedNodeId;
 
     @Override
     public void onCreate() {
@@ -80,6 +84,10 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
 
         mPrefs.mRootReplyDelay.registerChangeListener(
                 (oldValue, newValue) -> invalidateRoot());
+
+        Bundle extras = new Bundle();
+        extras.putBoolean(SEARCH_SUPPORTED, true);
+        mRoot = new BrowserRoot(ROOT_ID, extras);
     }
 
     @Override
@@ -114,14 +122,24 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     @Override
     public BrowserRoot onGetRoot(
             @NonNull String clientPackageName, int clientUid, Bundle rootHints) {
-        return new BrowserRoot(ROOT_ID, null);
+        return mRoot;
     }
 
     @Override
     public void onLoadChildren(@NonNull String parentId, @NonNull Result<List<MediaItem>> result) {
+        mLastLoadedNodeId = parentId;
+        getMediaItemsWithDelay(parentId, result, null);
+    }
+
+    @Override
+    public void onSearch(final String query, final Bundle extras, Result<List<MediaItem>> result) {
+        getMediaItemsWithDelay(mLastLoadedNodeId, result, query);
+    }
+
+    private void getMediaItemsWithDelay(@NonNull String parentId,
+            @NonNull Result<List<MediaItem>> result, @Nullable String filter) {
         // TODO: allow per item override of the delay ?
         TmaNodeReplyDelay delay = mPrefs.mRootReplyDelay.getValue();
-
         Runnable task = () -> {
             TmaMediaItem node;
             if (TmaAccountType.NONE.equals(mPrefs.mAccountType.getValue())) {
@@ -137,12 +155,15 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
             } else {
                 List<MediaItem> items = new ArrayList<>(node.mChildren.size());
                 for (TmaMediaItem child : node.mChildren) {
-                    items.add(child.toMediaItem());
+                    MediaItem item = child.toMediaItem();
+                    CharSequence title = item.getDescription().getTitle();
+                    if (filter == null || (title != null && title.toString().contains(filter))) {
+                        items.add(item);
+                    }
                 }
                 result.sendResult(items);
             }
         };
-
         if (delay == TmaNodeReplyDelay.NONE) {
             task.run();
         } else {
@@ -150,5 +171,4 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
             mHandler.postDelayed(task, delay.mReplyDelayMs);
         }
     }
-
 }
