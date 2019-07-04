@@ -102,9 +102,9 @@ public class TmaMediaEvent {
         PREFS
     }
 
-    public final EventState mState;
-    public final StateErrorCode mErrorCode;
-    public final String mErrorMessage;
+    final EventState mState;
+    final StateErrorCode mErrorCode;
+    final String mErrorMessage;
     final String mActionLabel;
     final ResolutionIntent mResolutionIntent;
     /** How long to wait before sending the event to the app. */
