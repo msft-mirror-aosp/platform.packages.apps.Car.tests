@@ -217,6 +217,7 @@ public class TmaPlayer extends MediaSessionCompat.Callback {
 
         mActiveItem.updateSessionMetadata(mSession);
 
+        mHandler.removeCallbacks(mEventTrigger);
         mNextEventIndex = 0;
         mHandler.postDelayed(mEventTrigger, mActiveItem.mMediaEvents.get(0).mPostDelayMs);
     }
