@@ -19,12 +19,13 @@
     },
     {
       "FLAGS": "browsable",
-      "PLAYABLE_HINT": "GRID",
+      "PLAYABLE_HINT": "LIST",
+      "BROWSABLE_HINT": "LIST",
       "METADATA": {
-        "MEDIA_ID": "only_nodes art nodes",
-        "DISPLAY_TITLE": "Album Art"
+        "MEDIA_ID": "only_nodes advanced",
+        "DISPLAY_TITLE": "Advanced"
       },
-      "INCLUDE":"media_items/album_art/art_nodes.json"
+      "INCLUDE":"media_items/advanced.json"
     },
     {
       "FLAGS": "browsable",
