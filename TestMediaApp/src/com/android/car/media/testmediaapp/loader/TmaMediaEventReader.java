@@ -75,7 +75,7 @@ class TmaMediaEventReader {
     }
 
     @Nullable
-    public TmaMediaEvent fromJson(@Nullable JSONObject json) {
+    TmaMediaEvent fromJson(@Nullable JSONObject json) {
         if (json == null) return null;
         return new TmaMediaEvent(
                 getEnum(json, Keys.STATE, mEventStates, EventState.NONE),
