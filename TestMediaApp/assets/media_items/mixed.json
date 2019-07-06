@@ -36,6 +36,16 @@
     {
       "FLAGS": "browsable",
       "PLAYABLE_HINT": "LIST",
+      "BROWSABLE_HINT": "LIST",
+      "METADATA": {
+        "MEDIA_ID": "mixed advanced",
+        "DISPLAY_TITLE": "Advanced"
+      },
+      "INCLUDE":"media_items/advanced.json"
+    },
+    {
+      "FLAGS": "browsable",
+      "PLAYABLE_HINT": "LIST",
       "BROWSABLE_HINT": "GRID",
       "METADATA": {
         "MEDIA_ID": "mixed rabbit hole",
