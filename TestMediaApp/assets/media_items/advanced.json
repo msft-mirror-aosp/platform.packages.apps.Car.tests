@@ -12,7 +12,8 @@
       "METADATA": {
         "MEDIA_ID": "advanced custom_action",
         "DISPLAY_TITLE": "Custom Action Item 1",
-        "DURATION": 10000
+        "DURATION": 10000,
+        "ART_URI": "drawable/ic_heart_plus_plus"
       },
       "CUSTOM_ACTIONS": ["HEART_LESS_LESS", "HEART_PLUS_PLUS"]
     },
@@ -21,7 +22,8 @@
       "METADATA": {
         "MEDIA_ID": "advanced custom_action 2",
         "DISPLAY_TITLE": "Custom Actions overflow",
-        "DURATION": 10000
+        "DURATION": 10000,
+        "ART_URI": "drawable/ic_heart_less_less"
       },
       "CUSTOM_ACTIONS": ["HEART_LESS_LESS", "HEART_PLUS_PLUS", "HEART_PLUS_PLUS", "HEART_PLUS_PLUS", "HEART_PLUS_PLUS"]
     },
@@ -30,7 +32,8 @@
       "METADATA": {
         "MEDIA_ID": "advanced custom_action 3",
         "DISPLAY_TITLE": "Custom Action Item 3",
-        "DURATION": 10000
+        "DURATION": 10000,
+        "ART_URI": "drawable/ic_rectangle_horiz"
       },
       "CUSTOM_ACTIONS": ["HEART_LESS_LESS", "HEART_PLUS_PLUS"]
     },
