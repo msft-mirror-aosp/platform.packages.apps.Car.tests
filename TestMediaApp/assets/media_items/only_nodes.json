@@ -13,7 +13,8 @@
       "FLAGS": "browsable",
       "METADATA": {
         "MEDIA_ID": "only_nodes simple_leaves",
-        "DISPLAY_TITLE": "Basic songs"
+        "DISPLAY_TITLE": "Basic songs",
+        "ART_URI": "drawable/ic_heart_plus_plus"
       },
       "INCLUDE":"media_items/simple_leaves.json"
     },
@@ -23,7 +24,8 @@
       "BROWSABLE_HINT": "LIST",
       "METADATA": {
         "MEDIA_ID": "only_nodes advanced",
-        "DISPLAY_TITLE": "Advanced"
+        "DISPLAY_TITLE": "Advanced",
+        "ART_URI": "drawable/ic_heart_less_less"
       },
       "INCLUDE":"media_items/advanced.json"
     },
