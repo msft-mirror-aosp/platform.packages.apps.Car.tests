@@ -25,4 +25,8 @@
         will truncate it when needed.
     </string>
 
+    <string name="heart_plus_plus" translatable="false">Heart++</string>
+
+    <string name="heart_less_less" translatable="false">Heart--</string>
+
 </resources>

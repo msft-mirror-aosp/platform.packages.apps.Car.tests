@@ -30,7 +30,9 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 class TmaLoaderUtils {
@@ -80,6 +82,23 @@ class TmaLoaderUtils {
         } catch (JSONException e) {
             Log.e(TAG, "JSONException getting array for: " + key + " e: " + e);
             return null;
+        }
+    }
+
+    /** Returns the array mapped to the name of the given key, or empty if missing. */
+    static <T extends Enum, U extends Enum> List<U> getEnumArray(JSONObject json, T key,
+            Map<String, U> enumMap) {
+        try {
+            JSONArray array = json.has(key.name()) ? json.getJSONArray(key.name()) : null;
+            int count = (array != null) ? array.length() : 0;
+            List<U> result = new ArrayList<>(count);
+            for (int i = 0; i < count; i++) {
+                result.add(enumMap.get(array.getString(i)));
+            }
+            return result;
+        } catch (JSONException e) {
+            Log.e(TAG, "JSONException getting array for: " + key + " e: " + e);
+            return new ArrayList<>();
         }
     }
 
