@@ -45,6 +45,15 @@
         "DISPLAY_TITLE": "Album Art"
       },
       "INCLUDE":"media_items/album_art/art_nodes.json"
+    },
+    {
+      "FLAGS": "browsable",
+      "PLAYABLE_HINT": "LIST",
+      "METADATA": {
+        "MEDIA_ID": "advanced exceptions",
+        "DISPLAY_TITLE": "Exceptions"
+      },
+      "INCLUDE":"media_items/exceptions.json"
     }
   ]
 }
