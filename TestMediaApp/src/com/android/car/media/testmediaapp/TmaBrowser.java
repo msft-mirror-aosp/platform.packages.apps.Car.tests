@@ -105,7 +105,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
                             TmaMediaEvent.StateErrorCode.AUTHENTICATION_EXPIRED,
                             getResources().getString(R.string.no_account),
                             getResources().getString(R.string.select_account),
-                            TmaMediaEvent.ResolutionIntent.PREFS, 0));
+                            TmaMediaEvent.ResolutionIntent.PREFS, 0, null));
         } else {
             // TODO don't reset error in all cases...
             PlaybackStateCompat.Builder playbackState = new PlaybackStateCompat.Builder();

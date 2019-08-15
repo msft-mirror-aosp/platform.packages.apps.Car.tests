@@ -63,7 +63,7 @@ class TmaLibrary {
     TmaMediaItem getMediaItemById(String mediaId) {
         TmaMediaItem result = mMediaItemsByMediaId.get(mediaId);
         // Processing includes only on request allows recursive structures :-)
-        if (!TextUtils.isEmpty(result.mInclude)) {
+        if (result != null && !TextUtils.isEmpty(result.mInclude)) {
             result = result.append(loadAssetFile(result.mInclude).mChildren);
         }
         return result;
