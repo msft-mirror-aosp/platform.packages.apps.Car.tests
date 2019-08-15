@@ -42,15 +42,18 @@ import static android.support.v4.media.session.PlaybackStateCompat.STATE_SKIPPIN
 import static android.support.v4.media.session.PlaybackStateCompat.STATE_STOPPED;
 
 import android.support.v4.media.session.PlaybackStateCompat.State;
+import android.util.Log;
 
 /**
  * Contains the info needed to generate a new playback state.
  */
 public class TmaMediaEvent {
 
+    private static final String TAG = "TmaMediaEvent";
+
     public static final TmaMediaEvent INSTANT_PLAYBACK =
             new TmaMediaEvent(EventState.PLAYING, StateErrorCode.UNKNOWN_ERROR, null, null,
-                    ResolutionIntent.NONE, 0);
+                    ResolutionIntent.NONE, 0, null);
 
     /** The name of each entry is the value used in the json file. */
     public enum EventState {
@@ -109,19 +112,36 @@ public class TmaMediaEvent {
     final ResolutionIntent mResolutionIntent;
     /** How long to wait before sending the event to the app. */
     final int mPostDelayMs;
+    private final String mExceptionClass;
 
     public TmaMediaEvent(EventState state, StateErrorCode errorCode, String errorMessage,
-            String actionLabel, ResolutionIntent resolutionIntent, int postDelayMs) {
+            String actionLabel, ResolutionIntent resolutionIntent, int postDelayMs,
+            String exceptionClass) {
         mState = state;
         mErrorCode = errorCode;
         mErrorMessage = errorMessage;
         mActionLabel = actionLabel;
         mResolutionIntent = resolutionIntent;
         mPostDelayMs = postDelayMs;
+        mExceptionClass = exceptionClass;
     }
 
     boolean premiumAccountRequired() {
         return mState == EventState.ERROR && mErrorCode == StateErrorCode.PREMIUM_ACCOUNT_REQUIRED;
+    }
+
+    void maybeThrow() {
+        if (mExceptionClass != null) {
+            RuntimeException exception = null;
+            try {
+                Class aClass = Class.forName(mExceptionClass);
+                exception = (RuntimeException) aClass.newInstance();
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+                Log.e(TAG, "Class error for " + mExceptionClass + " : " + e);
+            }
+
+            if (exception != null) throw exception;
+        }
     }
 
     @Override
@@ -133,6 +153,7 @@ public class TmaMediaEvent {
                 ", mActionLabel='" + mActionLabel + '\'' +
                 ", mResolutionIntent=" + mResolutionIntent +
                 ", mPostDelayMs=" + mPostDelayMs +
+                ", mExceptionClass=" + mExceptionClass +
                 '}';
     }
 }
