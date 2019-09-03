@@ -22,7 +22,6 @@ import android.os.Handler;
 import android.support.v4.media.MediaBrowserCompat.MediaItem;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,7 +29,7 @@ import androidx.media.MediaBrowserServiceCompat;
 
 import com.android.car.media.testmediaapp.loader.TmaLoader;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaAccountType;
-import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaNodeReplyDelay;
+import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaReplyDelay;
 import com.android.car.media.testmediaapp.prefs.TmaPrefs;
 
 import java.util.ArrayList;
@@ -139,7 +138,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     private void getMediaItemsWithDelay(@NonNull String parentId,
             @NonNull Result<List<MediaItem>> result, @Nullable String filter) {
         // TODO: allow per item override of the delay ?
-        TmaNodeReplyDelay delay = mPrefs.mRootReplyDelay.getValue();
+        TmaReplyDelay delay = mPrefs.mRootReplyDelay.getValue();
         Runnable task = () -> {
             TmaMediaItem node;
             if (TmaAccountType.NONE.equals(mPrefs.mAccountType.getValue())) {
@@ -164,7 +163,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
                 result.sendResult(items);
             }
         };
-        if (delay == TmaNodeReplyDelay.NONE) {
+        if (delay == TmaReplyDelay.NONE) {
             task.run();
         } else {
             result.detach();

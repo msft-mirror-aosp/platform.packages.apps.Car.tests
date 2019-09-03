@@ -24,6 +24,8 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.car.media.testmediaapp.prefs.TmaPrefs;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -45,9 +47,16 @@ public class TmaAssetProvider extends ContentProvider {
         return prefix + localArt;
     }
 
+    private int mAssetDelay = 0;
+
     @Override
     public AssetFileDescriptor openAssetFile(Uri uri, String mode) throws FileNotFoundException {
         Log.i(TAG, "TmaAssetProvider#openAssetFile " + uri);
+
+        try {
+            Thread.sleep(mAssetDelay + (int)(mAssetDelay * (Math.random())));
+        } catch (InterruptedException ignored) {
+        }
 
         String file_path = uri.getPath();
         if (TextUtils.isEmpty(file_path)) throw new FileNotFoundException();
@@ -64,7 +73,9 @@ public class TmaAssetProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        return false;
+        TmaPrefs.getInstance(getContext()).mAssetReplyDelay.registerChangeListener(
+                (oldValue, newValue) -> mAssetDelay = newValue.mReplyDelayMs);
+        return true;
     }
 
     @Override

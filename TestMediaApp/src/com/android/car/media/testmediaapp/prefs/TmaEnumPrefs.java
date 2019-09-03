@@ -51,17 +51,19 @@ public class TmaEnumPrefs {
     }
 
     /** For simulating various reply speeds. */
-    public enum TmaNodeReplyDelay implements EnumPrefValue {
+    public enum TmaReplyDelay implements EnumPrefValue {
         NONE("None", "none", 0),
         SHORT("Short", "short", 50),
+        SHORT_PLUS("Short+", "short+", 150),
         MEDIUM("Medium", "medium", 500),
+        MEDIUM_PLUS("Medium+", "medium+", 2000),
         LONG("Long", "long", 5000),
         EXTRA_LONG("Extra-Long", "extra-long", 10000);
 
         private final PrefValueImpl mPrefValue;
         public final int mReplyDelayMs;
 
-        TmaNodeReplyDelay(String displayTitle, String id, int delayMs) {
+        TmaReplyDelay(String displayTitle, String id, int delayMs) {
             mPrefValue = new PrefValueImpl(displayTitle + "(" + delayMs + ")", id);
             mReplyDelayMs = delayMs;
         }
