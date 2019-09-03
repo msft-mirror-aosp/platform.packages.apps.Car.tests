@@ -26,7 +26,7 @@ import androidx.preference.PreferenceScreen;
 
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaAccountType;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaBrowseNodeType;
-import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaNodeReplyDelay;
+import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaReplyDelay;
 import com.android.car.media.testmediaapp.prefs.TmaPrefs.PrefEntry;
 
 public class TmaPrefsFragment extends PreferenceFragmentCompat {
@@ -43,7 +43,9 @@ public class TmaPrefsFragment extends PreferenceFragmentCompat {
         screen.addPreference(createEnumPref(context, "Root node type", prefs.mRootNodeType,
                 TmaBrowseNodeType.values()));
         screen.addPreference(createEnumPref(context, "Root reply delay", prefs.mRootReplyDelay,
-                TmaNodeReplyDelay.values()));
+                TmaReplyDelay.values()));
+        screen.addPreference(createEnumPref(context, "Asset delay: random value in [v, 2v]",
+                prefs.mAssetReplyDelay, TmaReplyDelay.values()));
 
         setPreferenceScreen(screen);
     }
