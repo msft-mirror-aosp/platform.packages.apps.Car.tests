@@ -24,6 +24,7 @@ import androidx.preference.PreferenceManager;
 
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaAccountType;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaBrowseNodeType;
+import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaLoginEventOrder;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaReplyDelay;
 
 import java.util.HashMap;
@@ -45,6 +46,9 @@ public class TmaPrefs {
     /** Wait time for openAssetFile. */
     public final PrefEntry<TmaReplyDelay> mAssetReplyDelay;
 
+    /** Media apps event (update playback state, load browse tree) order after login. */
+    public final PrefEntry<TmaLoginEventOrder> mLoginEventOrder;
+
 
     public synchronized static TmaPrefs getInstance(Context context) {
         if (sPrefs == null) {
@@ -62,7 +66,8 @@ public class TmaPrefs {
         ACCOUNT_TYPE_KEY,
         ROOT_NODE_TYPE_KEY,
         ROOT_REPLY_DELAY_KEY,
-        ASSET_REPLY_DELAY_KEY
+        ASSET_REPLY_DELAY_KEY,
+        LOGIN_EVENT_ORDER_KEY
     }
 
     /**
@@ -128,6 +133,9 @@ public class TmaPrefs {
 
         mAssetReplyDelay = new EnumPrefEntry<>(TmaPrefKey.ASSET_REPLY_DELAY_KEY,
                 TmaReplyDelay.values(), TmaReplyDelay.NONE);
+
+        mLoginEventOrder = new EnumPrefEntry<>(TmaPrefKey.LOGIN_EVENT_ORDER_KEY,
+                TmaLoginEventOrder.values(), TmaLoginEventOrder.PLAYBACK_STATE_UPDATE_FIRST);
     }
 
 
