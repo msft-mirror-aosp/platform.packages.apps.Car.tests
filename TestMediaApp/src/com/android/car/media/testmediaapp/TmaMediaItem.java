@@ -29,7 +29,6 @@ import static com.android.car.media.common.MediaConstants.CONTENT_STYLE_PLAYABLE
 
 import android.os.Bundle;
 import android.support.v4.media.MediaBrowserCompat.MediaItem;
-import android.support.v4.media.MediaBrowserCompat.MediaItem.Flags;
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -73,7 +72,7 @@ public class TmaMediaItem {
 
     }
 
-    private final @MediaItem.Flags int mFlags;
+    private final int mFlags;
     private final MediaMetadataCompat mMediaMetadata;
     private final ContentStyle mPlayableStyle;
     private final ContentStyle mBrowsableStyle;
@@ -93,7 +92,7 @@ public class TmaMediaItem {
     int mHearts;
 
 
-    public TmaMediaItem(@Flags int flags, ContentStyle playableStyle, ContentStyle browsableStyle,
+    public TmaMediaItem(int flags, ContentStyle playableStyle, ContentStyle browsableStyle,
             MediaMetadataCompat metadata, List<TmaCustomAction> customActions,
             List<TmaMediaEvent> mediaEvents,
             List<TmaMediaItem> children, String include) {
