@@ -83,6 +83,7 @@ public class TmaEnumPrefs {
     public enum TmaBrowseNodeType implements EnumPrefValue {
         NULL("Null (error)", "null"),
         EMPTY("Empty", "empty"),
+        QUEUE_ONLY("Queue only", "queue-only"),
         NODE_CHILDREN("Only browse-able content", "nodes"),
         LEAF_CHILDREN("Only playable content (basic working and error cases)", "leaves"),
         MIXED_CHILDREN("Mixed content (apps are not supposed to do that)", "mixed");

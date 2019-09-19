@@ -145,6 +145,28 @@ public class TmaPlayer extends MediaSessionCompat.Callback {
     }
 
     @Override
+    public void onPrepareFromMediaId(String mediaId, Bundle extras) {
+        super.onPrepareFromMediaId(mediaId, extras);
+
+        TmaMediaItem item = mLibrary.getMediaItemById(mediaId);
+        if (item != null && item.getParent() != null) {
+            if (mIsPlaying) {
+                stopPlayback();
+            }
+            mActiveItem = item;
+            mActiveItem.updateSessionMetadata(mSession);
+            mSession.setQueue(item.getParent().buildQueue());
+
+            PlaybackStateCompat.Builder state = new PlaybackStateCompat.Builder()
+                    .setState(PlaybackStateCompat.STATE_PAUSED, mCurrentPositionMs, mPlaybackSpeed)
+                    .setActions(addActions(ACTION_PLAY));
+            setActiveItemState(state);
+            mSession.setPlaybackState(state.build());
+        }
+    }
+
+
+    @Override
     public void onSkipToQueueItem(long id) {
         super.onSkipToQueueItem(id);
         if (mActiveItem != null && mActiveItem.getParent() != null) {
