@@ -17,6 +17,7 @@ package com.android.car.media.testmediaapp;
 
 import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaBrowseNodeType.LEAF_CHILDREN;
 import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaBrowseNodeType.QUEUE_ONLY;
+import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaLoginEventOrder.PLAYBACK_STATE_UPDATE_FIRST;
 
 import android.content.Context;
 import android.media.AudioManager;
@@ -32,6 +33,7 @@ import androidx.media.MediaBrowserServiceCompat;
 
 import com.android.car.media.testmediaapp.loader.TmaLoader;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaAccountType;
+import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaLoginEventOrder;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaReplyDelay;
 import com.android.car.media.testmediaapp.prefs.TmaPrefs;
 import com.android.internal.util.Preconditions;
@@ -102,20 +104,32 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     }
 
     private void onAccountChanged(TmaAccountType accountType) {
+        if (PLAYBACK_STATE_UPDATE_FIRST.equals(mPrefs.mLoginEventOrder.getValue())) {
+            updatePlaybackState(accountType);
+            invalidateRoot();
+        } else {
+            invalidateRoot();
+            (new Handler()).postDelayed(() -> {
+                updatePlaybackState(accountType);
+            }, 3000);
+        }
+    }
+
+    private void updatePlaybackState(TmaAccountType accountType) {
         if (accountType == TmaAccountType.NONE) {
             mPlayer.setPlaybackState(
                     new TmaMediaEvent(TmaMediaEvent.EventState.ERROR,
                             TmaMediaEvent.StateErrorCode.AUTHENTICATION_EXPIRED,
                             getResources().getString(R.string.no_account),
                             getResources().getString(R.string.select_account),
-                            TmaMediaEvent.ResolutionIntent.PREFS, 0, null));
+                            TmaMediaEvent.ResolutionIntent.PREFS,
+                            TmaMediaEvent.Action.NONE, 0, null));
         } else {
             // TODO don't reset error in all cases...
             PlaybackStateCompat.Builder playbackState = new PlaybackStateCompat.Builder();
             playbackState.setState(PlaybackStateCompat.STATE_PAUSED, 0, 0);
             mSession.setPlaybackState(playbackState.build());
         }
-        invalidateRoot();
     }
 
     private void invalidateRoot() {

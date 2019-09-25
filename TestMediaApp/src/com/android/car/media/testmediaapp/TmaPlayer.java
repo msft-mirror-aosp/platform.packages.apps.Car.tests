@@ -44,6 +44,7 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.car.media.testmediaapp.TmaMediaEvent.Action;
 import com.android.car.media.testmediaapp.TmaMediaEvent.EventState;
 import com.android.car.media.testmediaapp.TmaMediaEvent.ResolutionIntent;
 import com.android.car.media.testmediaapp.TmaMediaItem.TmaCustomAction;
@@ -254,6 +255,8 @@ public class TmaPlayer extends MediaSessionCompat.Callback {
                 TmaAccountType.PAID.equals(mPrefs.mAccountType.getValue())) {
             Log.i(TAG, "Ignoring even for paid account");
             return;
+        } else if (Action.RESET_METADATA.equals(event.mAction)) {
+            mSession.setMetadata(mSession.getController().getMetadata());
         } else {
             setPlaybackState(event);
         }
