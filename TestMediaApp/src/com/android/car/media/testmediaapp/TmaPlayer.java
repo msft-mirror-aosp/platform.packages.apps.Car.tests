@@ -150,6 +150,25 @@ public class TmaPlayer extends MediaSessionCompat.Callback {
         super.onPrepareFromMediaId(mediaId, extras);
 
         TmaMediaItem item = mLibrary.getMediaItemById(mediaId);
+        prepareMediaItem(item);
+    }
+
+    @Override
+    public void onPrepare() {
+        super.onPrepare();
+        if (!mSession.isActive()) {
+            mSession.setActive(true);
+        }
+        // Prepare the first playable item (at root level) as the active item
+        if (mActiveItem == null) {
+            TmaMediaItem root = mLibrary.getRoot(mPrefs.mRootNodeType.getValue());
+            if (root != null) {
+                prepareMediaItem(root.getPlayableByIndex(0));
+            }
+        }
+    }
+
+    void prepareMediaItem(@Nullable TmaMediaItem item) {
         if (item != null && item.getParent() != null) {
             if (mIsPlaying) {
                 stopPlayback();
@@ -165,7 +184,6 @@ public class TmaPlayer extends MediaSessionCompat.Callback {
             mSession.setPlaybackState(state.build());
         }
     }
-
 
     @Override
     public void onSkipToQueueItem(long id) {
