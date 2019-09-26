@@ -53,7 +53,7 @@ public class TmaMediaEvent {
 
     public static final TmaMediaEvent INSTANT_PLAYBACK =
             new TmaMediaEvent(EventState.PLAYING, StateErrorCode.UNKNOWN_ERROR, null, null,
-                    ResolutionIntent.NONE, 0, null);
+                    ResolutionIntent.NONE, Action.NONE, 0, null);
 
     /** The name of each entry is the value used in the json file. */
     public enum EventState {
@@ -105,23 +105,31 @@ public class TmaMediaEvent {
         PREFS
     }
 
+    /** The name of each entry is the value used in the json file. */
+    public enum Action {
+        NONE,
+        RESET_METADATA
+    }
+
     final EventState mState;
     final StateErrorCode mErrorCode;
     final String mErrorMessage;
     final String mActionLabel;
     final ResolutionIntent mResolutionIntent;
+    final Action mAction;
     /** How long to wait before sending the event to the app. */
     final int mPostDelayMs;
     private final String mExceptionClass;
 
     public TmaMediaEvent(EventState state, StateErrorCode errorCode, String errorMessage,
-            String actionLabel, ResolutionIntent resolutionIntent, int postDelayMs,
+            String actionLabel, ResolutionIntent resolutionIntent, Action action, int postDelayMs,
             String exceptionClass) {
         mState = state;
         mErrorCode = errorCode;
         mErrorMessage = errorMessage;
         mActionLabel = actionLabel;
         mResolutionIntent = resolutionIntent;
+        mAction = action;
         mPostDelayMs = postDelayMs;
         mExceptionClass = exceptionClass;
     }
@@ -152,6 +160,7 @@ public class TmaMediaEvent {
                 ", mErrorMessage='" + mErrorMessage + '\'' +
                 ", mActionLabel='" + mActionLabel + '\'' +
                 ", mResolutionIntent=" + mResolutionIntent +
+                ", mAction=" + mAction +
                 ", mPostDelayMs=" + mPostDelayMs +
                 ", mExceptionClass=" + mExceptionClass +
                 '}';
