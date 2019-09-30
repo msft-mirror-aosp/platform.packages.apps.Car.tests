@@ -152,10 +152,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
             Preconditions.checkNotNull(queue);
             mSession.setQueue(queue.buildQueue());
 
-            TmaMediaItem firstItem = queue.getPlayableByIndex(0);
-            if (firstItem != null) {
-                mPlayer.onPrepareFromMediaId(firstItem.getMediaId(), null);
-            }
+            mPlayer.prepareMediaItem(queue.getPlayableByIndex(0));
         }
     }
 
