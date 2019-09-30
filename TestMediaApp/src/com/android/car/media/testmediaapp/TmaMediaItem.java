@@ -123,7 +123,11 @@ public class TmaMediaItem {
         return mParent;
     }
 
+    @Nullable
     TmaMediaItem getPlayableByIndex(long index) {
+        if (index < 0 || index >= mPlayableChildren.size()) {
+            return null;
+        }
         return mPlayableChildren.get((int)index);
     }
 
