@@ -49,6 +49,7 @@ class TmaLibrary {
         mRootAssetPaths.put(TmaBrowseNodeType.NULL, null);
         mRootAssetPaths.put(TmaBrowseNodeType.EMPTY, "media_items/empty.json");
         mRootAssetPaths.put(TmaBrowseNodeType.QUEUE_ONLY, "media_items/empty.json");
+        mRootAssetPaths.put(TmaBrowseNodeType.SINGLE_TAB, "media_items/single_node.json");
         mRootAssetPaths.put(TmaBrowseNodeType.NODE_CHILDREN, "media_items/only_nodes.json");
         mRootAssetPaths.put(TmaBrowseNodeType.LEAF_CHILDREN, "media_items/simple_leaves.json");
         mRootAssetPaths.put(TmaBrowseNodeType.MIXED_CHILDREN, "media_items/mixed.json");
