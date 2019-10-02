@@ -28,9 +28,6 @@ import static android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_T
 import static android.support.v4.media.session.PlaybackStateCompat.ERROR_CODE_APP_ERROR;
 import static android.support.v4.media.session.PlaybackStateCompat.STATE_ERROR;
 
-import static com.android.car.media.common.MediaConstants.ERROR_RESOLUTION_ACTION_INTENT;
-import static com.android.car.media.common.MediaConstants.ERROR_RESOLUTION_ACTION_LABEL;
-
 import androidx.annotation.Nullable;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -108,8 +105,8 @@ public class TmaPlayer extends MediaSessionCompat.Callback {
             PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, prefsIntent, 0);
 
             Bundle extras = new Bundle();
-            extras.putString(ERROR_RESOLUTION_ACTION_LABEL, event.mActionLabel);
-            extras.putParcelable(ERROR_RESOLUTION_ACTION_INTENT, pendingIntent);
+            extras.putString(MediaKeys.ERROR_RESOLUTION_ACTION_LABEL, event.mActionLabel);
+            extras.putParcelable(MediaKeys.ERROR_RESOLUTION_ACTION_INTENT, pendingIntent);
             state.setExtras(extras);
         }
 
