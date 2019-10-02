@@ -59,6 +59,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -140,7 +141,9 @@ class TmaMediaMetadataReader {
 
     MediaMetadataCompat fromJson(JSONObject object) throws JSONException {
         MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder();
-        for (String jsonKey : object.keySet()) {
+        Iterator<String> keys = object.keys();
+        while (keys.hasNext()) {
+            String jsonKey = keys.next();
             MetadataKey key = mMetadataKeys.get(jsonKey);
             if (key != null) {
                 switch (key.mKeyType) {

@@ -33,10 +33,8 @@ import androidx.media.MediaBrowserServiceCompat;
 
 import com.android.car.media.testmediaapp.loader.TmaLoader;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaAccountType;
-import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaLoginEventOrder;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaReplyDelay;
 import com.android.car.media.testmediaapp.prefs.TmaPrefs;
-import com.android.internal.util.Preconditions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -149,10 +147,10 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
 
         if (QUEUE_ONLY.equals(mPrefs.mRootNodeType.getValue()) && ROOT_ID.equals(parentId)) {
             TmaMediaItem queue = mLibrary.getRoot(LEAF_CHILDREN);
-            Preconditions.checkNotNull(queue);
-            mSession.setQueue(queue.buildQueue());
-
-            mPlayer.prepareMediaItem(queue.getPlayableByIndex(0));
+            if (queue != null) {
+                mSession.setQueue(queue.buildQueue());
+                mPlayer.prepareMediaItem(queue.getPlayableByIndex(0));
+            }
         }
     }
 
