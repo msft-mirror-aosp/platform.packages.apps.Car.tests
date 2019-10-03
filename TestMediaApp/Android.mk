@@ -34,11 +34,12 @@ LOCAL_CERTIFICATE := platform
 LOCAL_MODULE_TAGS := optional
 
 # car_car is ok here because this is meant to simulate a third party media app
+# Do NOT add dependencies preventing the app from being unbundled (compiled with gradle in Studio).
 LOCAL_STATIC_ANDROID_LIBRARIES := \
         androidx.car_car \
         androidx.appcompat_appcompat \
         androidx.preference_preference \
-        car-media-common
+        androidx.legacy_legacy-support-v4
 
 LOCAL_USE_AAPT2 := true
 
