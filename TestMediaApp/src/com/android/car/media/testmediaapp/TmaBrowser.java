@@ -123,6 +123,8 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
 
     private void updatePlaybackState(TmaAccountType accountType) {
         if (accountType == TmaAccountType.NONE) {
+            mSession.setMetadata(null);
+            mPlayer.onStop();
             mPlayer.setPlaybackState(
                     new TmaMediaEvent(TmaMediaEvent.EventState.ERROR,
                             TmaMediaEvent.StateErrorCode.AUTHENTICATION_EXPIRED,
