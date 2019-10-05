@@ -53,6 +53,11 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     private static final String MEDIA_SESSION_TAG = "TEST_MEDIA_SESSION";
     private static final String ROOT_ID = "_ROOT_ID_";
     private static final String SEARCH_SUPPORTED = "android.media.browse.SEARCH_SUPPORTED";
+    /**
+     * Extras key to allow Android Auto to identify the browse service from the media session.
+     */
+    private static final String BROWSE_SERVICE_FOR_SESSION_KEY =
+        "android.media.session.BROWSE_SERVICE";
 
     private TmaPrefs mPrefs;
     private Handler mHandler;
@@ -78,6 +83,9 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
         mSession.setCallback(mPlayer);
         mSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
                 | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
+        Bundle mediaSessionExtras = new Bundle();
+        mediaSessionExtras.putString(BROWSE_SERVICE_FOR_SESSION_KEY, TmaBrowser.class.getName());
+        mSession.setExtras(mediaSessionExtras);
 
         mPrefs.mAccountType.registerChangeListener(
                 (oldValue, newValue) -> onAccountChanged(newValue));
@@ -88,9 +96,9 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
         mPrefs.mRootReplyDelay.registerChangeListener(
                 (oldValue, newValue) -> invalidateRoot());
 
-        Bundle extras = new Bundle();
-        extras.putBoolean(SEARCH_SUPPORTED, true);
-        mRoot = new BrowserRoot(ROOT_ID, extras);
+        Bundle browserRootExtras = new Bundle();
+        browserRootExtras.putBoolean(SEARCH_SUPPORTED, true);
+        mRoot = new BrowserRoot(ROOT_ID, browserRootExtras);
     }
 
     @Override
@@ -115,6 +123,8 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
 
     private void updatePlaybackState(TmaAccountType accountType) {
         if (accountType == TmaAccountType.NONE) {
+            mSession.setMetadata(null);
+            mPlayer.onStop();
             mPlayer.setPlaybackState(
                     new TmaMediaEvent(TmaMediaEvent.EventState.ERROR,
                             TmaMediaEvent.StateErrorCode.AUTHENTICATION_EXPIRED,
