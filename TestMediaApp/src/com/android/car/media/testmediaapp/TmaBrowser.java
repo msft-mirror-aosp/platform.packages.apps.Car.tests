@@ -99,6 +99,8 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
         Bundle browserRootExtras = new Bundle();
         browserRootExtras.putBoolean(SEARCH_SUPPORTED, true);
         mRoot = new BrowserRoot(ROOT_ID, browserRootExtras);
+
+        updatePlaybackState(mPrefs.mAccountType.getValue());
     }
 
     @Override
@@ -136,6 +138,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
             // TODO don't reset error in all cases...
             PlaybackStateCompat.Builder playbackState = new PlaybackStateCompat.Builder();
             playbackState.setState(PlaybackStateCompat.STATE_PAUSED, 0, 0);
+            playbackState.setActions(PlaybackStateCompat.ACTION_PREPARE);
             mSession.setPlaybackState(playbackState.build());
         }
     }
