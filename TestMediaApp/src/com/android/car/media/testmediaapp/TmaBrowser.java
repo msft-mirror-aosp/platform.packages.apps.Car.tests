@@ -26,6 +26,7 @@ import android.os.Handler;
 import android.support.v4.media.MediaBrowserCompat.MediaItem;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -49,6 +50,7 @@ import java.util.List;
  * {@link TmaPlayer}.
  */
 public class TmaBrowser extends MediaBrowserServiceCompat {
+    private static final String TAG = "TmaBrowser";
 
     private static final String MEDIA_SESSION_TAG = "TEST_MEDIA_SESSION";
     private static final String ROOT_ID = "_ROOT_ID_";
@@ -150,6 +152,8 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     @Override
     public BrowserRoot onGetRoot(
             @NonNull String clientPackageName, int clientUid, Bundle rootHints) {
+        Log.i(TAG, "onGetroot client: " + clientPackageName + " EXTRA_MEDIA_ART_SIZE_HINT_PIXELS: "
+                + rootHints.getInt(MediaKeys.EXTRA_MEDIA_ART_SIZE_HINT_PIXELS, 0));
         return mRoot;
     }
 
