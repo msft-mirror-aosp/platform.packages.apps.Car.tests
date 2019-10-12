@@ -22,6 +22,10 @@ package com.android.car.media.testmediaapp;
  */
 public class MediaKeys {
 
+    /** Integer extra indicating the recommended size (in pixels) for media art bitmaps. */
+    public static final String EXTRA_MEDIA_ART_SIZE_HINT_PIXELS =
+            "android.media.extras.MEDIA_ART_SIZE_HINT_PIXELS";
+
     /**
      * Bundle extra holding the Pending Intent to launch to let users resolve the current error.
      * See {@link #ERROR_RESOLUTION_ACTION_LABEL} for more details.
