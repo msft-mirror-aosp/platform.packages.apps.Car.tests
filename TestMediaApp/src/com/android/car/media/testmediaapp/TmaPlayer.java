@@ -21,15 +21,13 @@ import static android.media.AudioManager.AUDIOFOCUS_REQUEST_GRANTED;
 import static android.support.v4.media.session.PlaybackStateCompat.ACTION_PAUSE;
 import static android.support.v4.media.session.PlaybackStateCompat.ACTION_PLAY;
 import static android.support.v4.media.session.PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID;
+import static android.support.v4.media.session.PlaybackStateCompat.ACTION_PREPARE;
 import static android.support.v4.media.session.PlaybackStateCompat.ACTION_SEEK_TO;
 import static android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_NEXT;
 import static android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS;
 import static android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_QUEUE_ITEM;
 import static android.support.v4.media.session.PlaybackStateCompat.ERROR_CODE_APP_ERROR;
 import static android.support.v4.media.session.PlaybackStateCompat.STATE_ERROR;
-
-import static com.android.car.media.common.MediaConstants.ERROR_RESOLUTION_ACTION_INTENT;
-import static com.android.car.media.common.MediaConstants.ERROR_RESOLUTION_ACTION_LABEL;
 
 import androidx.annotation.Nullable;
 import android.app.PendingIntent;
@@ -108,8 +106,8 @@ public class TmaPlayer extends MediaSessionCompat.Callback {
             PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, prefsIntent, 0);
 
             Bundle extras = new Bundle();
-            extras.putString(ERROR_RESOLUTION_ACTION_LABEL, event.mActionLabel);
-            extras.putParcelable(ERROR_RESOLUTION_ACTION_INTENT, pendingIntent);
+            extras.putString(MediaKeys.ERROR_RESOLUTION_ACTION_LABEL, event.mActionLabel);
+            extras.putParcelable(MediaKeys.ERROR_RESOLUTION_ACTION_INTENT, pendingIntent);
             state.setExtras(extras);
         }
 
@@ -348,7 +346,8 @@ public class TmaPlayer extends MediaSessionCompat.Callback {
     }
 
     private long addActions(long actions) {
-        actions |= ACTION_PLAY_FROM_MEDIA_ID | ACTION_SKIP_TO_QUEUE_ITEM | ACTION_SEEK_TO;
+        actions |= ACTION_PLAY_FROM_MEDIA_ID | ACTION_SKIP_TO_QUEUE_ITEM | ACTION_SEEK_TO
+                | ACTION_PREPARE;
 
         if (mActiveItem != null) {
             if (mActiveItem.getNext() != null) {

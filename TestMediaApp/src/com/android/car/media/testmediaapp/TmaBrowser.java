@@ -26,6 +26,7 @@ import android.os.Handler;
 import android.support.v4.media.MediaBrowserCompat.MediaItem;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,10 +34,8 @@ import androidx.media.MediaBrowserServiceCompat;
 
 import com.android.car.media.testmediaapp.loader.TmaLoader;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaAccountType;
-import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaLoginEventOrder;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaReplyDelay;
 import com.android.car.media.testmediaapp.prefs.TmaPrefs;
-import com.android.internal.util.Preconditions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,10 +50,16 @@ import java.util.List;
  * {@link TmaPlayer}.
  */
 public class TmaBrowser extends MediaBrowserServiceCompat {
+    private static final String TAG = "TmaBrowser";
 
     private static final String MEDIA_SESSION_TAG = "TEST_MEDIA_SESSION";
     private static final String ROOT_ID = "_ROOT_ID_";
     private static final String SEARCH_SUPPORTED = "android.media.browse.SEARCH_SUPPORTED";
+    /**
+     * Extras key to allow Android Auto to identify the browse service from the media session.
+     */
+    private static final String BROWSE_SERVICE_FOR_SESSION_KEY =
+        "android.media.session.BROWSE_SERVICE";
 
     private TmaPrefs mPrefs;
     private Handler mHandler;
@@ -80,6 +85,9 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
         mSession.setCallback(mPlayer);
         mSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
                 | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
+        Bundle mediaSessionExtras = new Bundle();
+        mediaSessionExtras.putString(BROWSE_SERVICE_FOR_SESSION_KEY, TmaBrowser.class.getName());
+        mSession.setExtras(mediaSessionExtras);
 
         mPrefs.mAccountType.registerChangeListener(
                 (oldValue, newValue) -> onAccountChanged(newValue));
@@ -90,9 +98,11 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
         mPrefs.mRootReplyDelay.registerChangeListener(
                 (oldValue, newValue) -> invalidateRoot());
 
-        Bundle extras = new Bundle();
-        extras.putBoolean(SEARCH_SUPPORTED, true);
-        mRoot = new BrowserRoot(ROOT_ID, extras);
+        Bundle browserRootExtras = new Bundle();
+        browserRootExtras.putBoolean(SEARCH_SUPPORTED, true);
+        mRoot = new BrowserRoot(ROOT_ID, browserRootExtras);
+
+        updatePlaybackState(mPrefs.mAccountType.getValue());
     }
 
     @Override
@@ -117,6 +127,8 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
 
     private void updatePlaybackState(TmaAccountType accountType) {
         if (accountType == TmaAccountType.NONE) {
+            mSession.setMetadata(null);
+            mPlayer.onStop();
             mPlayer.setPlaybackState(
                     new TmaMediaEvent(TmaMediaEvent.EventState.ERROR,
                             TmaMediaEvent.StateErrorCode.AUTHENTICATION_EXPIRED,
@@ -128,6 +140,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
             // TODO don't reset error in all cases...
             PlaybackStateCompat.Builder playbackState = new PlaybackStateCompat.Builder();
             playbackState.setState(PlaybackStateCompat.STATE_PAUSED, 0, 0);
+            playbackState.setActions(PlaybackStateCompat.ACTION_PREPARE);
             mSession.setPlaybackState(playbackState.build());
         }
     }
@@ -139,6 +152,8 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     @Override
     public BrowserRoot onGetRoot(
             @NonNull String clientPackageName, int clientUid, Bundle rootHints) {
+        Log.i(TAG, "onGetroot client: " + clientPackageName + " EXTRA_MEDIA_ART_SIZE_HINT_PIXELS: "
+                + rootHints.getInt(MediaKeys.EXTRA_MEDIA_ART_SIZE_HINT_PIXELS, 0));
         return mRoot;
     }
 
@@ -149,10 +164,10 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
 
         if (QUEUE_ONLY.equals(mPrefs.mRootNodeType.getValue()) && ROOT_ID.equals(parentId)) {
             TmaMediaItem queue = mLibrary.getRoot(LEAF_CHILDREN);
-            Preconditions.checkNotNull(queue);
-            mSession.setQueue(queue.buildQueue());
-
-            mPlayer.prepareMediaItem(queue.getPlayableByIndex(0));
+            if (queue != null) {
+                mSession.setQueue(queue.buildQueue());
+                mPlayer.prepareMediaItem(queue.getPlayableByIndex(0));
+            }
         }
     }
 
