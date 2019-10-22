@@ -53,7 +53,7 @@ import static com.android.car.media.testmediaapp.loader.TmaLoaderUtils.enumNames
 import android.support.v4.media.MediaMetadataCompat;
 import android.util.Log;
 
-import com.android.car.media.testmediaapp.TmaAssetProvider;
+import com.android.car.media.testmediaapp.TmaPublicProvider;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -153,7 +153,7 @@ class TmaMediaMetadataReader {
                     case TEXT:
                         String value = object.getString(jsonKey);
                         if (mUriKeys.contains(key)) {
-                            value = TmaAssetProvider.buildUriString(value);
+                            value = TmaPublicProvider.buildUriString(value);
                         }
                         builder.putString(key.mLongName, value);
                         break;
