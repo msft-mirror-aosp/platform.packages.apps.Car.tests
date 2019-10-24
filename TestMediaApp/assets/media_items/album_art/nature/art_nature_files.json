@@ -2,90 +2,90 @@
   "FLAGS": "browsable",
 
   "METADATA": {
-    "MEDIA_ID": "art_nature_512",
-    "DISPLAY_TITLE": "Art nature 512"
+    "MEDIA_ID": "art_nature_files_leaves",
+    "DISPLAY_TITLE": "Art nature files"
   },
 
   "CHILDREN": [
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "art_nature_512 bee",
+        "MEDIA_ID": "art_nature_files_leaves bee",
         "DISPLAY_TITLE": "Bee",
         "DURATION": 10000,
-        "ART_URI": "assets/bitmaps/nature-512/bee.jpg"
+        "ART_URI": "files/bitmaps/nature-1024/bee.jpg"
       }
     },
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "art_nature_512 clouds",
+        "MEDIA_ID": "art_nature_files_leaves clouds",
         "DISPLAY_TITLE": "Clouds",
         "DURATION": 10000,
-        "ART_URI": "assets/bitmaps/nature-512/clouds.jpg"
+        "ART_URI": "files/bitmaps/nature-1024/clouds.jpg"
       }
     },
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "art_nature_512 flower1",
+        "MEDIA_ID": "art_nature_files_leaves flower1",
         "DISPLAY_TITLE": "Flower 1",
         "DURATION": 10000,
-        "ART_URI": "assets/bitmaps/nature-512/flower1.jpg"
+        "ART_URI": "files/bitmaps/nature-1024/flower1.jpg"
       }
     },
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "art_nature_512 flower2",
+        "MEDIA_ID": "art_nature_files_leaves flower2",
         "DISPLAY_TITLE": "Flower 2",
         "DURATION": 10000,
-        "ART_URI": "assets/bitmaps/nature-512/flower2.jpg"
+        "ART_URI": "files/bitmaps/nature-1024/flower2.jpg"
       }
     },
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "art_nature_512 flower3",
+        "MEDIA_ID": "art_nature_files_leaves flower3",
         "DISPLAY_TITLE": "Flower3 ",
         "DURATION": 10000,
-        "ART_URI": "assets/bitmaps/nature-512/flower3.jpg"
+        "ART_URI": "files/bitmaps/nature-1024/flower3.jpg"
       }
     },
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "art_nature_512 flowers",
+        "MEDIA_ID": "art_nature_files_leaves flowers",
         "DISPLAY_TITLE": "Flowers",
         "DURATION": 10000,
-        "ART_URI": "assets/bitmaps/nature-512/flowers.jpg"
+        "ART_URI": "files/bitmaps/nature-1024/flowers.jpg"
       }
     },
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "art_nature_512 leaves",
+        "MEDIA_ID": "art_nature_files_leaves leaves",
         "DISPLAY_TITLE": "Leaves",
         "DURATION": 10000,
-        "ART_URI": "assets/bitmaps/nature-512/leaves.jpg"
+        "ART_URI": "files/bitmaps/nature-1024/leaves.jpg"
       }
     },
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "art_nature_512 sage",
+        "MEDIA_ID": "art_nature_files_leaves sage",
         "DISPLAY_TITLE": "Sage",
         "DURATION": 10000,
-        "ART_URI": "assets/bitmaps/nature-512/sage.jpg"
+        "ART_URI": "files/bitmaps/nature-1024/sage.jpg"
       }
     },
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "art_nature_512 tree",
+        "MEDIA_ID": "art_nature_files_leaves tree",
         "DISPLAY_TITLE": "Tree",
         "DURATION": 10000,
-        "ART_URI": "assets/bitmaps/nature-512/tree.jpg"
+        "ART_URI": "files/bitmaps/nature-1024/tree.jpg"
       }
     }
   ]
