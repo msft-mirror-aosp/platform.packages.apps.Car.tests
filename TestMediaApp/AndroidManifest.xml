@@ -28,10 +28,11 @@
         android:supportsRtl="true"
         android:theme="@style/TestMediaAppTheme" >
 
+        <!-- This provider is read-only, only returns album art, and is not a security risk -->
         <provider
-            android:name=".TmaAssetProvider"
+            android:name=".TmaPublicProvider"
             android:exported="true"
-            android:authorities="com.android.car.media.testmediaapp.assets"/>
+            android:authorities="com.android.car.media.testmediaapp.public"/>
 
         <service
             android:name=".TmaBrowser"
