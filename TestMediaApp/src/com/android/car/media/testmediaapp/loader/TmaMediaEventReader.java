@@ -26,6 +26,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.android.car.media.testmediaapp.TmaMediaEvent;
+import com.android.car.media.testmediaapp.TmaMediaEvent.Action;
 import com.android.car.media.testmediaapp.TmaMediaEvent.EventState;
 import com.android.car.media.testmediaapp.TmaMediaEvent.ResolutionIntent;
 import com.android.car.media.testmediaapp.TmaMediaEvent.StateErrorCode;
@@ -53,6 +54,7 @@ class TmaMediaEventReader {
         ERROR_MESSAGE,
         ACTION_LABEL,
         INTENT,
+        ACTION,
         /** How long to wait before sending the event to the app. */
         POST_DELAY_MS,
         THROW_EXCEPTION
@@ -70,11 +72,13 @@ class TmaMediaEventReader {
     private final Map<String, EventState> mEventStates;
     private final Map<String, StateErrorCode> mErrorCodes;
     private final Map<String, ResolutionIntent> mResolutionIntents;
+    private final Map<String, Action> mActions;
 
     private TmaMediaEventReader() {
         mEventStates = enumNamesToValues(EventState.values());
         mErrorCodes = enumNamesToValues(StateErrorCode.values());
         mResolutionIntents = enumNamesToValues(ResolutionIntent.values());
+        mActions = enumNamesToValues(Action.values());
     }
 
     @Nullable
@@ -86,6 +90,7 @@ class TmaMediaEventReader {
                 getString(json, Keys.ERROR_MESSAGE),
                 getString(json, Keys.ACTION_LABEL),
                 getEnum(json, Keys.INTENT, mResolutionIntents, ResolutionIntent.NONE),
+                getEnum(json, Keys.ACTION, mActions, Action.NONE),
                 getInt(json, Keys.POST_DELAY_MS),
                 getString(json, Keys.THROW_EXCEPTION));
     }

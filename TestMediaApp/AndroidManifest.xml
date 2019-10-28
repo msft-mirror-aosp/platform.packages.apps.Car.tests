@@ -17,9 +17,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.car.media.testmediaapp" >
 
-    <uses-sdk
-        android:minSdkVersion="21"
-        android:targetSdkVersion="28"/>
+    <uses-feature
+        android:name="android.hardware.type.automotive"
+        android:required="true"/>
+
 
     <application
         android:allowBackup="true"
@@ -27,10 +28,11 @@
         android:supportsRtl="true"
         android:theme="@style/TestMediaAppTheme" >
 
+        <!-- This provider is read-only, only returns album art, and is not a security risk -->
         <provider
-            android:name=".TmaAssetProvider"
+            android:name=".TmaPublicProvider"
             android:exported="true"
-            android:authorities="com.android.car.media.testmediaapp.assets"/>
+            android:authorities="com.android.car.media.testmediaapp.public"/>
 
         <service
             android:name=".TmaBrowser"
@@ -65,6 +67,8 @@
 
 
         <!--                To use the app on a phone.                      -->
+        <meta-data android:name="com.google.android.gms.car.application"
+            android:resource="@xml/automotive_app_desc"/>
 
         <activity android:name=".phone.TmaLauncherActivity" >
             <intent-filter>

@@ -22,11 +22,6 @@ import static android.support.v4.media.MediaBrowserCompat.MediaItem.FLAG_PLAYABL
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION;
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID;
 
-import static com.android.car.media.common.MediaConstants.CONTENT_STYLE_BROWSABLE_HINT;
-import static com.android.car.media.common.MediaConstants.CONTENT_STYLE_GRID_ITEM_HINT_VALUE;
-import static com.android.car.media.common.MediaConstants.CONTENT_STYLE_LIST_ITEM_HINT_VALUE;
-import static com.android.car.media.common.MediaConstants.CONTENT_STYLE_PLAYABLE_HINT;
-
 import android.os.Bundle;
 import android.support.v4.media.MediaBrowserCompat.MediaItem;
 import android.support.v4.media.MediaDescriptionCompat;
@@ -46,8 +41,8 @@ public class TmaMediaItem {
     /** The name of each entry is the value used in the json file. */
     public enum ContentStyle {
         NONE (0),
-        LIST (CONTENT_STYLE_LIST_ITEM_HINT_VALUE),
-        GRID (CONTENT_STYLE_GRID_ITEM_HINT_VALUE);
+        LIST (MediaKeys.CONTENT_STYLE_LIST_ITEM_HINT_VALUE),
+        GRID (MediaKeys.CONTENT_STYLE_GRID_ITEM_HINT_VALUE);
         final int mBundleValue;
         ContentStyle(int value) {
             mBundleValue = value;
@@ -123,7 +118,11 @@ public class TmaMediaItem {
         return mParent;
     }
 
+    @Nullable
     TmaMediaItem getPlayableByIndex(long index) {
+        if (index < 0 || index >= mPlayableChildren.size()) {
+            return null;
+        }
         return mPlayableChildren.get((int)index);
     }
 
@@ -208,8 +207,8 @@ public class TmaMediaItem {
             extras.putAll(metadataDescription.getExtras());
         }
 
-        extras.putInt(CONTENT_STYLE_PLAYABLE_HINT, mPlayableStyle.mBundleValue);
-        extras.putInt(CONTENT_STYLE_BROWSABLE_HINT, mBrowsableStyle.mBundleValue);
+        extras.putInt(MediaKeys.CONTENT_STYLE_PLAYABLE_HINT, mPlayableStyle.mBundleValue);
+        extras.putInt(MediaKeys.CONTENT_STYLE_BROWSABLE_HINT, mBrowsableStyle.mBundleValue);
 
         bob.setExtras(extras);
         return bob.build();

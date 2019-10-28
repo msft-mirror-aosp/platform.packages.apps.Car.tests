@@ -83,6 +83,8 @@ public class TmaEnumPrefs {
     public enum TmaBrowseNodeType implements EnumPrefValue {
         NULL("Null (error)", "null"),
         EMPTY("Empty", "empty"),
+        QUEUE_ONLY("Queue only", "queue-only"),
+        SINGLE_TAB("Single browse-able tab", "single-tab"),
         NODE_CHILDREN("Only browse-able content", "nodes"),
         LEAF_CHILDREN("Only playable content (basic working and error cases)", "leaves"),
         MIXED_CHILDREN("Mixed content (apps are not supposed to do that)", "mixed");
@@ -90,6 +92,29 @@ public class TmaEnumPrefs {
         private final PrefValueImpl mPrefValue;
 
         TmaBrowseNodeType(String displayTitle, String id) {
+            mPrefValue = new PrefValueImpl(displayTitle, id);
+        }
+
+        @Override
+        public String getTitle() {
+            return mPrefValue.getTitle();
+        }
+
+        @Override
+        public String getId() {
+            return mPrefValue.getId();
+        }
+    }
+
+    /* To simulate the events order after login. Media apps should update playback state first, then
+     * load the browse tree. But sometims some apps (e.g., GPB) don't follow this order strictly. */
+    public enum TmaLoginEventOrder implements EnumPrefValue {
+        PLAYBACK_STATE_UPDATE_FIRST("Update playback state first", "state-first"),
+        BROWSE_TREE_LOAD_FRIST("Load browse tree first", "tree-first");
+
+        private final PrefValueImpl mPrefValue;
+
+        TmaLoginEventOrder(String displayTitle, String id) {
             mPrefValue = new PrefValueImpl(displayTitle, id);
         }
 
