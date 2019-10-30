@@ -152,6 +152,10 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     @Override
     public BrowserRoot onGetRoot(
             @NonNull String clientPackageName, int clientUid, Bundle rootHints) {
+        if (rootHints == null) {
+            Log.e(TAG, "Client " + clientPackageName + " didn't set rootHints.");
+            throw new NullPointerException("rootHints is null");
+        }
         Log.i(TAG, "onGetroot client: " + clientPackageName + " EXTRA_MEDIA_ART_SIZE_HINT_PIXELS: "
                 + rootHints.getInt(MediaKeys.EXTRA_MEDIA_ART_SIZE_HINT_PIXELS, 0));
         return mRoot;
