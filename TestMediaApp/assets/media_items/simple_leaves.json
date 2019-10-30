@@ -104,6 +104,30 @@
           "POST_DELAY_MS": 1000
         }
       ]
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "simple_leaves bluetooth disconnected and reconnected",
+        "DISPLAY_TITLE": "Bluetooth disconnected at 2s and reconnected at 8s",
+        "DURATION": 20000
+      },
+      "EVENTS": [
+        { "STATE": "PLAYING", "POST_DELAY_MS": 0 },
+        {
+          "STATE": "ERROR",
+          "ERROR_MESSAGE": "Bluetooth audio disconnected.",
+          "POST_DELAY_MS": 2000
+        },
+        {
+          "ACTION": "RESET_METADATA",
+          "POST_DELAY_MS": 6000
+        },
+        {
+          "STATE": "PLAYING",
+          "POST_DELAY_MS": 3000
+        }
+      ]
     }
   ]
 }
