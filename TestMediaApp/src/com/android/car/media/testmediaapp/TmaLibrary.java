@@ -52,6 +52,7 @@ class TmaLibrary {
         mRootAssetPaths.put(TmaBrowseNodeType.NODE_CHILDREN, "media_items/only_nodes.json");
         mRootAssetPaths.put(TmaBrowseNodeType.LEAF_CHILDREN, "media_items/simple_leaves.json");
         mRootAssetPaths.put(TmaBrowseNodeType.MIXED_CHILDREN, "media_items/mixed.json");
+        mRootAssetPaths.put(TmaBrowseNodeType.UNTAGGED, "media_items/untagged.json");
     }
 
     @Nullable

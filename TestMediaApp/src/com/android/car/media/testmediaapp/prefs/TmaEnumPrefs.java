@@ -86,7 +86,8 @@ public class TmaEnumPrefs {
         QUEUE_ONLY("Queue only", "queue-only"),
         NODE_CHILDREN("Only browse-able content", "nodes"),
         LEAF_CHILDREN("Only playable content (basic working and error cases)", "leaves"),
-        MIXED_CHILDREN("Mixed content (apps are not supposed to do that)", "mixed");
+        MIXED_CHILDREN("Mixed content (apps are not supposed to do that)", "mixed"),
+        UNTAGGED("Untagged media items (not playable or browsable)", "untagged");
 
         private final PrefValueImpl mPrefValue;
 
