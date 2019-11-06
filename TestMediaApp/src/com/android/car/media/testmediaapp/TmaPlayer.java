@@ -226,6 +226,7 @@ public class TmaPlayer extends MediaSessionCompat.Callback {
         if (mActiveItem == null) return;
 
         TmaMediaEvent event = mActiveItem.mMediaEvents.get(mNextEventIndex);
+        event.maybeThrow();
 
         if (event.premiumAccountRequired() &&
                 TmaAccountType.PAID.equals(mPrefs.mAccountType.getValue())) {
