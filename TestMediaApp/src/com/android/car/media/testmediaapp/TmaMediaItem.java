@@ -42,7 +42,9 @@ public class TmaMediaItem {
     public enum ContentStyle {
         NONE (0),
         LIST (MediaKeys.CONTENT_STYLE_LIST_ITEM_HINT_VALUE),
-        GRID (MediaKeys.CONTENT_STYLE_GRID_ITEM_HINT_VALUE);
+        GRID (MediaKeys.CONTENT_STYLE_GRID_ITEM_HINT_VALUE),
+        LIST_CATEGORY(MediaKeys.CONTENT_STYLE_CATEGORY_LIST_ITEM_HINT_VALUE),
+        GRID_CATEGORY(MediaKeys.CONTENT_STYLE_CATEGORY_GRID_ITEM_HINT_VALUE);
         final int mBundleValue;
         ContentStyle(int value) {
             mBundleValue = value;
