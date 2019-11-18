@@ -39,7 +39,7 @@
     },
     {
       "FLAGS": "browsable",
-      "PLAYABLE_HINT": "GRID",
+      "BROWSABLE_HINT": "GRID_CATEGORY",
       "METADATA": {
         "MEDIA_ID": "advanced art nodes",
         "DISPLAY_TITLE": "Album Art"
