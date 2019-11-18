@@ -65,4 +65,18 @@ public class MediaKeys {
      * hints the corresponding items should be presented as grids.
      */
     static final int CONTENT_STYLE_GRID_ITEM_HINT_VALUE = 2;
+
+    /**
+     * Value for {@link #CONTENT_STYLE_BROWSABLE_HINT} that hints the corresponding items should be
+     * presented as a "category" list, where media items are browsable and represented by a
+     * meaningful icon.
+     */
+    public static final int CONTENT_STYLE_CATEGORY_LIST_ITEM_HINT_VALUE = 3;
+
+    /**
+     * Value for {@link #CONTENT_STYLE_BROWSABLE_HINT} that hints the corresponding items should be
+     * presented as a "category" grid, where media items are browsable and represented by a
+     * meaningful icon.
+     */
+    public static final int CONTENT_STYLE_CATEGORY_GRID_ITEM_HINT_VALUE = 4;
 }
