@@ -39,6 +39,8 @@ import com.android.car.media.testmediaapp.prefs.TmaPrefs;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -52,6 +54,7 @@ import java.util.List;
 public class TmaBrowser extends MediaBrowserServiceCompat {
     private static final String TAG = "TmaBrowser";
 
+    private static final int MAX_SEARCH_DEPTH = 4;
     private static final String MEDIA_SESSION_TAG = "TEST_MEDIA_SESSION";
     private static final String ROOT_ID = "_ROOT_ID_";
     private static final String SEARCH_SUPPORTED = "android.media.browse.SEARCH_SUPPORTED";
@@ -68,7 +71,6 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     private TmaPlayer mPlayer;
 
     private BrowserRoot mRoot;
-    private String mLastLoadedNodeId;
 
     @Override
     public void onCreate() {
@@ -163,7 +165,6 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
 
     @Override
     public void onLoadChildren(@NonNull String parentId, @NonNull Result<List<MediaItem>> result) {
-        mLastLoadedNodeId = parentId;
         getMediaItemsWithDelay(parentId, result, null);
 
         if (QUEUE_ONLY.equals(mPrefs.mRootNodeType.getValue()) && ROOT_ID.equals(parentId)) {
@@ -176,8 +177,9 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     }
 
     @Override
-    public void onSearch(final String query, final Bundle extras, Result<List<MediaItem>> result) {
-        getMediaItemsWithDelay(mLastLoadedNodeId, result, query);
+    public void onSearch(@NonNull String query, Bundle extras,
+            @NonNull Result<List<MediaItem>> result) {
+        getMediaItemsWithDelay(ROOT_ID, result, query);
     }
 
     private void getMediaItemsWithDelay(@NonNull String parentId,
@@ -196,14 +198,15 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
 
             if (node == null) {
                 result.sendResult(null);
+            } else if (filter != null) {
+                List<MediaItem> hits = new ArrayList<>(50);
+                Pattern pat = Pattern.compile(Pattern.quote(filter), Pattern.CASE_INSENSITIVE);
+                addSearchResults(node, pat.matcher(""), hits, MAX_SEARCH_DEPTH);
+                result.sendResult(hits);
             } else {
                 List<MediaItem> items = new ArrayList<>(node.mChildren.size());
                 for (TmaMediaItem child : node.mChildren) {
-                    MediaItem item = child.toMediaItem();
-                    CharSequence title = item.getDescription().getTitle();
-                    if (filter == null || (title != null && title.toString().contains(filter))) {
-                        items.add(item);
-                    }
+                    items.add(child.toMediaItem());
                 }
                 result.sendResult(items);
             }
@@ -213,6 +216,28 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
         } else {
             result.detach();
             mHandler.postDelayed(task, delay.mReplyDelayMs);
+        }
+    }
+
+    private void addSearchResults(@Nullable TmaMediaItem node, Matcher matcher,
+            List<MediaItem> hits, int currentDepth) {
+        if (node == null || currentDepth <= 0) {
+            return;
+        }
+
+        for (TmaMediaItem child : node.mChildren) {
+            MediaItem item = child.toMediaItem();
+            CharSequence title = item.getDescription().getTitle();
+            if (title != null) {
+                matcher.reset(title);
+                if (matcher.find()) {
+                    hits.add(item);
+                }
+            }
+
+            // Ask the library to load the grand children
+            child = mLibrary.getMediaItemById(child.getMediaId());
+            addSearchResults(child, matcher, hits, currentDepth - 1);
         }
     }
 }
