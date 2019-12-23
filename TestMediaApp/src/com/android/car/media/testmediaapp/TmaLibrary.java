@@ -48,6 +48,7 @@ class TmaLibrary {
         mLoader = loader;
         mRootAssetPaths.put(TmaBrowseNodeType.NULL, null);
         mRootAssetPaths.put(TmaBrowseNodeType.EMPTY, "media_items/empty.json");
+        mRootAssetPaths.put(TmaBrowseNodeType.QUEUE_ONLY, "media_items/empty.json");
         mRootAssetPaths.put(TmaBrowseNodeType.NODE_CHILDREN, "media_items/only_nodes.json");
         mRootAssetPaths.put(TmaBrowseNodeType.LEAF_CHILDREN, "media_items/simple_leaves.json");
         mRootAssetPaths.put(TmaBrowseNodeType.MIXED_CHILDREN, "media_items/mixed.json");
@@ -63,7 +64,7 @@ class TmaLibrary {
     TmaMediaItem getMediaItemById(String mediaId) {
         TmaMediaItem result = mMediaItemsByMediaId.get(mediaId);
         // Processing includes only on request allows recursive structures :-)
-        if (!TextUtils.isEmpty(result.mInclude)) {
+        if (result != null && !TextUtils.isEmpty(result.mInclude)) {
             result = result.append(loadAssetFile(result.mInclude).mChildren);
         }
         return result;
