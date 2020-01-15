@@ -10,6 +10,7 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.car.media.testmediaapp.MediaKeys;
 import com.android.car.media.testmediaapp.TmaBrowser;
 import com.android.car.media.testmediaapp.prefs.TmaPrefsActivity;
 import com.android.car.media.testmediaapp.R;
@@ -37,9 +38,11 @@ public class TmaLauncherActivity extends AppCompatActivity {
             startActivity(prefsIntent);
         });
 
-
+        Bundle rootHints = new Bundle();
+        // TODO: 256 is just a placeholder. We'd better find a proper value.
+        rootHints.putInt(MediaKeys.EXTRA_MEDIA_ART_SIZE_HINT_PIXELS, 256);
         mediaBrowser = new MediaBrowserCompat(this, new ComponentName(this, TmaBrowser.class),
-                mConnectionCallbacks, null);
+                mConnectionCallbacks, rootHints);
     }
 
     private final MediaBrowserCompat.ConnectionCallback mConnectionCallbacks =
