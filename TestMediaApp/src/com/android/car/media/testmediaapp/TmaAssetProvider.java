@@ -16,12 +16,15 @@
 package com.android.car.media.testmediaapp;
 
 import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
+
+import com.android.car.media.testmediaapp.prefs.TmaPrefs;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -30,15 +33,31 @@ public class TmaAssetProvider extends ContentProvider {
 
     private static final String TAG = "TmaAssetProvider";
 
-    private static final String URI_PREFIX = "content://com.android.car.media.testmediaapp.assets/";
+    private static final String PACKAGE_NAME = "com.android.car.media.testmediaapp";
+
+    private static final String ASSET_URI_PREFIX =
+            ContentResolver.SCHEME_CONTENT + "://" + PACKAGE_NAME + ".assets/";
+
+    private static final String RESOURCE_URI_PREFIX =
+            ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + PACKAGE_NAME + "/";
 
 
-    public static String buildUriString(String localAssetFilePath) {
-        return URI_PREFIX + localAssetFilePath;
+    public static String buildUriString(String localArt) {
+        String prefix = localArt.startsWith("drawable") ? RESOURCE_URI_PREFIX : ASSET_URI_PREFIX;
+        return prefix + localArt;
     }
+
+    private int mAssetDelay = 0;
 
     @Override
     public AssetFileDescriptor openAssetFile(Uri uri, String mode) throws FileNotFoundException {
+        Log.i(TAG, "TmaAssetProvider#openAssetFile " + uri);
+
+        try {
+            Thread.sleep(mAssetDelay + (int)(mAssetDelay * (Math.random())));
+        } catch (InterruptedException ignored) {
+        }
+
         String file_path = uri.getPath();
         if (TextUtils.isEmpty(file_path)) throw new FileNotFoundException();
         try {
@@ -54,7 +73,9 @@ public class TmaAssetProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        return false;
+        TmaPrefs.getInstance(getContext()).mAssetReplyDelay.registerChangeListener(
+                (oldValue, newValue) -> mAssetDelay = newValue.mReplyDelayMs);
+        return true;
     }
 
     @Override

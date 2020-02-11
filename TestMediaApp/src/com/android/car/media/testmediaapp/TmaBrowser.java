@@ -15,6 +15,10 @@
  */
 package com.android.car.media.testmediaapp;
 
+import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaBrowseNodeType.LEAF_CHILDREN;
+import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaBrowseNodeType.QUEUE_ONLY;
+import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaLoginEventOrder.PLAYBACK_STATE_UPDATE_FIRST;
+
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -22,7 +26,6 @@ import android.os.Handler;
 import android.support.v4.media.MediaBrowserCompat.MediaItem;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,7 +33,7 @@ import androidx.media.MediaBrowserServiceCompat;
 
 import com.android.car.media.testmediaapp.loader.TmaLoader;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaAccountType;
-import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaNodeReplyDelay;
+import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaReplyDelay;
 import com.android.car.media.testmediaapp.prefs.TmaPrefs;
 
 import java.util.ArrayList;
@@ -99,20 +102,32 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     }
 
     private void onAccountChanged(TmaAccountType accountType) {
+        if (PLAYBACK_STATE_UPDATE_FIRST.equals(mPrefs.mLoginEventOrder.getValue())) {
+            updatePlaybackState(accountType);
+            invalidateRoot();
+        } else {
+            invalidateRoot();
+            (new Handler()).postDelayed(() -> {
+                updatePlaybackState(accountType);
+            }, 3000);
+        }
+    }
+
+    private void updatePlaybackState(TmaAccountType accountType) {
         if (accountType == TmaAccountType.NONE) {
             mPlayer.setPlaybackState(
                     new TmaMediaEvent(TmaMediaEvent.EventState.ERROR,
                             TmaMediaEvent.StateErrorCode.AUTHENTICATION_EXPIRED,
                             getResources().getString(R.string.no_account),
                             getResources().getString(R.string.select_account),
-                            TmaMediaEvent.ResolutionIntent.PREFS, 0));
+                            TmaMediaEvent.ResolutionIntent.PREFS,
+                            TmaMediaEvent.Action.NONE, 0, null));
         } else {
             // TODO don't reset error in all cases...
             PlaybackStateCompat.Builder playbackState = new PlaybackStateCompat.Builder();
             playbackState.setState(PlaybackStateCompat.STATE_PAUSED, 0, 0);
             mSession.setPlaybackState(playbackState.build());
         }
-        invalidateRoot();
     }
 
     private void invalidateRoot() {
@@ -129,6 +144,14 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     public void onLoadChildren(@NonNull String parentId, @NonNull Result<List<MediaItem>> result) {
         mLastLoadedNodeId = parentId;
         getMediaItemsWithDelay(parentId, result, null);
+
+        if (QUEUE_ONLY.equals(mPrefs.mRootNodeType.getValue()) && ROOT_ID.equals(parentId)) {
+            TmaMediaItem queue = mLibrary.getRoot(LEAF_CHILDREN);
+            if (queue != null) {
+                mSession.setQueue(queue.buildQueue());
+                mPlayer.prepareMediaItem(queue.getPlayableByIndex(0));
+            }
+        }
     }
 
     @Override
@@ -139,7 +162,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     private void getMediaItemsWithDelay(@NonNull String parentId,
             @NonNull Result<List<MediaItem>> result, @Nullable String filter) {
         // TODO: allow per item override of the delay ?
-        TmaNodeReplyDelay delay = mPrefs.mRootReplyDelay.getValue();
+        TmaReplyDelay delay = mPrefs.mRootReplyDelay.getValue();
         Runnable task = () -> {
             TmaMediaItem node;
             if (TmaAccountType.NONE.equals(mPrefs.mAccountType.getValue())) {
@@ -164,7 +187,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
                 result.sendResult(items);
             }
         };
-        if (delay == TmaNodeReplyDelay.NONE) {
+        if (delay == TmaReplyDelay.NONE) {
             task.run();
         } else {
             result.detach();
