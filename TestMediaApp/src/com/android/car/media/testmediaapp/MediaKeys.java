@@ -22,6 +22,10 @@ package com.android.car.media.testmediaapp;
  */
 public class MediaKeys {
 
+    /** Integer extra indicating the recommended size (in pixels) for media art bitmaps. */
+    public static final String EXTRA_MEDIA_ART_SIZE_HINT_PIXELS =
+            "android.media.extras.MEDIA_ART_SIZE_HINT_PIXELS";
+
     /**
      * Bundle extra holding the Pending Intent to launch to let users resolve the current error.
      * See {@link #ERROR_RESOLUTION_ACTION_LABEL} for more details.
@@ -61,4 +65,18 @@ public class MediaKeys {
      * hints the corresponding items should be presented as grids.
      */
     static final int CONTENT_STYLE_GRID_ITEM_HINT_VALUE = 2;
+
+    /**
+     * Value for {@link #CONTENT_STYLE_BROWSABLE_HINT} that hints the corresponding items should be
+     * presented as a "category" list, where media items are browsable and represented by a
+     * meaningful icon.
+     */
+    public static final int CONTENT_STYLE_CATEGORY_LIST_ITEM_HINT_VALUE = 3;
+
+    /**
+     * Value for {@link #CONTENT_STYLE_BROWSABLE_HINT} that hints the corresponding items should be
+     * presented as a "category" grid, where media items are browsable and represented by a
+     * meaningful icon.
+     */
+    public static final int CONTENT_STYLE_CATEGORY_GRID_ITEM_HINT_VALUE = 4;
 }

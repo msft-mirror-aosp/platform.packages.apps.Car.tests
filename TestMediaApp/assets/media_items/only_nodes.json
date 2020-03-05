@@ -32,7 +32,7 @@
     {
       "FLAGS": "browsable",
       "PLAYABLE_HINT": "GRID",
-      "BROWSABLE_HINT": "LIST",
+      "BROWSABLE_HINT": "LIST_CATEGORY",
       "METADATA": {
         "MEDIA_ID": "only_nodes rabbit hole",
         "DISPLAY_TITLE": "Rabbit hole 2"
