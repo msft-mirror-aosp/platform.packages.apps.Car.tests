@@ -27,11 +27,10 @@ android_app {
 
     certificate: "platform",
 
-    // car_car is ok here because this is meant to simulate a third party media app
     // Do NOT add dependencies preventing the app from being unbundled (compiled with gradle in Studio).
     static_libs: [
-        "androidx.car_car",
         "androidx.appcompat_appcompat",
+	"androidx-constraintlayout_constraintlayout",
         "androidx.preference_preference",
         "androidx.legacy_legacy-support-v4",
     ],
