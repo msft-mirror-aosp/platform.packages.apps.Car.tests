@@ -204,11 +204,24 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
                 addSearchResults(node, pat.matcher(""), hits, MAX_SEARCH_DEPTH);
                 result.sendResult(hits);
             } else {
-                List<MediaItem> items = new ArrayList<>(node.mChildren.size());
-                for (TmaMediaItem child : node.mChildren) {
-                    items.add(child.toMediaItem());
+                List<TmaMediaItem> children = node.getChildren();
+                int childrenCount = children.size();
+                List<MediaItem> items = new ArrayList<>(childrenCount);
+                if (childrenCount <= 0) {
+                    result.sendResult(items);
+                } else {
+                    int selfUpdateDelay = node.getSelfUpdateDelay();
+                    int toShow = (selfUpdateDelay > 0) ? 1 + node.mRevealCounter : childrenCount;
+                    for (int childIndex = 0 ; childIndex < toShow; childIndex++) {
+                        items.add(children.get(childIndex).toMediaItem());
+                    }
+                    result.sendResult(items);
+
+                    if (selfUpdateDelay > 0) {
+                        mHandler.postDelayed(new UpdateNodeTask(parentId), selfUpdateDelay);
+                        node.mRevealCounter = (node.mRevealCounter + 1) % (childrenCount);
+                    }
                 }
-                result.sendResult(items);
             }
         };
         if (delay == TmaReplyDelay.NONE) {
@@ -225,7 +238,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
             return;
         }
 
-        for (TmaMediaItem child : node.mChildren) {
+        for (TmaMediaItem child : node.getChildren()) {
             MediaItem item = child.toMediaItem();
             CharSequence title = item.getDescription().getTitle();
             if (title != null) {
@@ -238,6 +251,20 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
             // Ask the library to load the grand children
             child = mLibrary.getMediaItemById(child.getMediaId());
             addSearchResults(child, matcher, hits, currentDepth - 1);
+        }
+    }
+
+    private class UpdateNodeTask implements Runnable {
+
+        private final String mNodeId;
+
+        UpdateNodeTask(@NonNull String nodeId) {
+            mNodeId = nodeId;
+        }
+
+        @Override
+        public void run() {
+            notifyChildrenChanged(mNodeId);
         }
     }
 }

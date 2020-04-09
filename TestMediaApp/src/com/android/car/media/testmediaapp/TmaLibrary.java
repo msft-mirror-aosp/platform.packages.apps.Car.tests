@@ -66,8 +66,9 @@ class TmaLibrary {
     TmaMediaItem getMediaItemById(String mediaId) {
         TmaMediaItem result = mMediaItemsByMediaId.get(mediaId);
         // Processing includes only on request allows recursive structures :-)
-        if (result != null && !TextUtils.isEmpty(result.mInclude)) {
-            result = result.append(loadAssetFile(result.mInclude).mChildren);
+        if (result != null && !TextUtils.isEmpty(result.mInclude)
+                && result.getChildren().isEmpty()) {
+            result.setChildren(loadAssetFile(result.mInclude).getChildren());
         }
         return result;
     }
@@ -89,7 +90,7 @@ class TmaLibrary {
     private void cacheMediaItem(TmaMediaItem item) {
         String key = item.getMediaId();
         if (mMediaItemsByMediaId.putIfAbsent(key, item) == null) {
-            for (TmaMediaItem child : item.mChildren) {
+            for (TmaMediaItem child : item.getChildren()) {
                 cacheMediaItem(child);
             }
         } else {
