@@ -22,6 +22,17 @@ To see TestMediaApp in Android Auto Projected:
 6. Exit and re-open Android Auto
 7. TestMediaApp should now be visible (click headphones icon in phone app to see app picker)
 
+### RotaryPlayground
+
+RotaryPlayground is a test and reference application for the AAOS Rotary framework to use with an external rotary input device.
+
+To buid and install RotaryPlayground into an AAOS device:
+
+```
+$ make RotaryPlayground
+$ adb install -r -g out/target/[path]/system/app/RotaryPlayground/RotaryPlayground.apk
+```
+
 ## Contributing
 
 ### Workstation setup
