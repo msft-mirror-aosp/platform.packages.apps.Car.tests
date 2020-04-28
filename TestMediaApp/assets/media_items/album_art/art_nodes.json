@@ -1,6 +1,6 @@
 {
   "FLAGS": "browsable",
-  "BROWSABLE_HINT": "LIST",
+  "BROWSABLE_HINT": "GRID_CATEGORY",
 
   "METADATA": {
     "MEDIA_ID": "album_art/art_nodes",
