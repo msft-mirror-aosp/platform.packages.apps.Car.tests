@@ -35,11 +35,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- A FocusArea with normal buttons with basic attributes. Upon nudging into this area,
-             the default focus should land on the first button in this container. Rotating the
-             rotary controller clockwise will move the focus from top to bottom.
-             Counterclockwise to move the focus from bottom to up. Nudge any direction to leave
-             this focus area. -->
+        <!-- A FocusArea with some buttons.
+             Upon nudging into this area, the default focus should land on the first
+             button in this container. Rotating the rotary controller clockwise will move the focus
+             from top to bottom. Counterclockwise to move the focus from bottom to up. Nudge any
+             direction to leave this focus area. The disabled button is skipped. -->
         <LinearLayout
             android:id="@+id/card_normal"
             android:background="@color/card_background_color"
@@ -53,6 +53,18 @@
                 android:onClick="onRotaryCardsButtonClick"
                 android:tag="test_button"
                 android:text="Button" />
+            <!-- This button is disabled and is not focusable by RotaryService. The RotaryService
+                 can see disabled views but it can't focus them. Android doesn't allow disabled
+                 views to be focused.
+                 The focus will skip this button when rotating the rotary countroller. -->
+            <Button
+                android:background="@color/button_disabled_background_color"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:onClick="onRotaryCardsButtonClick"
+                android:enabled="false"
+                android:tag="test_button"
+                android:text="Disabled" />
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -65,12 +77,49 @@
                 android:onClick="onRotaryCardsButtonClick"
                 android:tag="test_button"
                 android:text="Button" />
+        </LinearLayout>
+
+
+        <!-- A FocusArea where all elements are disabled. Elements that are disabled
+             (android:enabled="false") or not focusable (android:focusable="false") are
+             discoverable by the RotaryService, but the RotaryService will not focus them.
+             When no elements is focusable, nudging left and right from the adjacent cards
+             will cause focus to appear to skip this card -->
+        <LinearLayout
+            android:id="@+id/card_normal"
+            android:background="@color/card_disabled_background_color"
+            android:layout_margin="16dp"
+            android:layout_width="300dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:onClick="onRotaryCardsButtonClick"
+                android:enabled="false"
                 android:tag="test_button"
-                android:text="Button" />
+                android:text="Disabled" />
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:onClick="onRotaryCardsButtonClick"
+                android:enabled="false"
+                android:tag="test_button"
+                android:text="Disabled" />
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:onClick="onRotaryCardsButtonClick"
+                android:enabled="false"
+                android:tag="test_button"
+                android:text="Disabled" />
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:onClick="onRotaryCardsButtonClick"
+                android:enabled="false"
+                android:tag="test_button"
+                android:text="Disabled" />
         </LinearLayout>
 
         <!-- A FocusArea that contains a button with a default focus attribute. Upon nudging into
