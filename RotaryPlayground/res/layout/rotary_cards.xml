@@ -19,7 +19,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
+    <com.android.car.ui.FocusArea
         android:layout_margin="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,178 +29,183 @@
             android:layout_height="wrap_content"
             android:singleLine="true">
         </EditText>
-    </LinearLayout>
+    </com.android.car.ui.FocusArea>
 
-    <LinearLayout
+    <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-        <!-- A FocusArea with some buttons.
-             Upon nudging into this area, the default focus should land on the first
-             button in this container. Rotating the rotary controller clockwise will move the focus
-             from top to bottom. Counterclockwise to move the focus from bottom to up. Nudge any
-             direction to leave this focus area. The disabled button is skipped. -->
         <LinearLayout
-            android:id="@+id/card_normal"
-            android:background="@color/card_background_color"
-            android:layout_margin="16dp"
-            android:layout_width="300dp"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:onClick="onRotaryCardsButtonClick"
-                android:tag="test_button"
-                android:text="Button" />
-            <!-- This button is disabled and is not focusable by RotaryService. The RotaryService
-                 can see disabled views but it can't focus them. Android doesn't allow disabled
-                 views to be focused.
-                 The focus will skip this button when rotating the rotary countroller. -->
-            <Button
-                android:background="@color/button_disabled_background_color"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:onClick="onRotaryCardsButtonClick"
-                android:enabled="false"
-                android:tag="test_button"
-                android:text="Disabled" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:onClick="onRotaryCardsButtonClick"
-                android:tag="test_button"
-                android:text="Button" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:onClick="onRotaryCardsButtonClick"
-                android:tag="test_button"
-                android:text="Button" />
-        </LinearLayout>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
+            <!-- A FocusArea with some buttons.
+                 Upon nudging into this area, the default focus should land on the first
+                 button in this container. Rotating the rotary controller clockwise will move the
+                 focus from top to bottom. Counterclockwise to move the focus from bottom to up.
+                 Nudge any direction to leave this focus area. The disabled button is skipped. -->
+            <com.android.car.ui.FocusArea
+                android:id="@+id/card_normal"
+                android:background="@color/card_background_color"
+                android:layout_margin="16dp"
+                android:layout_width="300dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:onClick="onRotaryCardsButtonClick"
+                    android:tag="test_button"
+                    android:text="Button" />
 
-        <!-- A FocusArea where all elements are disabled. Elements that are disabled
-             (android:enabled="false") or not focusable (android:focusable="false") are
-             discoverable by the RotaryService, but the RotaryService will not focus them.
-             When no elements is focusable, nudging left and right from the adjacent cards
-             will cause focus to appear to skip this card -->
-        <LinearLayout
-            android:id="@+id/card_normal"
-            android:background="@color/card_disabled_background_color"
-            android:layout_margin="16dp"
-            android:layout_width="300dp"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:onClick="onRotaryCardsButtonClick"
-                android:enabled="false"
-                android:tag="test_button"
-                android:text="Disabled" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:onClick="onRotaryCardsButtonClick"
-                android:enabled="false"
-                android:tag="test_button"
-                android:text="Disabled" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:onClick="onRotaryCardsButtonClick"
-                android:enabled="false"
-                android:tag="test_button"
-                android:text="Disabled" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:onClick="onRotaryCardsButtonClick"
-                android:enabled="false"
-                android:tag="test_button"
-                android:text="Disabled" />
-        </LinearLayout>
+                <!-- This button is disabled and is not focusable by RotaryService.
+                     The RotaryService can see disabled views but it can't focus them. Android
+                     doesn't allow disabled views to be focused.
+                     The focus will skip this button when rotating the rotary countroller. -->
+                <Button
+                    android:background="@color/button_disabled_background_color"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:onClick="onRotaryCardsButtonClick"
+                    android:enabled="false"
+                    android:tag="test_button"
+                    android:text="Disabled" />
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:onClick="onRotaryCardsButtonClick"
+                    android:tag="test_button"
+                    android:text="Button" />
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:onClick="onRotaryCardsButtonClick"
+                    android:tag="test_button"
+                    android:text="Button" />
+            </com.android.car.ui.FocusArea>
 
-        <!-- A FocusArea that contains a button with a default focus attribute. Upon nudging into
-             this area, the focus will land on the button with the default focus attribute.
-             Rotating the rotary controller clockwise will move the focus from top to bottom.
-             Counterclockwise to move the focus from bottom to up. Nudge any direction to leave
-             this focus area. -->
-        <LinearLayout
-            android:id="@+id/card_with_default_focus"
-            android:background="@color/card_background_color"
-            android:layout_margin="16dp"
-            android:layout_width="300dp"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:onClick="onRotaryCardsButtonClick"
-                android:tag="test_button"
-                android:text="Button" />
-            <!-- TODO(b/154180719): Make this button the default focus in this FocusArea -->
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:onClick="onRotaryCardsButtonClick"
-                android:tag="test_button"
-                android:text="Button (Default)" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:onClick="onRotaryCardsButtonClick"
-                android:tag="test_button"
-                android:text="Button" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:onClick="onRotaryCardsButtonClick"
-                android:tag="test_button"
-                android:text="Button" />
-        </LinearLayout>
+            <!-- A FocusArea where all elements are disabled. Elements that are disabled
+                 (android:enabled="false") or not focusable (android:focusable="false") are
+                 discoverable by the RotaryService, but the RotaryService will not focus them.
+                 When no elements is focusable, nudging left and right from the adjacent cards
+                 will cause focus to appear to skip this card -->
+            <com.android.car.ui.FocusArea
+                android:id="@+id/card_normal"
+                android:background="@color/card_disabled_background_color"
+                android:layout_margin="16dp"
+                android:layout_width="300dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:onClick="onRotaryCardsButtonClick"
+                    android:enabled="false"
+                    android:tag="test_button"
+                    android:text="Disabled" />
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:onClick="onRotaryCardsButtonClick"
+                    android:enabled="false"
+                    android:tag="test_button"
+                    android:text="Disabled" />
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:onClick="onRotaryCardsButtonClick"
+                    android:enabled="false"
+                    android:tag="test_button"
+                    android:text="Disabled" />
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:onClick="onRotaryCardsButtonClick"
+                    android:enabled="false"
+                    android:tag="test_button"
+                    android:text="Disabled" />
+            </com.android.car.ui.FocusArea>
 
-        <!-- A FocusArea that contains buttons with explicit ordering. Upon nudging into
-             this area, button_one will be focused. Rotating the rotary controller clockwise will
-             move the focus to button_two -> button_three -> button_four. Counterclockwise will
-             move the focus in the opposite order. Nudge any direction to leave this focus area. -->
-        <!-- TODO(b/154180719): Add explicit ordering to the buttons -->
-        <LinearLayout
-            android:id="@+id/card_with_explicit_order"
-            android:background="@color/card_background_color"
-            android:layout_margin="16dp"
-            android:layout_width="300dp"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-            <Button
-                android:id="@+id/button_one"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:onClick="onRotaryCardsButtonClick"
-                android:tag="test_button"
-                android:text="Button 1" />
-            <Button
-                android:id="@+id/button_three"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:onClick="onRotaryCardsButtonClick"
-                android:tag="test_button"
-                android:text="Button 3" />
-            <Button
-                android:id="@+id/button_two"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:onClick="onRotaryCardsButtonClick"
-                android:tag="test_button"
-                android:text="Button 2" />
-            <Button
-                android:id="@+id/button_four"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:onClick="onRotaryCardsButtonClick"
-                android:tag="test_button"
-                android:text="Button 4" />
+            <!-- A FocusArea that contains a button with a default focus attribute.
+                 Upon nudging into this area, the focus will land on the button with the default
+                 focus attribute. Rotating the rotary controller clockwise will move the focus
+                 from top to bottom. Counterclockwise to move the focus from bottom to up.
+                 Nudge any direction to leave this focus area. -->
+            <com.android.car.ui.FocusArea
+                android:id="@+id/card_with_default_focus"
+                android:background="@color/card_background_color"
+                android:layout_margin="16dp"
+                android:layout_width="300dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:onClick="onRotaryCardsButtonClick"
+                    android:tag="test_button"
+                    android:text="Button" />
+                <!-- TODO(b/154180719): Make this button the default focus in this FocusArea -->
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:onClick="onRotaryCardsButtonClick"
+                    android:tag="test_button"
+                    android:text="Button (Default)" />
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:onClick="onRotaryCardsButtonClick"
+                    android:tag="test_button"
+                    android:text="Button" />
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:onClick="onRotaryCardsButtonClick"
+                    android:tag="test_button"
+                    android:text="Button" />
+            </com.android.car.ui.FocusArea>
+
+            <!-- A FocusArea that contains buttons with explicit ordering. Upon nudging into
+                 this area, button_one will be focused. Rotating the rotary controller
+                 clockwise will move the focus to button_two -> button_three -> button_four.
+                 Counterclockwise will move the focus in the opposite order.
+                 Nudge any direction to leave this focus area. -->
+            <!-- TODO(b/154180719): Add explicit ordering to the buttons -->
+            <com.android.car.ui.FocusArea
+                android:id="@+id/card_with_explicit_order"
+                android:background="@color/card_background_color"
+                android:layout_margin="16dp"
+                android:layout_width="300dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <Button
+                    android:id="@+id/button_one"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:onClick="onRotaryCardsButtonClick"
+                    android:tag="test_button"
+                    android:text="Button 1" />
+                <Button
+                    android:id="@+id/button_three"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:onClick="onRotaryCardsButtonClick"
+                    android:tag="test_button"
+                    android:text="Button 3" />
+                <Button
+                    android:id="@+id/button_two"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:onClick="onRotaryCardsButtonClick"
+                    android:tag="test_button"
+                    android:text="Button 2" />
+                <Button
+                    android:id="@+id/button_four"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:onClick="onRotaryCardsButtonClick"
+                    android:tag="test_button"
+                    android:text="Button 4" />
+            </com.android.car.ui.FocusArea>
         </LinearLayout>
-    </LinearLayout>
+    </HorizontalScrollView>
 </LinearLayout>
