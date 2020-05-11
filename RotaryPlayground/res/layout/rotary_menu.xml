@@ -33,11 +33,11 @@
         android:layout_marginTop="32dp"
         android:text="Menu Item 2" />
     <Button
-        android:id="@+id/menu_item_3"
+        android:id="@+id/grid_example"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="32dp"
-        android:text="Menu Item 3" />
+        android:text="Grid Example" />
     <Button
         android:id="@+id/menu_item_4"
         android:layout_width="match_parent"
