@@ -31,8 +31,10 @@ import androidx.fragment.app.Fragment;
 public class RotaryMenu extends Fragment {
 
     private Fragment mRotaryCards = null;
+    private Fragment mRotaryGrid = null;
 
     private Button mCardExamplesButton;
+    private Button mGridExampleButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -42,6 +44,10 @@ public class RotaryMenu extends Fragment {
         mCardExamplesButton = view.findViewById(R.id.cards_example);
         mCardExamplesButton.setOnFocusChangeListener((v, hasFocus) -> showRotaryCards(hasFocus));
         mCardExamplesButton.setOnClickListener(v -> showRotaryCards(/* hasFocus= */ true));
+
+        mGridExampleButton = view.findViewById(R.id.grid_example);
+        mGridExampleButton.setOnFocusChangeListener((v, hasFocus) -> showGridExample(hasFocus));
+        mGridExampleButton.setOnClickListener(v -> showGridExample(/* hasFocus= */ true));
 
         return view;
     }
@@ -54,6 +60,16 @@ public class RotaryMenu extends Fragment {
             mRotaryCards = new RotaryCards();
         }
         showContent(mRotaryCards);
+    }
+
+    private void showGridExample(boolean hasFocus) {
+        if (!hasFocus) {
+            return; // do nothing if no focus.
+        }
+        if (mRotaryGrid == null) {
+            mRotaryGrid = new RotaryGrid();
+        }
+        showContent(mRotaryGrid);
     }
 
     private void showContent(Fragment fragment) {
