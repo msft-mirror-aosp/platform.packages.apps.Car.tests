@@ -32,29 +32,36 @@ public class RotaryMenu extends Fragment {
 
     private Fragment mRotaryCards = null;
     private Fragment mRotaryGrid = null;
+    private Fragment mDirectManipulation = null;
 
-    private Button mCardExamplesButton;
-    private Button mGridExampleButton;
+    private Button mCardButton;
+    private Button mGridButton;
+    private Button mDirectManipulationButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.rotary_menu, container, false);
 
-        mCardExamplesButton = view.findViewById(R.id.cards_example);
-        mCardExamplesButton.setOnFocusChangeListener((v, hasFocus) -> showRotaryCards(hasFocus));
-        mCardExamplesButton.setOnClickListener(v -> showRotaryCards(/* hasFocus= */ true));
+        mCardButton = view.findViewById(R.id.cards);
+        mCardButton.setOnFocusChangeListener((v, hasFocus) -> showRotaryCards(hasFocus));
+        mCardButton.setOnClickListener(v -> showRotaryCards(/* hasFocus= */ true));
 
-        mGridExampleButton = view.findViewById(R.id.grid_example);
-        mGridExampleButton.setOnFocusChangeListener((v, hasFocus) -> showGridExample(hasFocus));
-        mGridExampleButton.setOnClickListener(v -> showGridExample(/* hasFocus= */ true));
+        mGridButton = view.findViewById(R.id.grid);
+        mGridButton.setOnFocusChangeListener((v, hasFocus) -> showGridExample(hasFocus));
+        mGridButton.setOnClickListener(v -> showGridExample(/* hasFocus= */ true));
 
+        mDirectManipulationButton = view.findViewById(R.id.direct_manipulation);
+        mDirectManipulationButton.setOnFocusChangeListener(
+                (v, hasFocus) -> showDirectManipulationExamples(hasFocus));
+        mDirectManipulationButton.setOnClickListener(
+                (v -> showDirectManipulationExamples(/* hasFocus= */ true)));
         return view;
     }
 
     private void showRotaryCards(boolean hasFocus) {
         if (!hasFocus) {
-            return; // do nothing if no focus.
+            return; // Do nothing if no focus.
         }
         if (mRotaryCards == null) {
             mRotaryCards = new RotaryCards();
@@ -70,6 +77,18 @@ public class RotaryMenu extends Fragment {
             mRotaryGrid = new RotaryGrid();
         }
         showContent(mRotaryGrid);
+    }
+
+    // TODO(agathaman): refactor this and the showRotaryCards above into a
+    //  showFragment(Fragment fragment, boolean hasFocus); method.
+    private void showDirectManipulationExamples(boolean hasFocus) {
+        if (!hasFocus) {
+            return; // Do nothing if no focus.
+        }
+        if (mDirectManipulation == null) {
+            mDirectManipulation = new RotaryDirectManipulationWidgets();
+        }
+        showContent(mDirectManipulation);
     }
 
     private void showContent(Fragment fragment) {

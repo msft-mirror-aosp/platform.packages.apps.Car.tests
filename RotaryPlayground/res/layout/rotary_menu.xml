@@ -21,27 +21,27 @@
     android:orientation="vertical">
 
     <Button
-        android:id="@+id/cards_example"
+        android:id="@+id/cards"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="32dp"
-        android:text="Card Examples" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Cards" />
     <Button
-        android:id="@+id/menu_item_2"
+        android:id="@+id/direct_manipulation"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="32dp"
-        android:text="Menu Item 2" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Direct Manipulation" />
     <Button
-        android:id="@+id/grid_example"
+        android:id="@+id/grid"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="32dp"
-        android:text="Grid Example" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Grid" />
     <Button
         android:id="@+id/menu_item_4"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="32dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:text="Menu Item 4" />
 </com.android.car.ui.FocusArea>
