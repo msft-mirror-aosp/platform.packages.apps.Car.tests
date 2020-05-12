@@ -21,25 +21,38 @@
     <!--  Split the screen in half horizontally.  -->
 
     <!--  Two time pickers formatted differently.  -->
-    <com.android.car.ui.FocusArea
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_weight="1">
-        <TimePicker
+        <!-- Put each TimePicker into a separate FocusArea. A TimePicker has several focusable views
+         and it's difficult to move to another TimePicker via rotation. Let's wrap each TimePicker
+         with a FocusArea so that we can use nudge to move to another TimePicker. -->
+        <com.android.car.ui.FocusArea
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:timePickerMode="spinner">
-        </TimePicker>
-        <TimePicker
-            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TimePicker
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:timePickerMode="spinner">
+            </TimePicker>
+        </com.android.car.ui.FocusArea>
+        <com.android.car.ui.FocusArea
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:timePickerMode="clock">
-        </TimePicker>
-    </com.android.car.ui.FocusArea>
+            android:layout_weight="1">
+            <TimePicker
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:timePickerMode="clock">
+            </TimePicker>
+        </com.android.car.ui.FocusArea>
+    </LinearLayout>
 
-    <!--  A seek bar and a radial time picker. -->
+    <!--  A seek bar, a radial time picker, and a custom DirectManipulationView. -->
     <com.android.car.ui.FocusArea
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -52,7 +65,14 @@
         <RadialTimePickerView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:focusable="true">
         </RadialTimePickerView>
+        <com.android.car.rotaryplayground.DirectManipulationView
+            android:id="@+id/direct_manipulation_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+        </com.android.car.rotaryplayground.DirectManipulationView>
     </com.android.car.ui.FocusArea>
 </LinearLayout>
