@@ -17,4 +17,8 @@
 <resources>
     <!-- Rotary Menu values -->
     <dimen name="menu_width">200dp</dimen>
+    <!-- Card example values -->
+    <dimen name="card_width">400dp</dimen>
+    <dimen name="card_padding">20dp</dimen>
+    <dimen name="description_height">200dp</dimen>
 </resources>
