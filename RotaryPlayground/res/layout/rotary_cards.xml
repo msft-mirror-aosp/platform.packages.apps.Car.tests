@@ -16,6 +16,7 @@
   -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -48,9 +49,14 @@
                 android:id="@+id/card_normal"
                 android:background="@color/card_background_color"
                 android:layout_margin="16dp"
-                android:layout_width="300dp"
+                android:layout_width="@dimen/card_width"
                 android:layout_height="match_parent"
+                android:padding="@dimen/card_padding"
                 android:orientation="vertical">
+                <TextView
+                    android:layout_height="@dimen/description_height"
+                    android:layout_width="match_parent"
+                    android:text="@string/card_normal_text" />
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
@@ -90,12 +96,17 @@
                  When no elements is focusable, nudging left and right from the adjacent cards
                  will cause focus to appear to skip this card -->
             <com.android.car.ui.FocusArea
-                android:id="@+id/card_normal"
+                android:id="@+id/card_disabled"
                 android:background="@color/card_disabled_background_color"
                 android:layout_margin="16dp"
-                android:layout_width="300dp"
+                android:layout_width="@dimen/card_width"
                 android:layout_height="match_parent"
+                android:padding="@dimen/card_padding"
                 android:orientation="vertical">
+                <TextView
+                    android:layout_height="@dimen/description_height"
+                    android:layout_width="match_parent"
+                    android:text="@string/card_disabled_text" />
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
@@ -135,9 +146,14 @@
                 android:id="@+id/card_with_default_focus"
                 android:background="@color/card_background_color"
                 android:layout_margin="16dp"
-                android:layout_width="300dp"
+                android:layout_width="@dimen/card_width"
                 android:layout_height="match_parent"
+                android:padding="@dimen/card_padding"
                 android:orientation="vertical">
+                <TextView
+                    android:layout_height="@dimen/description_height"
+                    android:layout_width="match_parent"
+                    android:text="@string/card_with_default_focus_text" />
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
@@ -165,47 +181,129 @@
                     android:text="Button" />
             </com.android.car.ui.FocusArea>
 
-            <!-- A FocusArea that contains buttons with explicit ordering. Upon nudging into
-                 this area, button_one will be focused. Rotating the rotary controller
-                 clockwise will move the focus to button_two -> button_three -> button_four.
-                 Counterclockwise will move the focus in the opposite order.
-                 Nudge any direction to leave this focus area. -->
-            <!-- TODO(b/154180719): Add explicit ordering to the buttons -->
+            <!-- A FocusArea with buttons in a circle. The default focus should land on A.
+                 Rotating clockwise moves the focus from A -> B -> C -> D -> E -> F -> G -> H,
+                 and reverse counterclockwise.
+                 Adding app:defaultFocus to A to make it the default focus on this card
+                 Adding android:nextFocusForward is necessary to ensure the expected focus
+                 order, without it, the focus will move from
+                 G -> H -> F -> A -> E -> B -> D -> C.
+                 Lastly, android:nextFocusForward is not added to H -> A, to avoid linking
+                 the nodes in a circle. app:wrapAround="true" should be used instead.
+             -->
+            <!-- TODO(agathaman): add app:wrapAround to this card when b/155698037 is fixed -->
+            <!-- TODO(agathaman): add app:defaultFocus to this card when b/155698037 is fixed -->
             <com.android.car.ui.FocusArea
-                android:id="@+id/card_with_explicit_order"
+                android:id="@+id/card_that_wraps_around"
                 android:background="@color/card_background_color"
                 android:layout_margin="16dp"
-                android:layout_width="300dp"
+                android:layout_width="@dimen/card_width"
                 android:layout_height="match_parent"
+                android:padding="@dimen/card_padding"
                 android:orientation="vertical">
-                <Button
-                    android:id="@+id/button_one"
+                <TextView
+                    android:layout_height="@dimen/description_height"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:onClick="onRotaryCardsButtonClick"
-                    android:tag="test_button"
-                    android:text="Button 1" />
-                <Button
-                    android:id="@+id/button_three"
+                    android:text="@string/card_that_wraps_around_text" />
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:onClick="onRotaryCardsButtonClick"
-                    android:tag="test_button"
-                    android:text="Button 3" />
-                <Button
-                    android:id="@+id/button_two"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:onClick="onRotaryCardsButtonClick"
-                    android:tag="test_button"
-                    android:text="Button 2" />
-                <Button
-                    android:id="@+id/button_four"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:onClick="onRotaryCardsButtonClick"
-                    android:tag="test_button"
-                    android:text="Button 4" />
+                    android:layout_height="match_parent">
+                    <View
+                        android:id="@+id/circle_center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                    <Button
+                        android:id="@+id/button_a"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:nextFocusForward="@+id/button_b"
+                        android:padding="20dp"
+                        android:text="A"
+                        app:layout_constraintCircle="@id/circle_center"
+                        app:layout_constraintCircleAngle="0"
+                        app:layout_constraintCircleRadius="90dp"
+                        />
+                    <Button
+                        android:id="@+id/button_b"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:nextFocusForward="@+id/button_c"
+                        android:padding="20dp"
+                        android:text="B"
+                        app:layout_constraintCircle="@id/circle_center"
+                        app:layout_constraintCircleAngle="45"
+                        app:layout_constraintCircleRadius="90dp"
+                        />
+                    <Button
+                        android:id="@+id/button_c"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:nextFocusForward="@+id/button_d"
+                        android:padding="20dp"
+                        android:text="C"
+                        app:layout_constraintCircle="@id/circle_center"
+                        app:layout_constraintCircleAngle="90"
+                        app:layout_constraintCircleRadius="90dp"
+                        />
+                    <Button
+                        android:id="@+id/button_d"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:nextFocusForward="@+id/button_e"
+                        android:padding="20dp"
+                        android:text="D"
+                        app:layout_constraintCircle="@id/circle_center"
+                        app:layout_constraintCircleAngle="135"
+                        app:layout_constraintCircleRadius="90dp"
+                        />
+                    <Button
+                        android:id="@+id/button_e"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:nextFocusForward="@+id/button_f"
+                        android:padding="20dp"
+                        android:text="E"
+                        app:layout_constraintCircle="@id/circle_center"
+                        app:layout_constraintCircleAngle="180"
+                        app:layout_constraintCircleRadius="90dp"
+                        />
+                    <Button
+                        android:id="@+id/button_f"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:nextFocusForward="@+id/button_g"
+                        android:padding="20dp"
+                        android:text="F"
+                        app:layout_constraintCircle="@id/circle_center"
+                        app:layout_constraintCircleAngle="225"
+                        app:layout_constraintCircleRadius="90dp"
+                        />
+                    <Button
+                        android:id="@+id/button_g"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:nextFocusForward="@+id/button_h"
+                        android:padding="20dp"
+                        android:text="G"
+                        app:layout_constraintCircle="@id/circle_center"
+                        app:layout_constraintCircleAngle="270"
+                        app:layout_constraintCircleRadius="90dp"
+                        />
+                    <Button
+                        android:id="@+id/button_h"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="20dp"
+                        android:text="H"
+                        app:layout_constraintCircle="@id/circle_center"
+                        app:layout_constraintCircleAngle="315"
+                        app:layout_constraintCircleRadius="90dp"
+                        />
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </com.android.car.ui.FocusArea>
         </LinearLayout>
     </HorizontalScrollView>
