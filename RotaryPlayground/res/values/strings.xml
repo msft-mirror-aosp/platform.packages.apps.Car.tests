@@ -16,4 +16,18 @@
   -->
 <resources>
     <string name="app_name" translatable="false">Rotary Playground</string>
+
+    <!-- Texts for card examples -->
+    <string name="card_normal_text" translatable="false">
+      The focus should land on the first button upon entering this card. Rotating the rotary controller will move the focus up and down. The disabled button should not be focusable.
+    </string>
+    <string name="card_disabled_text" translatable="false">
+      Nothing in this card should be focusable because all the buttons are disabled.
+    </string>
+    <string name="card_with_default_focus_text" translatable="false">
+      The focus should land on the second button upon entering this card.
+    </string>
+    <string name="card_that_wraps_around_text" translatable="false">
+      The focus should move clockwise when rotating clockwise and similarly for counterclockwise. Focus also wraps around the elements (H -> A clockwise and A -> H counterclockwise).
+    </string>
 </resources>
