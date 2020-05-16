@@ -12,13 +12,9 @@
   ~ distributed under the License is distributed on an "AS IS" BASIS,
   ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   ~ See the License for the specific language governing permissions and
-  ~ limitations under the License
+  ~ limitations under the License.
   -->
-<resources>
-    <!-- Rotary Menu values -->
-    <dimen name="menu_width">200dp</dimen>
-    <!-- Card example values -->
-    <dimen name="card_width">400dp</dimen>
-    <dimen name="card_padding">20dp</dimen>
-    <dimen name="description_height">200dp</dimen>
-</resources>
+
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+        android:color="@color/car_ui_rotary_focus_color"
+        android:radius="16dp" />
