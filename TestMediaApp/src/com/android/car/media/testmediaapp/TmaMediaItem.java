@@ -55,7 +55,9 @@ public class TmaMediaItem {
         HEART_PLUS_PLUS(CUSTOM_ACTION_PREFIX + "heart_plus_plus", R.string.heart_plus_plus,
                 R.drawable.ic_heart_plus_plus),
         HEART_LESS_LESS(CUSTOM_ACTION_PREFIX + "heart_less_less", R.string.heart_less_less,
-                R.drawable.ic_heart_less_less);
+                R.drawable.ic_heart_less_less),
+        REQUEST_LOCATION(CUSTOM_ACTION_PREFIX + "location", R.string.location,
+                R.drawable.ic_location);
 
         final String mId;
         final int mNameId;

@@ -30,6 +30,7 @@ import static android.support.v4.media.session.PlaybackStateCompat.ERROR_CODE_AP
 import static android.support.v4.media.session.PlaybackStateCompat.STATE_ERROR;
 
 import androidx.annotation.Nullable;
+
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -76,7 +77,6 @@ public class TmaPlayer extends MediaSessionCompat.Callback {
     @Nullable
     private TmaMediaItem mActiveItem;
     private int mNextEventIndex = -1;
-
 
     TmaPlayer(Context context, TmaLibrary library, AudioManager audioManager, Handler handler,
             MediaSessionCompat session) {
@@ -248,6 +248,8 @@ public class TmaPlayer extends MediaSessionCompat.Callback {
             } else if (TmaCustomAction.HEART_LESS_LESS.mId.equals(action)) {
                 mActiveItem.mHearts--;
                 toast("" + mActiveItem.mHearts);
+            } else if (TmaCustomAction.REQUEST_LOCATION.mId.equals(action)) {
+                mContext.startService(new Intent(mContext, TmaForegroundService.class));
             }
         }
     }
