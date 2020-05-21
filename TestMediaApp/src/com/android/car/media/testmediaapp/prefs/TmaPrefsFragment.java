@@ -16,8 +16,12 @@
 
 package com.android.car.media.testmediaapp.prefs;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.preference.DropDownPreference;
 import androidx.preference.Preference;
@@ -29,6 +33,8 @@ import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaBrowseNodeType;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaLoginEventOrder;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaReplyDelay;
 import com.android.car.media.testmediaapp.prefs.TmaPrefs.PrefEntry;
+
+import java.util.function.Consumer;
 
 public class TmaPrefsFragment extends PreferenceFragmentCompat {
 
@@ -49,6 +55,8 @@ public class TmaPrefsFragment extends PreferenceFragmentCompat {
                 prefs.mAssetReplyDelay, TmaReplyDelay.values()));
         screen.addPreference(createEnumPref(context, "Login event order", prefs.mLoginEventOrder,
                 TmaLoginEventOrder.values()));
+        screen.addPreference(createClickPref(context, "Request location perm",
+                this::requestPermissions));
 
         setPreferenceScreen(screen);
     }
@@ -71,5 +79,26 @@ public class TmaPrefsFragment extends PreferenceFragmentCompat {
         prefWidget.setEntries(entries);
         prefWidget.setEntryValues(entryValues);
         return prefWidget;
+    }
+
+    private Preference createClickPref(Context context, String title, Consumer<Context> runnable) {
+        Preference prefWidget = new Preference(context);
+        prefWidget.setTitle(title);
+        prefWidget.setOnPreferenceClickListener(pref -> {
+            runnable.accept(context);
+            return true;
+        });
+        return prefWidget;
+    }
+
+    private void requestPermissions(Context context) {
+        if (context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(context, "Location permission already granted", Toast.LENGTH_SHORT)
+                    .show();
+        } else {
+            ((Activity) context).requestPermissions(
+                    new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
     }
 }
