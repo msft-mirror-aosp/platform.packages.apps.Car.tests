@@ -51,12 +51,6 @@ public class RotaryDirectManipulationWidgets extends Fragment {
     // TODO(agathaman): refactor a common class that takes in a fragment xml id and inflates it, to
     //  share between this and RotaryCards.
 
-    /** How many pixels do we want to move the {@link DirectManipulationView} for nudge. */
-    private static final float DIRECT_MANIPULATION_VIEW_PX_PER_NUDGE = 10f;
-
-    /** How many pixels do we want to zoom the {@link DirectManipulationView} for a rotation. */
-    private static final float DIRECT_MANIPULATION_VIEW_PX_PER_ROTATION = 10f;
-
     /** Background color of a view when it's in direct manipulation mode. */
     private static final int BACKGROUND_COLOR_IN_DIRECT_MANIPULATION_MODE = Color.BLUE;
 
@@ -71,7 +65,12 @@ public class RotaryDirectManipulationWidgets extends Fragment {
         View view = inflater.inflate(R.layout.rotary_direct_manipulation, container, false);
 
         DirectManipulationView dmv = view.findViewById(R.id.direct_manipulation_view);
-        initDirectManipulationMode(dmv, /* handleNudge= */ true, /* handleRotate= */ true);
+        registerDirectManipulationHandler(dmv,
+                new DirectManipulationHandler.Builder(mDirectManipulationMode)
+                        .setNudgeHandler(new DirectManipulationView.NudgeHandler())
+                        .setRotationHandler(new DirectManipulationView.RotationHandler())
+                        .build());
+
 
         TimePicker spinnerTimePicker = view.findViewById(R.id.spinner_time_picker);
         registerDirectManipulationHandler(spinnerTimePicker,
@@ -139,52 +138,6 @@ public class RotaryDirectManipulationWidgets extends Fragment {
         super.onPause();
     }
 
-    /**
-     * Initializes the given view so that it can enter/exit direct manipulation mode and interact
-     * with the rotary controller directly.
-     *
-     * @param dmv          the view to enable direct manipulation mode
-     * @param handleNudge  whether to handle controller nudge in direct manipulation mode
-     * @param handleRotate whether to handle controller rotate in direct manipulation mode
-     */
-    private void initDirectManipulationMode(
-            @NonNull View dmv, boolean handleNudge, boolean handleRotate) {
-        dmv.setOnKeyListener((view, keyCode, keyEvent) -> {
-            boolean isActionUp = keyEvent.getAction() == KeyEvent.ACTION_UP;
-            switch (keyCode) {
-                // Always consume KEYCODE_DPAD_CENTER and KEYCODE_BACK event.
-                case KeyEvent.KEYCODE_DPAD_CENTER:
-                    if (!mDirectManipulationMode.isActive() && isActionUp) {
-                        enableDirectManipulationMode(dmv, true);
-                    }
-                    return true;
-                case KeyEvent.KEYCODE_BACK:
-                    if (mDirectManipulationMode.isActive() && isActionUp) {
-                        enableDirectManipulationMode(dmv, false);
-                    }
-                    return true;
-                // Consume nudge event if the view handles controller nudge in direct manipulation
-                // mode.
-                case KeyEvent.KEYCODE_DPAD_UP:
-                case KeyEvent.KEYCODE_DPAD_DOWN:
-                case KeyEvent.KEYCODE_DPAD_LEFT:
-                case KeyEvent.KEYCODE_DPAD_RIGHT:
-                    return handleNudge ? handleNudgeEvent(keyEvent) : false;
-                // Don't consume other key events.
-                default:
-                    return false;
-            }
-        });
-
-        // Consume rotate event if the view handles controller rotate in direct manipulation mode.
-        if (handleRotate) {
-            dmv.setOnGenericMotionListener(((view, motionEvent) -> {
-                float scroll = motionEvent.getAxisValue(MotionEvent.AXIS_SCROLL);
-                return handleRotateEvent(scroll);
-            }));
-        }
-    }
-
     private void enableDirectManipulationMode(@NonNull View view, boolean enable) {
         view.setBackgroundColor(enable
                 ? BACKGROUND_COLOR_IN_DIRECT_MANIPULATION_MODE
@@ -193,69 +146,6 @@ public class RotaryDirectManipulationWidgets extends Fragment {
         DirectManipulationHelper.enableDirectManipulationMode(view, enable);
         View currentView = enable ? view : null;
         mDirectManipulationMode.setStartingView(currentView);
-    }
-
-    /** Handles controller nudge event. Returns whether the event was consumed. */
-    private boolean handleNudgeEvent(KeyEvent keyEvent) {
-        if (!mDirectManipulationMode.isActive()) {
-            return false;
-        }
-        if (keyEvent.getAction() != KeyEvent.ACTION_UP) {
-            return true;
-        }
-        int keyCode = keyEvent.getKeyCode();
-        if (mDirectManipulationMode.getStartingView() instanceof DirectManipulationView) {
-            DirectManipulationView dmv =
-                    (DirectManipulationView) mDirectManipulationMode.getStartingView();
-            handleNudgeEvent(dmv, keyCode);
-            return true;
-        }
-
-        // TODO: support other views.
-
-        return true;
-    }
-
-    /** Handles controller rotate event. Returns whether the event was consumed. */
-    private boolean handleRotateEvent(float scroll) {
-        if (!mDirectManipulationMode.isActive()) {
-            return false;
-        }
-        if (mDirectManipulationMode.getStartingView() instanceof DirectManipulationView) {
-            DirectManipulationView dmv =
-                    (DirectManipulationView) mDirectManipulationMode.getStartingView();
-            handleRotateEvent(dmv, scroll);
-            return true;
-        }
-
-        // TODO: support other views.
-
-        return true;
-    }
-
-    /** Moves the circle of the DirectManipulationView when the controller nudges. */
-    private void handleNudgeEvent(@NonNull DirectManipulationView dmv, int keyCode) {
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_DPAD_UP:
-                dmv.move(0f, -DIRECT_MANIPULATION_VIEW_PX_PER_NUDGE);
-                return;
-            case KeyEvent.KEYCODE_DPAD_DOWN:
-                dmv.move(0f, DIRECT_MANIPULATION_VIEW_PX_PER_NUDGE);
-                return;
-            case KeyEvent.KEYCODE_DPAD_LEFT:
-                dmv.move(-DIRECT_MANIPULATION_VIEW_PX_PER_NUDGE, 0f);
-                return;
-            case KeyEvent.KEYCODE_DPAD_RIGHT:
-                dmv.move(DIRECT_MANIPULATION_VIEW_PX_PER_NUDGE, 0f);
-                return;
-            default:
-                throw new IllegalArgumentException("Invalid keycode :" + keyCode);
-        }
-    }
-
-    /** Zooms the circle of the DirectManipulationView when the controller rotates. */
-    private void handleRotateEvent(@NonNull DirectManipulationView dmv, float scroll) {
-        dmv.zoom(DIRECT_MANIPULATION_VIEW_PX_PER_ROTATION * scroll);
     }
 
     /**
