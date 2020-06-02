@@ -33,4 +33,10 @@
     <string name="lorem" translatable="false">
       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla et velit finibus, tempor ipsum vel, pellentesque lorem. Suspendisse congue urna pulvinar, congue dolor in, eleifend orci. Nam egestas sodales sapien. Integer sit amet ligula in ex commodo semper. Phasellus ac facilisis ligula. Ut mollis risus eu nunc consequat, eu molestie dolor maximus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Donec commodo lectus non est lacinia accumsan. Nulla tristique cursus iaculis. Sed in hendrerit nulla, vel faucibus mi. Aenean placerat turpis eros, non sagittis enim viverra id. Vestibulum vel rutrum est, eu consequat felis. Maecenas ac suscipit ante. Fusce dapibus ut libero blandit vehicula. Vivamus vel ipsum condimentum, maximus tellus nec, rutrum lorem.
     </string>
+    <string name="sys_ui_supports_dm" translatable="true">
+      Supports Direct Manipulation Mode
+    </string>
+    <string name="sys_ui_does_not_support_dm" translatable="true">
+        Doesn\'t support Direct Manipulation Mode
+    </string>
 </resources>
