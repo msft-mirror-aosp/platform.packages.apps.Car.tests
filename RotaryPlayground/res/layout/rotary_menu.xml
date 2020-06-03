@@ -44,4 +44,10 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:text="Menu Item 4" />
+    <Button
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Scroll" />
 </com.android.car.ui.FocusArea>
