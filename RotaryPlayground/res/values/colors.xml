@@ -19,4 +19,5 @@
     <color name="card_disabled_background_color">#61646b</color>
     <color name="grid_item_background_color">#006666</color>
     <color name="button_disabled_background_color">#61646b</color>
+    <color name="scroll_text_background_color">#61646b</color>
 </resources>
