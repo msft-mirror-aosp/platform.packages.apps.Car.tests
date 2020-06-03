@@ -15,6 +15,9 @@
   ~ limitations under the License
   -->
 <resources>
+    <!-- common values -->
+    <dimen name="padding">16dp</dimen>
+    <dimen name="margin">16dp</dimen>
     <!-- Rotary Menu values -->
     <dimen name="menu_width">200dp</dimen>
     <!-- Card example values -->
