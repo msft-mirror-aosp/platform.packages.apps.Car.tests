@@ -30,7 +30,7 @@ android_app {
     // Do NOT add dependencies preventing the app from being unbundled (compiled with gradle in Studio).
     static_libs: [
         "androidx.appcompat_appcompat",
-	"androidx-constraintlayout_constraintlayout",
+        "androidx-constraintlayout_constraintlayout",
         "androidx.preference_preference",
         "androidx.legacy_legacy-support-v4",
     ],
