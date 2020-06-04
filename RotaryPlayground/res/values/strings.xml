@@ -30,4 +30,7 @@
     <string name="card_that_wraps_around_text" translatable="false">
       The focus should move clockwise when rotating clockwise and similarly for counterclockwise. Focus also wraps around the elements (H -> A clockwise and A -> H counterclockwise).
     </string>
+    <string name="lorem" translatable="false">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla et velit finibus, tempor ipsum vel, pellentesque lorem. Suspendisse congue urna pulvinar, congue dolor in, eleifend orci. Nam egestas sodales sapien. Integer sit amet ligula in ex commodo semper. Phasellus ac facilisis ligula. Ut mollis risus eu nunc consequat, eu molestie dolor maximus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Donec commodo lectus non est lacinia accumsan. Nulla tristique cursus iaculis. Sed in hendrerit nulla, vel faucibus mi. Aenean placerat turpis eros, non sagittis enim viverra id. Vestibulum vel rutrum est, eu consequat felis. Maecenas ac suscipit ante. Fusce dapibus ut libero blandit vehicula. Vivamus vel ipsum condimentum, maximus tellus nec, rutrum lorem.
+    </string>
 </resources>
