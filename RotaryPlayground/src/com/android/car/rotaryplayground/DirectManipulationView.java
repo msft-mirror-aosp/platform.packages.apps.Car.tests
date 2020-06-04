@@ -15,16 +15,19 @@
  */
 package com.android.car.rotaryplayground;
 
+import static java.lang.Math.min;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import static java.lang.Math.min;
 
 /**
  * A {@link View} used to demonstrate direct manipulation mode.
@@ -95,7 +98,7 @@ public class DirectManipulationView extends View {
     }
 
     /** Changes the radius of the circle by {@code dr} then redraws it. */
-    void zoom(float dr) {
+    void resizeCircle(float dr) {
         mDeltaRadius += dr;
         invalidate();
     }
@@ -112,5 +115,96 @@ public class DirectManipulationView extends View {
         mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         mPaint.setStrokeJoin(Paint.Join.ROUND);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
+    }
+
+    /**
+     * A {@link View.OnKeyListener} for handling Direct Manipulation rotary nudge behavior
+     * for a {@link DirectManipulationView}.
+     * <p>
+     * This handler expects that it is being used in Direct Manipulation mode, i.e. as a directional
+     * delegate through a {@link DirectManipulationHandler} which can invoke it at the
+     * appropriate times.
+     * <p>
+     * Moves the circle drawn in the {@link DirectManipulationView} in the relevant direction for
+     * following {@link KeyEvent}s:
+     * <ul>
+     *     <li>{@link KeyEvent#KEYCODE_DPAD_UP}
+     *     <li>{@link KeyEvent#KEYCODE_DPAD_DOWN}
+     *     <li>{@link KeyEvent#KEYCODE_DPAD_LEFT}
+     *     <li>{@link KeyEvent#KEYCODE_DPAD_RIGHT}
+     * </ul>
+     */
+    static class NudgeHandler implements View.OnKeyListener {
+
+        /** How many pixels do we want to move the {@link DirectManipulationView} per nudge. */
+        private static final float DIRECT_MANIPULATION_VIEW_PX_PER_NUDGE = 10f;
+
+        @Override
+        public boolean onKey(View v, int keyCode, KeyEvent keyEvent) {
+            if (keyEvent.getAction() != KeyEvent.ACTION_UP) {
+                return true;
+            }
+
+            if (v instanceof DirectManipulationView) {
+                DirectManipulationView dmv = (DirectManipulationView) v;
+                handleNudgeEvent(dmv, keyCode);
+                return true;
+            }
+
+            throw new UnsupportedOperationException("NudgeHandler shouldn't be registered "
+                    + "as a listener on a view other than a DirectManipulationView.");
+        }
+
+        /** Moves the circle of the DirectManipulationView when the controller nudges. */
+        private void handleNudgeEvent(@NonNull DirectManipulationView dmv, int keyCode) {
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_DPAD_UP:
+                    dmv.move(0f, -DIRECT_MANIPULATION_VIEW_PX_PER_NUDGE);
+                    return;
+                case KeyEvent.KEYCODE_DPAD_DOWN:
+                    dmv.move(0f, DIRECT_MANIPULATION_VIEW_PX_PER_NUDGE);
+                    return;
+                case KeyEvent.KEYCODE_DPAD_LEFT:
+                    dmv.move(-DIRECT_MANIPULATION_VIEW_PX_PER_NUDGE, 0f);
+                    return;
+                case KeyEvent.KEYCODE_DPAD_RIGHT:
+                    dmv.move(DIRECT_MANIPULATION_VIEW_PX_PER_NUDGE, 0f);
+                    return;
+                default:
+                    throw new IllegalArgumentException("Invalid keycode: " + keyCode);
+            }
+        }
+    }
+
+    /**
+     * A {@link View.OnGenericMotionListener} for handling Direct Manipulation rotation events for
+     * a {@link DirectManipulationView}. It does so by increasing or decreasing the radius of
+     * the circle drawn depending on the direction of rotation.
+     */
+    static class RotationHandler implements View.OnGenericMotionListener {
+
+        /**
+         * How many pixels do we want to change the radius of the circle in the
+         * {@link DirectManipulationView} for a rotation.
+         */
+        private static final float DIRECT_MANIPULATION_VIEW_PX_PER_ROTATION = 10f;
+
+        @Override
+        public boolean onGenericMotion(View v, MotionEvent event) {
+            if (v instanceof DirectManipulationView) {
+                handleRotateEvent(
+                        (DirectManipulationView) v,
+                        event.getAxisValue(MotionEvent.AXIS_SCROLL));
+                return true;
+            }
+
+            throw new UnsupportedOperationException("RotationHandler shouldn't be registered "
+                    + "as a listener on a view other than a DirectManipulationView.");
+        }
+
+        /** Resizes the circle of the DirectManipulationView when the controller rotates. */
+        private void handleRotateEvent(@NonNull DirectManipulationView dmv, float scroll) {
+            dmv.resizeCircle(DIRECT_MANIPULATION_VIEW_PX_PER_ROTATION * scroll);
+        }
     }
 }
