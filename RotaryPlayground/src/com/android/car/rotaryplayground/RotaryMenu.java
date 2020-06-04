@@ -33,10 +33,12 @@ public class RotaryMenu extends Fragment {
     private Fragment mRotaryCards = null;
     private Fragment mRotaryGrid = null;
     private Fragment mDirectManipulation = null;
+    private Fragment mScrollFragment = null;
 
     private Button mCardButton;
     private Button mGridButton;
     private Button mDirectManipulationButton;
+    private Button mScrollButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -56,6 +58,11 @@ public class RotaryMenu extends Fragment {
                 (v, hasFocus) -> showDirectManipulationExamples(hasFocus));
         mDirectManipulationButton.setOnClickListener(
                 (v -> showDirectManipulationExamples(/* hasFocus= */ true)));
+
+        mScrollButton = view.findViewById(R.id.scroll);
+        mScrollButton.setOnFocusChangeListener((v, hasFocus) -> showScrollFragment(hasFocus));
+        mScrollButton.setOnClickListener(v -> showScrollFragment(/* hasFocus= */ true));
+
         return view;
     }
 
@@ -66,7 +73,7 @@ public class RotaryMenu extends Fragment {
         if (mRotaryCards == null) {
             mRotaryCards = new RotaryCards();
         }
-        showContent(mRotaryCards);
+        showFragment(mRotaryCards);
     }
 
     private void showGridExample(boolean hasFocus) {
@@ -76,7 +83,7 @@ public class RotaryMenu extends Fragment {
         if (mRotaryGrid == null) {
             mRotaryGrid = new RotaryGrid();
         }
-        showContent(mRotaryGrid);
+        showFragment(mRotaryGrid);
     }
 
     // TODO(agathaman): refactor this and the showRotaryCards above into a
@@ -88,10 +95,20 @@ public class RotaryMenu extends Fragment {
         if (mDirectManipulation == null) {
             mDirectManipulation = new RotaryDirectManipulationWidgets();
         }
-        showContent(mDirectManipulation);
+        showFragment(mDirectManipulation);
     }
 
-    private void showContent(Fragment fragment) {
+    private void showScrollFragment(boolean hasFocus) {
+        if (!hasFocus) {
+            return; // Do nothing if no focus.
+        }
+        if (mScrollFragment == null) {
+            mScrollFragment = new ScrollFragment();
+        }
+        showFragment(mScrollFragment);
+    }
+
+    private void showFragment(Fragment fragment) {
         getFragmentManager().beginTransaction()
                 .replace(R.id.rotary_content, fragment)
                 .commit();
