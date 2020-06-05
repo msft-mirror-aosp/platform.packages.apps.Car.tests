@@ -24,4 +24,6 @@
     <dimen name="card_width">400dp</dimen>
     <dimen name="card_padding">20dp</dimen>
     <dimen name="description_height">200dp</dimen>
+    <!-- Notification values -->
+    <dimen name="button_height">70dp</dimen>
 </resources>
