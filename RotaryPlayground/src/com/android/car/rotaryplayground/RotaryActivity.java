@@ -24,6 +24,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.Random;
+
 /**
  * The main activity for Rotary Playground
  *
@@ -33,7 +35,8 @@ import android.widget.Toast;
 public class RotaryActivity extends FragmentActivity {
 
     private static final String TAG = "RotaryActivity";
-    private static final String MESSAGE = "Hello there!";
+
+    private final Random mRandom = new Random();
 
     private Fragment mMenuFragment = null;
 
@@ -44,9 +47,10 @@ public class RotaryActivity extends FragmentActivity {
         showMenuFragment();
     }
 
-    /** Event handler for buttons in res/layout/rotary_cards.xml */
-    public void onRotaryCardsButtonClick(View v) {
-        showToast(MESSAGE);
+    /** Event handler for button clicks. */
+    public void onRotaryButtonClick(View v) {
+        final String[] greetings = getResources().getStringArray(R.array.greetings);
+        showToast(greetings[mRandom.nextInt(greetings.length)]);
     }
 
     private void showMenuFragment() {

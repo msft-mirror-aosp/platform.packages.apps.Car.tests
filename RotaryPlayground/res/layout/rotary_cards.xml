@@ -60,7 +60,7 @@
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:onClick="onRotaryCardsButtonClick"
+                    android:onClick="onRotaryButtonClick"
                     android:tag="test_button"
                     android:text="Button" />
 
@@ -72,20 +72,20 @@
                     android:background="@color/button_disabled_background_color"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:onClick="onRotaryCardsButtonClick"
+                    android:onClick="onRotaryButtonClick"
                     android:enabled="false"
                     android:tag="test_button"
                     android:text="Disabled" />
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:onClick="onRotaryCardsButtonClick"
+                    android:onClick="onRotaryButtonClick"
                     android:tag="test_button"
                     android:text="Button" />
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:onClick="onRotaryCardsButtonClick"
+                    android:onClick="onRotaryButtonClick"
                     android:tag="test_button"
                     android:text="Button" />
             </com.android.car.ui.FocusArea>
@@ -110,28 +110,28 @@
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:onClick="onRotaryCardsButtonClick"
+                    android:onClick="onRotaryButtonClick"
                     android:enabled="false"
                     android:tag="test_button"
                     android:text="Disabled" />
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:onClick="onRotaryCardsButtonClick"
+                    android:onClick="onRotaryButtonClick"
                     android:enabled="false"
                     android:tag="test_button"
                     android:text="Disabled" />
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:onClick="onRotaryCardsButtonClick"
+                    android:onClick="onRotaryButtonClick"
                     android:enabled="false"
                     android:tag="test_button"
                     android:text="Disabled" />
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:onClick="onRotaryCardsButtonClick"
+                    android:onClick="onRotaryButtonClick"
                     android:enabled="false"
                     android:tag="test_button"
                     android:text="Disabled" />
@@ -157,26 +157,26 @@
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:onClick="onRotaryCardsButtonClick"
+                    android:onClick="onRotaryButtonClick"
                     android:tag="test_button"
                     android:text="Button" />
                 <!-- TODO(b/154180719): Make this button the default focus in this FocusArea -->
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:onClick="onRotaryCardsButtonClick"
+                    android:onClick="onRotaryButtonClick"
                     android:tag="test_button"
                     android:text="Button (Default)" />
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:onClick="onRotaryCardsButtonClick"
+                    android:onClick="onRotaryButtonClick"
                     android:tag="test_button"
                     android:text="Button" />
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:onClick="onRotaryCardsButtonClick"
+                    android:onClick="onRotaryButtonClick"
                     android:tag="test_button"
                     android:text="Button" />
             </com.android.car.ui.FocusArea>
