@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
@@ -33,11 +34,13 @@ public class RotaryMenu extends Fragment {
     private Fragment mRotaryCards = null;
     private Fragment mRotaryGrid = null;
     private Fragment mDirectManipulation = null;
+    private Fragment mNotificationFragment = null;
     private Fragment mScrollFragment = null;
 
     private Button mCardButton;
     private Button mGridButton;
     private Button mDirectManipulationButton;
+    private Button mNotificationButton;
     private Button mScrollButton;
 
     @Override
@@ -58,6 +61,11 @@ public class RotaryMenu extends Fragment {
                 (v, hasFocus) -> showDirectManipulationExamples(hasFocus));
         mDirectManipulationButton.setOnClickListener(
                 (v -> showDirectManipulationExamples(/* hasFocus= */ true)));
+
+        mNotificationButton = view.findViewById(R.id.notification);
+        mNotificationButton.setOnFocusChangeListener(
+                (v, hasFocus) -> showNotificationExample(hasFocus));
+        mNotificationButton.setOnClickListener(v -> showNotificationExample(/* hasFocus= */ true));
 
         mScrollButton = view.findViewById(R.id.scroll);
         mScrollButton.setOnFocusChangeListener((v, hasFocus) -> showScrollFragment(hasFocus));
@@ -96,6 +104,16 @@ public class RotaryMenu extends Fragment {
             mDirectManipulation = new RotaryDirectManipulationWidgets();
         }
         showFragment(mDirectManipulation);
+    }
+
+    private void showNotificationExample(boolean hasFocus) {
+        if (!hasFocus) {
+            return; // do nothing if no focus.
+        }
+        if (mNotificationFragment == null) {
+            mNotificationFragment = new HeadsUpNotificationFragment();
+        }
+        showFragment(mNotificationFragment);
     }
 
     private void showScrollFragment(boolean hasFocus) {
