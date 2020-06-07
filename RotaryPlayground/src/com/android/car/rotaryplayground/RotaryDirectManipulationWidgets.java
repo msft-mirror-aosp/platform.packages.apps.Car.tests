@@ -16,7 +16,6 @@
 
 package com.android.car.rotaryplayground;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -28,11 +27,8 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.NumberPicker;
 import android.widget.TimePicker;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import com.android.car.ui.utils.DirectManipulationHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,12 +46,6 @@ public class RotaryDirectManipulationWidgets extends Fragment {
 
     // TODO(agathaman): refactor a common class that takes in a fragment xml id and inflates it, to
     //  share between this and RotaryCards.
-
-    /** Background color of a view when it's in direct manipulation mode. */
-    private static final int BACKGROUND_COLOR_IN_DIRECT_MANIPULATION_MODE = Color.BLUE;
-
-    /** Background color of a view when it's not in direct manipulation mode. */
-    private static final int BACKGROUND_COLOR_NOT_IN_DIRECT_MANIPULATION_MODE = Color.TRANSPARENT;
 
     private final DirectManipulationState mDirectManipulationMode = new DirectManipulationState();
 
@@ -133,19 +123,9 @@ public class RotaryDirectManipulationWidgets extends Fragment {
         if (mDirectManipulationMode.isActive()) {
             // To ensure that the user doesn't get stuck in direct manipulation mode, disable direct
             // manipulation mode when the fragment is not interactive (e.g., a dialog shows up).
-            enableDirectManipulationMode(mDirectManipulationMode.getStartingView(), false);
+            mDirectManipulationMode.disable();
         }
         super.onPause();
-    }
-
-    private void enableDirectManipulationMode(@NonNull View view, boolean enable) {
-        view.setBackgroundColor(enable
-                ? BACKGROUND_COLOR_IN_DIRECT_MANIPULATION_MODE
-                : BACKGROUND_COLOR_NOT_IN_DIRECT_MANIPULATION_MODE);
-        view.invalidate();
-        DirectManipulationHelper.enableDirectManipulationMode(view, enable);
-        View currentView = enable ? view : null;
-        mDirectManipulationMode.setStartingView(currentView);
     }
 
     /**
