@@ -16,7 +16,6 @@
 
 package com.android.car.rotaryplayground;
 
-import android.graphics.Color;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -25,8 +24,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 import androidx.core.util.Preconditions;
-
-import com.android.car.ui.utils.DirectManipulationHelper;
 
 /**
  * A {@link View.OnKeyListener} and {@link View.OnGenericMotionListener} that adds a
@@ -56,12 +53,6 @@ import com.android.car.ui.utils.DirectManipulationHelper;
  */
 public class DirectManipulationHandler implements View.OnKeyListener,
         View.OnGenericMotionListener {
-
-    /** Background color of a view when it's in direct manipulation mode. */
-    private static final int BACKGROUND_COLOR_IN_DIRECT_MANIPULATION_MODE = Color.BLUE;
-
-    /** Background color of a view when it's not in direct manipulation mode. */
-    private static final int BACKGROUND_COLOR_NOT_IN_DIRECT_MANIPULATION_MODE = Color.TRANSPARENT;
 
     private final DirectManipulationState mDirectManipulationMode;
     private final View.OnKeyListener mNudgeDelegate;
@@ -112,51 +103,23 @@ public class DirectManipulationHandler implements View.OnKeyListener,
     @Override
     public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
         boolean isActionUp = keyEvent.getAction() == KeyEvent.ACTION_UP;
-        Log.d("RotaryPlayGround", "View: " + view + "\n  is handling " + keyCode
+        Log.d("RotaryPlayGround", "View: " + view + " is handling " + keyCode
                 + " and action " + keyEvent.getAction()
-                + " having entered direct manipulation mode from "
-                + mDirectManipulationMode.getStartingView());
+                + " direct manipulation mode is "
+                + (mDirectManipulationMode.isActive() ? "active" : "inactive"));
 
         switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_CENTER:
                 // If not yet in Direct Manipulation mode, switch to that mode.
-                // We generally want to give some kind of visual indication that this change
-                // has happened. In this example we change the background color.
+
                 if (!mDirectManipulationMode.isActive() && isActionUp) {
-                    mDirectManipulationMode.setStartingView(view);
-                    /*
-                     * A more robust approach would be to fetch the current background color from
-                     * the view object and store it back onto the View itself using the {@link
-                     * View#setTag(int, java.lang.Object)} API. This could then be fetched back
-                     * and used to restore the background color without needing to keep a constant
-                     * reference to the color here which could fall out of sync with the xml files.
-                     */
-                    view.setBackgroundColor(BACKGROUND_COLOR_IN_DIRECT_MANIPULATION_MODE);
-                    DirectManipulationHelper.enableDirectManipulationMode(view, true);
+                    mDirectManipulationMode.enable(view);
                 }
                 return true;
             case KeyEvent.KEYCODE_BACK:
                 // If in Direct Manipulation mode, exit, and clean up state.
                 if (mDirectManipulationMode.isActive() && isActionUp) {
-                    // This may or may not be the same as argument v. It is possible
-                    // for us to enter Direct Manipulation mode from view A and exit from
-                    // view B. dmStartingView represents A and v represents B.
-                    View dmStartingView = mDirectManipulationMode.getStartingView();
-                    // For ViewGroup objects, restore descendant focusability to
-                    // FOCUS_BLOCK_DESCENDANTS so during non-Direct Manipulation mode, aka,
-                    // general rotary navigation, we don't go through the individual inner UI
-                    // elements.
-                    if (dmStartingView instanceof ViewGroup) {
-                        ViewGroup viewGroup = (ViewGroup) dmStartingView;
-                        viewGroup.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-                    }
-                    // Restore any visual indicators that the view was in Direct Manipulation.
-                    dmStartingView.setBackgroundColor(
-                            BACKGROUND_COLOR_NOT_IN_DIRECT_MANIPULATION_MODE);
-                    // Actually go ahead and disable Direct Manipulation mode for the view.
-                    DirectManipulationHelper.enableDirectManipulationMode(dmStartingView, false);
-                    // Update mode.
-                    mDirectManipulationMode.setStartingView(null);
+                    mDirectManipulationMode.disable();
                 }
                 return true;
             default:
@@ -165,9 +128,9 @@ public class DirectManipulationHandler implements View.OnKeyListener,
                 if (!mDirectManipulationMode.isActive()) {
                     return false;
                 }
-                // If no delegate present, ignore events.
+                // If no delegate present, silently consume the events.
                 if (mNudgeDelegate == null) {
-                    return false;
+                    return true;
                 }
                 return mNudgeDelegate.onKey(view, keyCode, keyEvent);
         }
@@ -180,9 +143,9 @@ public class DirectManipulationHandler implements View.OnKeyListener,
         if (!mDirectManipulationMode.isActive()) {
             return false;
         }
-        // If no delegate present, ignore events.
+        // If no delegate present, silently consume the events.
         if (mRotationDelegate == null) {
-            return false;
+            return true;
         }
         return mRotationDelegate.onGenericMotion(v, event);
     }
