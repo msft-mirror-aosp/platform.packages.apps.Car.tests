@@ -34,12 +34,14 @@ public class RotaryMenu extends Fragment {
     private Fragment mRotaryCards = null;
     private Fragment mRotaryGrid = null;
     private Fragment mDirectManipulation = null;
+    private Fragment mSysUiDirectManipulation = null;
     private Fragment mNotificationFragment = null;
     private Fragment mScrollFragment = null;
 
     private Button mCardButton;
     private Button mGridButton;
     private Button mDirectManipulationButton;
+    private Button mSysUiDirectManipulationButton;
     private Button mNotificationButton;
     private Button mScrollButton;
 
@@ -61,6 +63,12 @@ public class RotaryMenu extends Fragment {
                 (v, hasFocus) -> showDirectManipulationExamples(hasFocus));
         mDirectManipulationButton.setOnClickListener(
                 (v -> showDirectManipulationExamples(/* hasFocus= */ true)));
+
+        mSysUiDirectManipulationButton = view.findViewById(R.id.sys_ui_direct_manipulation);
+        mSysUiDirectManipulationButton.setOnFocusChangeListener(
+                (v, hasFocus) -> showSysUiDirectManipulationExamples(hasFocus));
+        mSysUiDirectManipulationButton.setOnClickListener(
+                (v -> showSysUiDirectManipulationExamples(/* hasFocus= */ true)));
 
         mNotificationButton = view.findViewById(R.id.notification);
         mNotificationButton.setOnFocusChangeListener(
@@ -104,6 +112,16 @@ public class RotaryMenu extends Fragment {
             mDirectManipulation = new RotaryDirectManipulationWidgets();
         }
         showFragment(mDirectManipulation);
+    }
+
+    private void showSysUiDirectManipulationExamples(boolean hasFocus) {
+        if (!hasFocus) {
+            return; // Do nothing if no focus.
+        }
+        if (mSysUiDirectManipulation == null) {
+            mSysUiDirectManipulation = new RotarySysUiDirectManipulationWidgets();
+        }
+        showFragment(mSysUiDirectManipulation);
     }
 
     private void showNotificationExample(boolean hasFocus) {
