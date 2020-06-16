@@ -103,7 +103,7 @@ public class DirectManipulationHandler implements View.OnKeyListener,
     @Override
     public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
         boolean isActionUp = keyEvent.getAction() == KeyEvent.ACTION_UP;
-        Log.d("RotaryPlayGround", "View: " + view + " is handling " + keyCode
+        Log.d(L.TAG, "View: " + view + " is handling " + keyCode
                 + " and action " + keyEvent.getAction()
                 + " direct manipulation mode is "
                 + (mDirectManipulationMode.isActive() ? "active" : "inactive"));
