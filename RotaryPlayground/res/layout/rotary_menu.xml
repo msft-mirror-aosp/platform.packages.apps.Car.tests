@@ -33,6 +33,12 @@
         android:layout_weight="1"
         android:text="Direct Manipulation" />
     <Button
+        android:id="@+id/sys_ui_direct_manipulation"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Sys UI Manipulation" />
+    <Button
         android:id="@+id/grid"
         android:layout_width="match_parent"
         android:layout_height="0dp"
