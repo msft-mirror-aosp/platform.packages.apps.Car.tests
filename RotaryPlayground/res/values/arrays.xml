@@ -44,6 +44,7 @@
          height. Items here with '0' indicates the buttons item and items with value > 0 indicates
          the text item where the integer value is the height of the textview. -->
     <integer-array name="scroll_item_heights">
+        <item>240</item>
         <item>0</item>
         <item>60</item>
         <item>0</item>
@@ -64,6 +65,10 @@
         <item>0</item>
         <item>240</item>
         <item>240</item>
+        <item>240</item>
         <item>0</item>
+        <item>240</item>
+        <item>240</item>
+        <item>240</item>
     </integer-array>
 </resources>
