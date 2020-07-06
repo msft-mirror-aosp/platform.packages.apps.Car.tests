@@ -33,6 +33,16 @@ $ make RotaryPlayground
 $ adb install -r -g out/target/[path]/system/app/RotaryPlayground/RotaryPlayground.apk
 ```
 
+### RotaryIME
+
+RotaryIME is a sample input method for rotary controllers.
+
+To build and install RotaryIME onto an AAOS device:
+```
+$ make RotaryIME
+$ adb install -r -g out/target/[path]/system/app/RotaryIME/RotaryIME.apk
+```
+
 ## Contributing
 
 ### Workstation setup
