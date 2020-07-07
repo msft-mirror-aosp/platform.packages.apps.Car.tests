@@ -19,7 +19,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="#2c2c2c">
+    android:background="@color/keyboard_background">
   <com.android.car.ui.FocusParkingView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
