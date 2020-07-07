@@ -25,7 +25,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 /**
- * Sample IME for rotary controllers.  This is intentionally very basic so that it's easy to
+ * Sample IME for rotary controllers. This is intentionally very basic so that it's easy to
  * understand the code. It doesn't support multiple locales / layouts. It doesn't support password
  * fields, numeric fields, etc.
  */
@@ -56,7 +56,7 @@ public class RotaryIme extends InputMethodService {
     // on the key which will invoke its click handler. Long press will similarly result in the key's
     // long click handler being invoked.
 
-    // The first row contains letters and the delete key.
+    // The first row contains letters in alphabetical order and the delete key.
     ViewGroup letters = rootView.findViewById(R.id.letters);
     int aIndex = findChild(letters, rootView.findViewById(R.id.a));
     for (int i = 0; i < 26; i++) {
