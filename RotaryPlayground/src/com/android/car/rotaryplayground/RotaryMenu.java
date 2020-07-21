@@ -38,64 +38,68 @@ public class RotaryMenu extends Fragment {
     private Fragment mNotificationFragment = null;
     private Fragment mScrollFragment = null;
 
-    private Button mCardButton;
-    private Button mGridButton;
-    private Button mDirectManipulationButton;
-    private Button mSysUiDirectManipulationButton;
-    private Button mNotificationButton;
-    private Button mScrollButton;
-
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.rotary_menu, container, false);
 
-        mCardButton = view.findViewById(R.id.cards);
-        mCardButton.setOnFocusChangeListener((v, hasFocus) -> showRotaryCards(hasFocus));
-        mCardButton.setOnClickListener(v -> showRotaryCards(/* hasFocus= */ true));
+        Button cardButton = view.findViewById(R.id.cards);
+        cardButton.setOnClickListener(v -> {
+            selectTab(v);
+            showRotaryCards();
+        });
 
-        mGridButton = view.findViewById(R.id.grid);
-        mGridButton.setOnFocusChangeListener((v, hasFocus) -> showGridExample(hasFocus));
-        mGridButton.setOnClickListener(v -> showGridExample(/* hasFocus= */ true));
+        Button gridButton = view.findViewById(R.id.grid);
+        gridButton.setOnClickListener(v -> {
+            selectTab(v);
+            showGridExample();
+        });
 
-        mDirectManipulationButton = view.findViewById(R.id.direct_manipulation);
-        mDirectManipulationButton.setOnFocusChangeListener(
-                (v, hasFocus) -> showDirectManipulationExamples(hasFocus));
-        mDirectManipulationButton.setOnClickListener(
-                (v -> showDirectManipulationExamples(/* hasFocus= */ true)));
+        Button directManipulationButton = view.findViewById(R.id.direct_manipulation);
+        directManipulationButton.setOnClickListener(
+                (v -> {
+                    selectTab(v);
+                    showDirectManipulationExamples();
+                }));
 
-        mSysUiDirectManipulationButton = view.findViewById(R.id.sys_ui_direct_manipulation);
-        mSysUiDirectManipulationButton.setOnFocusChangeListener(
-                (v, hasFocus) -> showSysUiDirectManipulationExamples(hasFocus));
-        mSysUiDirectManipulationButton.setOnClickListener(
-                (v -> showSysUiDirectManipulationExamples(/* hasFocus= */ true)));
+        Button sysUiDirectManipulationButton = view.findViewById(R.id.sys_ui_direct_manipulation);
+        sysUiDirectManipulationButton.setOnClickListener(
+                (v -> {
+                    selectTab(v);
+                    showSysUiDirectManipulationExamples();
+                }));
 
-        mNotificationButton = view.findViewById(R.id.notification);
-        mNotificationButton.setOnFocusChangeListener(
-                (v, hasFocus) -> showNotificationExample(hasFocus));
-        mNotificationButton.setOnClickListener(v -> showNotificationExample(/* hasFocus= */ true));
+        Button notificationButton = view.findViewById(R.id.notification);
+        notificationButton.setOnClickListener(v -> {
+            selectTab(v);
+            showNotificationExample();
+        });
 
-        mScrollButton = view.findViewById(R.id.scroll);
-        mScrollButton.setOnFocusChangeListener((v, hasFocus) -> showScrollFragment(hasFocus));
-        mScrollButton.setOnClickListener(v -> showScrollFragment(/* hasFocus= */ true));
+        Button scrollButton = view.findViewById(R.id.scroll);
+        scrollButton.setOnClickListener(v -> {
+            selectTab(v);
+            showScrollFragment();
+        });
 
         return view;
     }
 
-    private void showRotaryCards(boolean hasFocus) {
-        if (!hasFocus) {
-            return; // Do nothing if no focus.
+    private void selectTab(View view) {
+        ViewGroup container = (ViewGroup) view.getParent();
+        for (int i = 0; i < container.getChildCount(); i++) {
+            container.getChildAt(i).setSelected(false);
         }
+        view.setSelected(true);
+    }
+
+    private void showRotaryCards() {
         if (mRotaryCards == null) {
             mRotaryCards = new RotaryCards();
         }
         showFragment(mRotaryCards);
     }
 
-    private void showGridExample(boolean hasFocus) {
-        if (!hasFocus) {
-            return; // do nothing if no focus.
-        }
+    private void showGridExample() {
         if (mRotaryGrid == null) {
             mRotaryGrid = new RotaryGrid();
         }
@@ -104,40 +108,28 @@ public class RotaryMenu extends Fragment {
 
     // TODO(agathaman): refactor this and the showRotaryCards above into a
     //  showFragment(Fragment fragment, boolean hasFocus); method.
-    private void showDirectManipulationExamples(boolean hasFocus) {
-        if (!hasFocus) {
-            return; // Do nothing if no focus.
-        }
+    private void showDirectManipulationExamples() {
         if (mDirectManipulation == null) {
             mDirectManipulation = new RotaryDirectManipulationWidgets();
         }
         showFragment(mDirectManipulation);
     }
 
-    private void showSysUiDirectManipulationExamples(boolean hasFocus) {
-        if (!hasFocus) {
-            return; // Do nothing if no focus.
-        }
+    private void showSysUiDirectManipulationExamples() {
         if (mSysUiDirectManipulation == null) {
             mSysUiDirectManipulation = new RotarySysUiDirectManipulationWidgets();
         }
         showFragment(mSysUiDirectManipulation);
     }
 
-    private void showNotificationExample(boolean hasFocus) {
-        if (!hasFocus) {
-            return; // do nothing if no focus.
-        }
+    private void showNotificationExample() {
         if (mNotificationFragment == null) {
             mNotificationFragment = new HeadsUpNotificationFragment();
         }
         showFragment(mNotificationFragment);
     }
 
-    private void showScrollFragment(boolean hasFocus) {
-        if (!hasFocus) {
-            return; // Do nothing if no focus.
-        }
+    private void showScrollFragment() {
         if (mScrollFragment == null) {
             mScrollFragment = new ScrollFragment();
         }
