@@ -23,13 +23,15 @@ android_app {
     sdk_version: "system_current",
 
     static_libs: [
-        "androidx-constraintlayout_constraintlayout",
-        "car-apps-common",
         "car-ui-lib",
     ],
 
     owner: "google",
     certificate: "shared",
+
+    dex_preopt: {
+        enabled: false,
+    },
 
     optimize: {
         enabled: false,
