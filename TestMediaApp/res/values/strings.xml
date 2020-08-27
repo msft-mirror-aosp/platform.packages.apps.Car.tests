@@ -31,4 +31,5 @@
 
     <string name="heart_less_less" translatable="false">Heart--</string>
 
+    <string name="location" translatable="false">Location</string>
 </resources>
