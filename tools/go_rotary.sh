@@ -15,13 +15,14 @@
 # limitations under the License.
 
 TMP_OUTDIR="/tmp/rotary"
+ME=`basename "$0"`
 
 function help {
     echo "A simple helper script that runs the Trade Federation unit tests"
-    echo "to print this message: packages/apps/Car/tests/tools/goRotary.sh"
-    echo "to build: packages/apps/Car/tests/tools/goRotary.sh b"
-    echo "to install: packages/apps/Car/tests/tools/goRotary.sh i"
-    echo "to run only: packages/apps/Car/tests/tools/goRotary.sh r"
+    echo "to print this message: packages/apps/Car/tests/tools/$ME"
+    echo "to build: packages/apps/Car/tests/tools/$ME b"
+    echo "to install: packages/apps/Car/tests/tools/$ME i"
+    echo "to run only: packages/apps/Car/tests/tools/$ME r"
     echo "the apks and jar are in $TMP_OUTDIR"
 }
 
