@@ -37,6 +37,7 @@ public class RotaryMenu extends Fragment {
     private Fragment mSysUiDirectManipulation = null;
     private Fragment mNotificationFragment = null;
     private Fragment mScrollFragment = null;
+    private Fragment mWebViewFragment = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -56,18 +57,16 @@ public class RotaryMenu extends Fragment {
         });
 
         Button directManipulationButton = view.findViewById(R.id.direct_manipulation);
-        directManipulationButton.setOnClickListener(
-                (v -> {
-                    selectTab(v);
-                    showDirectManipulationExamples();
-                }));
+        directManipulationButton.setOnClickListener(v -> {
+            selectTab(v);
+            showDirectManipulationExamples();
+        });
 
         Button sysUiDirectManipulationButton = view.findViewById(R.id.sys_ui_direct_manipulation);
-        sysUiDirectManipulationButton.setOnClickListener(
-                (v -> {
-                    selectTab(v);
-                    showSysUiDirectManipulationExamples();
-                }));
+        sysUiDirectManipulationButton.setOnClickListener(v -> {
+            selectTab(v);
+            showSysUiDirectManipulationExamples();
+        });
 
         Button notificationButton = view.findViewById(R.id.notification);
         notificationButton.setOnClickListener(v -> {
@@ -79,6 +78,12 @@ public class RotaryMenu extends Fragment {
         scrollButton.setOnClickListener(v -> {
             selectTab(v);
             showScrollFragment();
+        });
+
+        Button webViewButton = view.findViewById(R.id.web_view);
+        webViewButton.setOnClickListener(v -> {
+            selectTab(v);
+            showWebViewFragment();
         });
 
         return view;
@@ -134,6 +139,13 @@ public class RotaryMenu extends Fragment {
             mScrollFragment = new ScrollFragment();
         }
         showFragment(mScrollFragment);
+    }
+
+    private void showWebViewFragment() {
+        if (mWebViewFragment == null) {
+            mWebViewFragment = new WebViewFragment();
+        }
+        showFragment(mWebViewFragment);
     }
 
     private void showFragment(Fragment fragment) {
