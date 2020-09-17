@@ -55,7 +55,9 @@ public class TmaMediaItem {
         HEART_PLUS_PLUS(CUSTOM_ACTION_PREFIX + "heart_plus_plus", R.string.heart_plus_plus,
                 R.drawable.ic_heart_plus_plus),
         HEART_LESS_LESS(CUSTOM_ACTION_PREFIX + "heart_less_less", R.string.heart_less_less,
-                R.drawable.ic_heart_less_less);
+                R.drawable.ic_heart_less_less),
+        REQUEST_LOCATION(CUSTOM_ACTION_PREFIX + "location", R.string.location,
+                R.drawable.ic_location);
 
         final String mId;
         final int mNameId;
@@ -66,16 +68,17 @@ public class TmaMediaItem {
             mNameId = name;
             mIcon = icon;
         }
-
     }
 
     private final int mFlags;
     private final MediaMetadataCompat mMediaMetadata;
     private final ContentStyle mPlayableStyle;
     private final ContentStyle mBrowsableStyle;
+    private final int mSelfUpdateMs;
 
-    /** Read only list. */
-    final List<TmaMediaItem> mChildren;
+
+    /** Internally modifiable list (for includes). */
+    private final List<TmaMediaItem> mChildren;
     /** Read only list. */
     private final List<TmaMediaItem> mPlayableChildren;
     /** Read only list. */
@@ -87,18 +90,20 @@ public class TmaMediaItem {
 
     private @Nullable TmaMediaItem mParent;
     int mHearts;
+    int mRevealCounter;
 
 
     public TmaMediaItem(int flags, ContentStyle playableStyle, ContentStyle browsableStyle,
-            MediaMetadataCompat metadata, List<TmaCustomAction> customActions,
-            List<TmaMediaEvent> mediaEvents,
+            MediaMetadataCompat metadata, int selfUpdateMs,
+            List<TmaCustomAction> customActions, List<TmaMediaEvent> mediaEvents,
             List<TmaMediaItem> children, String include) {
         mFlags = flags;
         mPlayableStyle = playableStyle;
         mBrowsableStyle = browsableStyle;
         mMediaMetadata = metadata;
+        mSelfUpdateMs = selfUpdateMs;
         mCustomActions = Collections.unmodifiableList(customActions);
-        mChildren = Collections.unmodifiableList(children);
+        mChildren = children;
         mMediaEvents = Collections.unmodifiableList(mediaEvents);
         mInclude = include;
         List<TmaMediaItem> playableChildren = new ArrayList<>(children.size());
@@ -113,6 +118,14 @@ public class TmaMediaItem {
 
     private void setParent(@Nullable TmaMediaItem parent) {
         mParent = parent;
+    }
+
+    int getSelfUpdateDelay() {
+        return mSelfUpdateMs;
+    }
+
+    List<TmaMediaItem> getChildren() {
+        return Collections.unmodifiableList(mChildren);
     }
 
     @Nullable
@@ -155,12 +168,9 @@ public class TmaMediaItem {
         return result;
     }
 
-    TmaMediaItem append(List<TmaMediaItem> children) {
-        List<TmaMediaItem> allChildren = new ArrayList<>(mChildren.size() + children.size());
-        allChildren.addAll(mChildren);
-        allChildren.addAll(children);
-        return new TmaMediaItem(mFlags, mPlayableStyle, mBrowsableStyle, mMediaMetadata,
-                mCustomActions, mMediaEvents, allChildren, null);
+    void setChildren(List<TmaMediaItem> children) {
+        mChildren.clear();
+        mChildren.addAll(children);
     }
 
     void updateSessionMetadata(MediaSessionCompat session) {

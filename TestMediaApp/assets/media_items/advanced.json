@@ -54,6 +54,16 @@
         "DISPLAY_TITLE": "Exceptions"
       },
       "INCLUDE":"media_items/exceptions.json"
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "location",
+        "DISPLAY_TITLE": "Location",
+        "DURATION": 10000,
+        "ART_URI": "drawable/ic_location"
+      },
+      "CUSTOM_ACTIONS": ["REQUEST_LOCATION"]
     }
   ]
 }
