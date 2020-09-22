@@ -52,15 +52,12 @@
                 android:layout_width="@dimen/card_width"
                 android:layout_height="match_parent"
                 android:padding="@dimen/card_padding"
-                android:orientation="vertical"
-                app:nudgeShortcut="@+id/button1"
-                app:nudgeShortcutDirection="up">
+                android:orientation="vertical">
                 <TextView
                     android:layout_height="@dimen/description_height"
                     android:layout_width="match_parent"
                     android:text="@string/card_normal_text" />
                 <Button
-                    android:id="@+id/button1"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:onClick="onRotaryButtonClick"
