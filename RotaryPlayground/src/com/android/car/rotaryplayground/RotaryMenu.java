@@ -38,6 +38,7 @@ public class RotaryMenu extends Fragment {
     private Fragment mNotificationFragment = null;
     private Fragment mScrollFragment = null;
     private Fragment mWebViewFragment = null;
+    private Fragment mCustomFocusAreasFragment = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -84,6 +85,12 @@ public class RotaryMenu extends Fragment {
         webViewButton.setOnClickListener(v -> {
             selectTab(v);
             showWebViewFragment();
+        });
+
+        Button customFocusAreasButton = view.findViewById(R.id.custom_focus_areas);
+        customFocusAreasButton.setOnClickListener(v -> {
+            selectTab(v);
+            showCustomFocusAreasFragment();
         });
 
         return view;
@@ -146,6 +153,13 @@ public class RotaryMenu extends Fragment {
             mWebViewFragment = new WebViewFragment();
         }
         showFragment(mWebViewFragment);
+    }
+
+    private void showCustomFocusAreasFragment() {
+        if (mCustomFocusAreasFragment == null) {
+            mCustomFocusAreasFragment = new CustomFocusAreasFragment();
+        }
+        showFragment(mCustomFocusAreasFragment);
     }
 
     private void showFragment(Fragment fragment) {
