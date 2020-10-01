@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2019 The Android Open Source Project
+// Copyright (C) 2020 The Android Open Source Project
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,38 +14,24 @@
 // limitations under the License.
 //
 
-// Actual Package:
-
 android_app {
-    name: "TestMediaApp",
+    name: "RotaryPlayground",
 
     srcs: ["src/**/*.java"],
-
     resource_dirs: ["res"],
 
     sdk_version: "system_current",
 
-    certificate: "platform",
-
-    // Do NOT add dependencies preventing the app from being unbundled (compiled with gradle in Studio).
     static_libs: [
-        "androidx.appcompat_appcompat",
         "androidx-constraintlayout_constraintlayout",
-        "androidx.preference_preference",
-        "androidx.legacy_legacy-support-v4",
+        "car-apps-common",
+        "car-ui-lib",
     ],
+
+    owner: "google",
+    certificate: "shared",
 
     optimize: {
         enabled: false,
-    },
-
-    dex_preopt: {
-        enabled: false,
-    },
-
-    product_variables: {
-        pdk: {
-            enabled: false,
-        },
-    },
+    }
 }
