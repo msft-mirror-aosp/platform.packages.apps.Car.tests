@@ -26,11 +26,18 @@
         android:layout_height="wrap_content"
         android:singleLine="true"/>
 
+    <!-- Use contentDescription to enable rotary scrolling for this view. With rotary scrolling
+         enabled, rotation will scroll rather than moving the focus if moving the focus would
+         cause a lot of scrolling. Rotary scrolling should be enabled for scrolling views which
+         contain content which the user may want to see but can't interact with, either alone or
+         with interactive (focusable) content. -->
     <com.android.car.ui.recyclerview.CarUiRecyclerView
         android:id="@+id/rotary_scroll_view"
+        android:contentDescription="com.android.car.ui.utils.VERTICALLY_SCROLLABLE"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"/>
+    <!-- TODO(b/171339427) Use app:rotaryScrollEnabled instead of contentDescription. -->
 
     <EditText
         android:layout_width="match_parent"
