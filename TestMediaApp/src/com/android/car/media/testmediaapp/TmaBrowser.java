@@ -33,7 +33,9 @@ import androidx.annotation.Nullable;
 import androidx.media.MediaBrowserServiceCompat;
 
 import com.android.car.media.testmediaapp.loader.TmaLoader;
+import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaAccountType;
+import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaBrowseNodeType;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaReplyDelay;
 import com.android.car.media.testmediaapp.prefs.TmaPrefs;
 
@@ -72,6 +74,10 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
 
     private BrowserRoot mRoot;
 
+    public TmaBrowser() {
+        super();
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -91,14 +97,9 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
         mediaSessionExtras.putString(BROWSE_SERVICE_FOR_SESSION_KEY, TmaBrowser.class.getName());
         mSession.setExtras(mediaSessionExtras);
 
-        mPrefs.mAccountType.registerChangeListener(
-                (oldValue, newValue) -> onAccountChanged(newValue));
-
-        mPrefs.mRootNodeType.registerChangeListener(
-                (oldValue, newValue) -> invalidateRoot());
-
-        mPrefs.mRootReplyDelay.registerChangeListener(
-                (oldValue, newValue) -> invalidateRoot());
+        mPrefs.mAccountType.registerChangeListener(mOnAccountChanged);
+        mPrefs.mRootNodeType.registerChangeListener(mOnRootNodeTypeChanged);
+        mPrefs.mRootReplyDelay.registerChangeListener(mOnReplyDelayChanged);
 
         Bundle browserRootExtras = new Bundle();
         browserRootExtras.putBoolean(SEARCH_SUPPORTED, true);
@@ -109,23 +110,33 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
 
     @Override
     public void onDestroy() {
+        mPrefs.mAccountType.unregisterChangeListener(mOnAccountChanged);
+        mPrefs.mRootNodeType.unregisterChangeListener(mOnRootNodeTypeChanged);
+        mPrefs.mRootReplyDelay.unregisterChangeListener(mOnReplyDelayChanged);
         mSession.release();
         mHandler = null;
         mPrefs = null;
         super.onDestroy();
     }
 
-    private void onAccountChanged(TmaAccountType accountType) {
-        if (PLAYBACK_STATE_UPDATE_FIRST.equals(mPrefs.mLoginEventOrder.getValue())) {
-            updatePlaybackState(accountType);
-            invalidateRoot();
-        } else {
-            invalidateRoot();
-            (new Handler()).postDelayed(() -> {
-                updatePlaybackState(accountType);
-            }, 3000);
-        }
-    }
+    private final TmaPrefs.PrefValueChangedListener<TmaAccountType> mOnAccountChanged =
+            (oldValue, newValue) -> {
+                if (PLAYBACK_STATE_UPDATE_FIRST.equals(mPrefs.mLoginEventOrder.getValue())) {
+                    updatePlaybackState(newValue);
+                    invalidateRoot();
+                } else {
+                    invalidateRoot();
+                    (new Handler()).postDelayed(() -> {
+                        updatePlaybackState(newValue);
+                    }, 3000);
+                }
+            };
+
+    private final TmaPrefs.PrefValueChangedListener<TmaBrowseNodeType> mOnRootNodeTypeChanged =
+            (oldValue, newValue) -> invalidateRoot();
+
+    private final TmaPrefs.PrefValueChangedListener<TmaReplyDelay> mOnReplyDelayChanged =
+            (oldValue, newValue) -> invalidateRoot();
 
     private void updatePlaybackState(TmaAccountType accountType) {
         if (accountType == TmaAccountType.NONE) {
