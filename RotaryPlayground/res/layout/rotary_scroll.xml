@@ -17,6 +17,7 @@
 
 <com.android.car.ui.FocusArea
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -33,11 +34,10 @@
          with interactive (focusable) content. -->
     <com.android.car.ui.recyclerview.CarUiRecyclerView
         android:id="@+id/rotary_scroll_view"
-        android:contentDescription="com.android.car.ui.utils.VERTICALLY_SCROLLABLE"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
-    <!-- TODO(b/171339427) Use app:rotaryScrollEnabled instead of contentDescription. -->
+        android:layout_weight="1"
+        app:rotaryScrollEnabled="true"/>
 
     <EditText
         android:layout_width="match_parent"
