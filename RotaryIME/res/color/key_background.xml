@@ -14,7 +14,8 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<ripple xmlns:android="http://schemas.android.com/apk/res/android"
-        android:color="@color/car_ui_rotary_focus_color"
-        android:radius="16dp" />
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:state_pressed="true" android:color="@color/key_background_pressed" />
+  <item android:state_focused="true" android:color="@color/key_background_focused" />
+  <item android:color="@color/key_background_normal" />
+</selector>
