@@ -34,7 +34,12 @@
             android:layout_margin="@dimen/margin"
             android:gravity="center"
             android:orientation="vertical"
-            android:background="@color/card_background_color">
+            android:background="@color/card_background_color"
+            app:wrapAround="true">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Wrap-around enabled"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/button_height"
@@ -47,7 +52,6 @@
                 android:focusedByDefault="true"
                 android:text="android:focusedByDefault"/>
             <Button
-                android:id="@+id/default_focus1"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/button_height"
                 android:paddingHorizontal="@dimen/padding"
