@@ -59,6 +59,15 @@
       "FLAGS": "browsable",
       "PLAYABLE_HINT": "LIST",
       "METADATA": {
+        "MEDIA_ID": "advanced more songs",
+        "DISPLAY_TITLE": "More songs"
+      },
+      "INCLUDE":"media_items/hundreds_songs.json"
+    },
+    {
+      "FLAGS": "browsable",
+      "PLAYABLE_HINT": "LIST",
+      "METADATA": {
         "MEDIA_ID": "advanced exceptions",
         "DISPLAY_TITLE": "Exceptions"
       },
