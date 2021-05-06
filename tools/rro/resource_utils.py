@@ -75,7 +75,8 @@ def get_all_resources(resDir, excluded_resource_files=[]):
         for file in os.listdir(os.path.join(resDir, dir)):
             filePath = os.path.abspath(os.path.join(resDir, dir, file))
             if file.endswith('.xml') and filePath not in excluded_resource_files:
-                for resource in get_resources_from_single_file(os.path.join(resDir, dir, file)):
+                for resource in get_resources_from_single_file(os.path.join(resDir, dir, file),
+                                                               dir != "values"):
                     add_resource_to_set(resources, resource)
     return resources
 
@@ -87,7 +88,7 @@ def get_ids_from_layout_file(filename):
             add_resource_to_set(result, Resource(i, 'id', ResourceLocation(filename)))
     return result
 
-def get_resources_from_single_file(filename):
+def get_resources_from_single_file(filename, ignore_strings=False):
     doc = etree.parse(filename)
     root = doc.getroot()
     result = set()
@@ -100,6 +101,8 @@ def get_resources_from_single_file(filename):
             resType = "array"
         if resource.tag == 'item' or resource.tag == 'public':
             resType = resource.get('type')
+        if resType == 'string' and ignore_strings:
+            continue
         if resType == 'overlayable':
             for policy in resource:
                 for overlayable in policy:
