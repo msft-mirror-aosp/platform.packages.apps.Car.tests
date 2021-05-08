@@ -167,8 +167,7 @@
             android:gravity="center"
             android:orientation="vertical"
             android:background="@color/card_background_color"
-            app:nudgeShortcut="@+id/nudge_shortcut"
-            app:nudgeShortcutDirection="up">
+            app:nudgeUpShortcut="@+id/nudge_shortcut">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
