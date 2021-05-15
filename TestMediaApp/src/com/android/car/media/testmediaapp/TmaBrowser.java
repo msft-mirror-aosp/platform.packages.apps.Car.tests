@@ -19,7 +19,10 @@ import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaBrowseNod
 import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaBrowseNodeType.QUEUE_ONLY;
 import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaLoginEventOrder.PLAYBACK_STATE_UPDATE_FIRST;
 
+import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,6 +34,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.media.MediaBrowserServiceCompat;
+import androidx.media.session.MediaButtonReceiver;
 
 import com.android.car.media.testmediaapp.loader.TmaLoader;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaAccountType;
@@ -83,7 +87,14 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
         super.onCreate();
         mPrefs = TmaPrefs.getInstance(this);
         mHandler = new Handler();
-        mSession = new MediaSessionCompat(this, MEDIA_SESSION_TAG);
+
+        ComponentName mbrComponent = MediaButtonReceiver.getMediaButtonReceiverComponent(this);
+        Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
+        mediaButtonIntent.setComponent(mbrComponent);
+        PendingIntent mbrIntent = PendingIntent.getBroadcast(this, 0, mediaButtonIntent,
+                PendingIntent.FLAG_IMMUTABLE);
+
+        mSession = new MediaSessionCompat(this, MEDIA_SESSION_TAG, mbrComponent, mbrIntent);
         setSessionToken(mSession.getSessionToken());
 
         mLibrary = new TmaLibrary(new TmaLoader(this));
