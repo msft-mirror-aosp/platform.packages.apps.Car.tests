@@ -33,7 +33,6 @@ import androidx.annotation.Nullable;
 import androidx.media.MediaBrowserServiceCompat;
 
 import com.android.car.media.testmediaapp.loader.TmaLoader;
-import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaAccountType;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaBrowseNodeType;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaReplyDelay;
@@ -41,6 +40,7 @@ import com.android.car.media.testmediaapp.prefs.TmaPrefs;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -148,7 +148,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
                             getResources().getString(R.string.no_account),
                             getResources().getString(R.string.select_account),
                             TmaMediaEvent.ResolutionIntent.PREFS,
-                            TmaMediaEvent.Action.NONE, 0, null));
+                            TmaMediaEvent.Action.NONE, 0, null, null));
         } else {
             // TODO don't reset error in all cases...
             PlaybackStateCompat.Builder playbackState = new PlaybackStateCompat.Builder();
@@ -193,6 +193,10 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
         getMediaItemsWithDelay(ROOT_ID, result, query);
     }
 
+    private TmaMediaItem getRoot() {
+        return mLibrary.getRoot(mPrefs.mRootNodeType.getValue());
+    }
+
     private void getMediaItemsWithDelay(@NonNull String parentId,
             @NonNull Result<List<MediaItem>> result, @Nullable String filter) {
         // TODO: allow per item override of the delay ?
@@ -202,7 +206,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
             if (TmaAccountType.NONE.equals(mPrefs.mAccountType.getValue())) {
                 node = null;
             } else if (ROOT_ID.equals(parentId)) {
-                node = mLibrary.getRoot(mPrefs.mRootNodeType.getValue());
+                node = getRoot();
             } else {
                 node = mLibrary.getMediaItemById(parentId);
             }
@@ -224,7 +228,11 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
                     int selfUpdateDelay = node.getSelfUpdateDelay();
                     int toShow = (selfUpdateDelay > 0) ? 1 + node.mRevealCounter : childrenCount;
                     for (int childIndex = 0 ; childIndex < toShow; childIndex++) {
-                        items.add(children.get(childIndex).toMediaItem());
+                        TmaMediaItem child = children.get(childIndex);
+                        if (child.mIsHidden) {
+                            continue;
+                        }
+                        items.add(child.toMediaItem());
                     }
                     result.sendResult(items);
 
@@ -250,6 +258,9 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
         }
 
         for (TmaMediaItem child : node.getChildren()) {
+            if (child.mIsHidden) {
+                continue;
+            }
             MediaItem item = child.toMediaItem();
             CharSequence title = item.getDescription().getTitle();
             if (title != null) {
@@ -262,6 +273,20 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
             // Ask the library to load the grand children
             child = mLibrary.getMediaItemById(child.getMediaId());
             addSearchResults(child, matcher, hits, currentDepth - 1);
+        }
+    }
+
+    void toggleItem(@Nullable TmaMediaItem item) {
+        if (item == null) {
+            return;
+        }
+        item.mIsHidden = !item.mIsHidden;
+        if (item.getParent() != null) {
+            String parentId = item.getParent().getMediaId();
+            if (Objects.equals(parentId, getRoot().getMediaId())) {
+                parentId = ROOT_ID;
+            }
+            notifyChildrenChanged(parentId);
         }
     }
 
