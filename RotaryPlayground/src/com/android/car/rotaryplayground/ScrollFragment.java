@@ -26,11 +26,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.car.ui.recyclerview.CarUiRecyclerView;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /** Fragment to demo scrolling with CarRecyclerView. */
@@ -71,7 +71,7 @@ public class ScrollFragment extends Fragment {
         // Set adapter
         Context context = getContext();
         ScrollListItemAdapter adapter = new ScrollListItemAdapter(context, items);
-        RecyclerView view = (RecyclerView) mScrollView.findViewById(R.id.rotary_scroll_view);
+        CarUiRecyclerView view = mScrollView.requireViewById(R.id.rotary_scroll_view);
         view.setAdapter(adapter);
     }
 

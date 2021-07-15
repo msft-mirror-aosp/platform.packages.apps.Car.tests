@@ -20,10 +20,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+
+import com.android.car.ui.recyclerview.CarUiGridLayoutStyle;
+import com.android.car.ui.recyclerview.CarUiRecyclerView;
 
 /**
  * Fragment with a RecyclerView Grid to demo and test z-pattern rotating navigation and
@@ -51,8 +53,10 @@ public class RotaryGrid extends Fragment {
     }
 
     private void populateGridItems(View view) {
-        RecyclerView gridView = view.findViewById(R.id.rotary_grid_view);
-        gridView.setLayoutManager(new GridLayoutManager(getActivity(), NUMBER_OF_COLUMNS));
+        CarUiRecyclerView gridView = view.findViewById(R.id.rotary_grid_view);
+        CarUiGridLayoutStyle layoutStyle = new CarUiGridLayoutStyle();
+        layoutStyle.setSpanCount(NUMBER_OF_COLUMNS);
+        gridView.setLayoutStyle(layoutStyle);
         mGridAdapter = new RotaryGridAdapter(getActivity(), DATA);
         gridView.setAdapter(mGridAdapter);
     }
