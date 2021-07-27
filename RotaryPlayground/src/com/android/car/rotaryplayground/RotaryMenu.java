@@ -31,14 +31,15 @@ import androidx.fragment.app.Fragment;
  */
 public class RotaryMenu extends Fragment {
 
-    private Fragment mRotaryCards = null;
-    private Fragment mRotaryGrid = null;
-    private Fragment mDirectManipulation = null;
-    private Fragment mSysUiDirectManipulation = null;
-    private Fragment mNotificationFragment = null;
-    private Fragment mScrollFragment = null;
-    private Fragment mWebViewFragment = null;
-    private Fragment mCustomFocusAreasFragment = null;
+    private Fragment mRotaryCards;
+    private Fragment mRotaryGrid;
+    private Fragment mDirectManipulation;
+    private Fragment mSysUiDirectManipulation;
+    private Fragment mNotificationFragment;
+    private Fragment mScrollFragment;
+    private Fragment mWebViewFragment;
+    private Fragment mCustomFocusAreasFragment;
+    private Fragment mSurfaceViewFragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -91,6 +92,12 @@ public class RotaryMenu extends Fragment {
         customFocusAreasButton.setOnClickListener(v -> {
             selectTab(v);
             showCustomFocusAreasFragment();
+        });
+
+        Button surfaceViewButton = view.findViewById(R.id.surface_view);
+        surfaceViewButton.setOnClickListener(v -> {
+            selectTab(v);
+            showSurfaceViewFragment();
         });
 
         return view;
@@ -160,6 +167,13 @@ public class RotaryMenu extends Fragment {
             mCustomFocusAreasFragment = new CustomFocusAreasFragment();
         }
         showFragment(mCustomFocusAreasFragment);
+    }
+
+    private void showSurfaceViewFragment() {
+        if (mSurfaceViewFragment == null) {
+            mSurfaceViewFragment = new SurfaceViewFragment();
+        }
+        showFragment(mSurfaceViewFragment);
     }
 
     private void showFragment(Fragment fragment) {
