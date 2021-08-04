@@ -40,6 +40,7 @@ public class RotaryMenu extends Fragment {
     private Fragment mWebViewFragment;
     private Fragment mCustomFocusAreasFragment;
     private Fragment mSurfaceViewFragment;
+    private Fragment mNestedContainersFragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -98,6 +99,12 @@ public class RotaryMenu extends Fragment {
         surfaceViewButton.setOnClickListener(v -> {
             selectTab(v);
             showSurfaceViewFragment();
+        });
+
+        Button nestedContainersButton = view.findViewById(R.id.nested_containers);
+        nestedContainersButton.setOnClickListener(v -> {
+            selectTab(v);
+            showNestedContainersFragment();
         });
 
         return view;
@@ -174,6 +181,13 @@ public class RotaryMenu extends Fragment {
             mSurfaceViewFragment = new SurfaceViewFragment();
         }
         showFragment(mSurfaceViewFragment);
+    }
+
+    private void showNestedContainersFragment() {
+        if (mNestedContainersFragment == null) {
+            mNestedContainersFragment = new NestedContainersFragment();
+        }
+        showFragment(mNestedContainersFragment);
     }
 
     private void showFragment(Fragment fragment) {
