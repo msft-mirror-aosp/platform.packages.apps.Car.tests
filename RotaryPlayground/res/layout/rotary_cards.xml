@@ -141,7 +141,10 @@
                  Upon nudging into this area, the focus will land on the button with the default
                  focus attribute. Rotating the rotary controller clockwise will move the focus
                  from top to bottom. Counterclockwise to move the focus from bottom to up.
-                 Nudge any direction to leave this focus area. -->
+                 Nudge any direction to leave this focus area.
+                 When a FocusArea is off the screen, RotaryService can't see it thus the user can't
+                 nudge to it. This can be solved by specifying the nudge target FocusArea explicitly
+                 on the app side. That's why "app:nudgeLeft" and "app:nudgeRight" are needed. -->
             <com.android.car.ui.FocusArea
                 android:id="@+id/card_with_default_focus"
                 android:background="@color/card_background_color"
@@ -150,6 +153,8 @@
                 android:layout_height="match_parent"
                 android:padding="@dimen/card_padding"
                 android:orientation="vertical"
+                app:nudgeLeft="@+id/card_normal"
+                app:nudgeRight="@+id/card_that_wraps_around"
                 app:defaultFocus="@+id/default_focus">
                 <TextView
                     android:layout_height="@dimen/description_height"
@@ -184,7 +189,10 @@
 
             <!-- A FocusArea with buttons in a circle.
                  Rotating clockwise moves the focus from A -> B -> C -> D -> E -> F -> G -> H,
-                 and reverse counterclockwise. -->
+                 and reverse counterclockwise.
+                 By default rotating will go over focusable views in view tree order (e.g., B -> D),
+                 but the order can be specified explicitly via attributes like
+                 "android:nextFocusForward" (e.g., B -> C). -->
             <com.android.car.ui.FocusArea
                 android:id="@+id/card_that_wraps_around"
                 android:background="@color/card_background_color"
@@ -193,6 +201,7 @@
                 android:layout_height="match_parent"
                 android:padding="@dimen/card_padding"
                 android:orientation="vertical"
+                app:nudgeRight="@+id/focus_area5"
                 app:wrapAround="true">
                 <TextView
                     android:layout_height="@dimen/description_height"
@@ -213,7 +222,6 @@
                         android:id="@+id/button_a"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:nextFocusForward="@+id/button_b"
                         android:padding="20dp"
                         android:text="A"
                         app:layout_constraintCircle="@id/circle_center"
@@ -232,23 +240,23 @@
                         app:layout_constraintCircleRadius="90dp"
                         />
                     <Button
-                        android:id="@+id/button_c"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:nextFocusForward="@+id/button_d"
-                        android:padding="20dp"
-                        android:text="C"
-                        app:layout_constraintCircle="@id/circle_center"
-                        app:layout_constraintCircleAngle="90"
-                        app:layout_constraintCircleRadius="90dp"
-                        />
-                    <Button
                         android:id="@+id/button_d"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:nextFocusForward="@+id/button_e"
                         android:padding="20dp"
                         android:text="D"
+                        app:layout_constraintCircle="@id/circle_center"
+                        app:layout_constraintCircleAngle="90"
+                        app:layout_constraintCircleRadius="90dp"
+                        />
+                    <Button
+                        android:id="@+id/button_c"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:nextFocusForward="@+id/button_d"
+                        android:padding="20dp"
+                        android:text="C"
                         app:layout_constraintCircle="@id/circle_center"
                         app:layout_constraintCircleAngle="135"
                         app:layout_constraintCircleRadius="90dp"
@@ -268,7 +276,6 @@
                         android:id="@+id/button_f"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:nextFocusForward="@+id/button_g"
                         android:padding="20dp"
                         android:text="F"
                         app:layout_constraintCircle="@id/circle_center"
@@ -279,7 +286,6 @@
                         android:id="@+id/button_g"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:nextFocusForward="@+id/button_h"
                         android:padding="20dp"
                         android:text="G"
                         app:layout_constraintCircle="@id/circle_center"
