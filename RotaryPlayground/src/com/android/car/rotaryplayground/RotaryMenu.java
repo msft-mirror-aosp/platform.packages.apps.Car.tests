@@ -39,6 +39,7 @@ public class RotaryMenu extends Fragment {
     private Fragment mScrollFragment;
     private Fragment mWebViewFragment;
     private Fragment mCustomFocusAreasFragment;
+    private Fragment mPopupWindowFragment;
     private Fragment mSurfaceViewFragment;
 
     @Override
@@ -92,6 +93,12 @@ public class RotaryMenu extends Fragment {
         customFocusAreasButton.setOnClickListener(v -> {
             selectTab(v);
             showCustomFocusAreasFragment();
+        });
+
+        Button popupWindowButton = view.findViewById(R.id.popup_window);
+        popupWindowButton.setOnClickListener(v -> {
+            selectTab(v);
+            showPopupWindowFragment();
         });
 
         Button surfaceViewButton = view.findViewById(R.id.surface_view);
@@ -167,6 +174,13 @@ public class RotaryMenu extends Fragment {
             mCustomFocusAreasFragment = new CustomFocusAreasFragment();
         }
         showFragment(mCustomFocusAreasFragment);
+    }
+
+    private void showPopupWindowFragment() {
+        if (mPopupWindowFragment == null) {
+            mPopupWindowFragment = new PopupWindowFragment();
+        }
+        showFragment(mPopupWindowFragment);
     }
 
     private void showSurfaceViewFragment() {
