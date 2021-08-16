@@ -193,23 +193,26 @@
                  By default rotating will go over focusable views in view tree order (e.g., B -> D),
                  but the order can be specified explicitly via attributes like
                  "android:nextFocusForward" (e.g., B -> C). -->
-            <com.android.car.ui.FocusArea
-                android:id="@+id/card_that_wraps_around"
+            <LinearLayout
                 android:background="@color/card_background_color"
                 android:layout_margin="16dp"
                 android:layout_width="@dimen/card_width"
                 android:layout_height="match_parent"
                 android:padding="@dimen/card_padding"
-                android:orientation="vertical"
-                app:nudgeRight="@+id/focus_area5"
-                app:wrapAround="true">
+                android:orientation="vertical">
                 <TextView
                     android:layout_height="@dimen/description_height"
                     android:layout_width="match_parent"
                     android:text="@string/card_that_wraps_around_text" />
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <!-- Set a negative topBoundOffset so that nudging left from focus_area5 goes to
+                     this focus area. -->
+                <com.android.car.ui.ConstraintFocusArea
+                    android:id="@+id/card_that_wraps_around"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    app:topBoundOffset="-200dp"
+                    app:nudgeRight="@+id/focus_area5"
+                    app:wrapAround="true">
                     <View
                         android:id="@+id/circle_center"
                         android:layout_width="wrap_content"
@@ -302,8 +305,8 @@
                         app:layout_constraintCircleAngle="315"
                         app:layout_constraintCircleRadius="90dp"
                         />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </com.android.car.ui.FocusArea>
+                </com.android.car.ui.ConstraintFocusArea>
+            </LinearLayout>
             <!-- A FocusArea to demonstrate how to update a view properly.
                  Don't remove the focused view, otherwise Android framework will focus on another
                  view (the default focus view, or the first focusable view in the view tree), and
