@@ -111,7 +111,7 @@ def get_resources_from_single_file(filename, ignore_strings=False):
             resType = "array"
         if resource.tag == 'item' or resource.tag == 'public':
             resType = resource.get('type')
-        if resType == 'string' and ignore_strings:
+        if (resType == 'string' or resType == 'plurals') and ignore_strings:
             continue
         if resType == 'overlayable':
             for policy in resource:
