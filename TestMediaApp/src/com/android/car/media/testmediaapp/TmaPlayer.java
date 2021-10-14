@@ -103,7 +103,8 @@ public class TmaPlayer extends MediaSessionCompat.Callback {
             Intent prefsIntent = new Intent();
             prefsIntent.setClass(mBrowser, TmaPrefsActivity.class);
             prefsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            PendingIntent pendingIntent = PendingIntent.getActivity(mBrowser, 0, prefsIntent, 0);
+            PendingIntent pendingIntent = PendingIntent.getActivity(mBrowser, 0, prefsIntent,
+                    PendingIntent.FLAG_IMMUTABLE);
 
             Bundle extras = new Bundle();
             extras.putString(MediaKeys.ERROR_RESOLUTION_ACTION_LABEL, event.mActionLabel);
