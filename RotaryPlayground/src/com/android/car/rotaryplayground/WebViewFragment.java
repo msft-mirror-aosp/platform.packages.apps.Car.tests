@@ -52,6 +52,8 @@ public class WebViewFragment extends Fragment {
             bottomButton.setVisibility(buttonVisibility);
         });
 
+        webView.setVerticalScrollBarEnabled(true);
+
         Resources res = getResources();
         InputStream inputStream = res.openRawResource(R.raw.web_view_html);
         byte[] byteArray = new byte[0];

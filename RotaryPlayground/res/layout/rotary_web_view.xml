@@ -47,11 +47,12 @@
             android:text="Top Button"
             android:visibility="gone" />
 
-        <WebView
+        <com.android.car.ui.RotaryScrollWebView
             android:id="@+id/web_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:scrollbarThumbVertical="@*android:color/car_scrollbar_thumb_dark"
             android:defaultFocusHighlightEnabled="false"/>
 
         <Button
