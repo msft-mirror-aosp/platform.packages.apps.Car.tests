@@ -36,6 +36,9 @@ public class RotaryCards extends Fragment {
             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.rotary_cards, container, false);
 
+        View scrollView = view.findViewById(R.id.scroll_view);
+        scrollView.setFocusable(false);
+
         // This button will be removed and immediately added back after click. So the focus
         // highlight will jump to another view after rotary click.
         FocusArea focusArea5 = view.findViewById(R.id.focus_area5);
