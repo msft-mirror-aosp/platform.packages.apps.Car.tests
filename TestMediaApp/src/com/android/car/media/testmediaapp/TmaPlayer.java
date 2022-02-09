@@ -32,9 +32,6 @@ import static android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_T
 import static android.support.v4.media.session.PlaybackStateCompat.ERROR_CODE_APP_ERROR;
 import static android.support.v4.media.session.PlaybackStateCompat.STATE_ERROR;
 
-import android.media.AudioManager.OnAudioFocusChangeListener;
-import androidx.annotation.Nullable;
-
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.media.AudioFocusRequest;
@@ -46,6 +43,9 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.media.utils.MediaConstants;
 
 import com.android.car.media.testmediaapp.TmaMediaEvent.Action;
 import com.android.car.media.testmediaapp.TmaMediaEvent.EventState;
@@ -113,8 +113,11 @@ public class TmaPlayer extends MediaSessionCompat.Callback {
                     PendingIntent.FLAG_IMMUTABLE);
 
             Bundle extras = new Bundle();
-            extras.putString(MediaKeys.ERROR_RESOLUTION_ACTION_LABEL, event.mActionLabel);
-            extras.putParcelable(MediaKeys.ERROR_RESOLUTION_ACTION_INTENT, pendingIntent);
+            extras.putString(MediaConstants.PLAYBACK_STATE_EXTRAS_KEY_ERROR_RESOLUTION_ACTION_LABEL,
+                    event.mActionLabel);
+            extras.putParcelable(
+                    MediaConstants.PLAYBACK_STATE_EXTRAS_KEY_ERROR_RESOLUTION_ACTION_INTENT,
+                    pendingIntent);
             state.setExtras(extras);
         }
 
