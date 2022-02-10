@@ -34,6 +34,7 @@
     </com.android.car.ui.FocusArea>
 
     <HorizontalScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
@@ -369,6 +370,26 @@
                     android:layout_gravity="center"
                     android:background="@drawable/custom_button_background"/>
             </com.android.car.ui.FocusArea>
+            <!-- A LinearLayout to demonstrate orphan views. All focusable views must be wrapped
+                 inside a focus area, so this LinearLayout should be replaced by a FocusArea.
+                 However, if the developer forgets to do that, RotaryService can still handle
+                 it. -->
+            <LinearLayout
+                android:background="@color/card_background_color"
+                android:layout_margin="16dp"
+                android:layout_width="@dimen/card_width"
+                android:layout_height="match_parent"
+                android:padding="@dimen/card_padding"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/orphan_view"/>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:text="Button"/>
+            </LinearLayout>
         </LinearLayout>
     </HorizontalScrollView>
 </LinearLayout>

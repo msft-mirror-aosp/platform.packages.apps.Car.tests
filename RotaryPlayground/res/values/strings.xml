@@ -39,4 +39,7 @@
     <string name="sys_ui_does_not_support_dm" translatable="true">
         Doesn\'t support Direct Manipulation Mode
     </string>
+    <string name="orphan_view" translatable="false">
+        This button is not wrapped inside any focus areas, but the user can still nudge to it
+    </string>
 </resources>
