@@ -17,7 +17,7 @@
 <resources>
     <string name="app_name" translatable="false">Test Media App</string>
 
-    <string name="broken_service" translatable="false">Test Empty Media</string>
+    <string name="empty_browse" translatable="false">Test Empty Media</string>
 
     <string name="select_account" translatable="false">Please select an account type</string>
 
@@ -32,4 +32,10 @@
     <string name="heart_less_less" translatable="false">Heart--</string>
 
     <string name="location" translatable="false">Location</string>
+
+    <string name="car_service_name" translatable="false">Test Media Car App Service</string>
+
+    <string name="car_settings_header" translatable="false">Test Settings</string>
+
+    <string name="car_settings_toggle_item" translatable="false">Toggle setting</string>
 </resources>
