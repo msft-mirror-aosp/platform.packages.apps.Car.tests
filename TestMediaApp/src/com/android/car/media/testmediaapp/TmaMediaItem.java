@@ -16,8 +16,6 @@
 
 package com.android.car.media.testmediaapp;
 
-import androidx.annotation.Nullable;
-
 import static android.support.v4.media.MediaBrowserCompat.MediaItem.FLAG_PLAYABLE;
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION;
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID;
@@ -28,6 +26,9 @@ import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.MediaSessionCompat.QueueItem;
+
+import androidx.annotation.Nullable;
+import androidx.media.utils.MediaConstants;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,10 +42,10 @@ public class TmaMediaItem {
     /** The name of each entry is the value used in the json file. */
     public enum ContentStyle {
         NONE (0),
-        LIST (MediaKeys.CONTENT_STYLE_LIST_ITEM_HINT_VALUE),
-        GRID (MediaKeys.CONTENT_STYLE_GRID_ITEM_HINT_VALUE),
-        LIST_CATEGORY(MediaKeys.CONTENT_STYLE_CATEGORY_LIST_ITEM_HINT_VALUE),
-        GRID_CATEGORY(MediaKeys.CONTENT_STYLE_CATEGORY_GRID_ITEM_HINT_VALUE);
+        LIST (MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_LIST_ITEM),
+        GRID (MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_GRID_ITEM),
+        LIST_CATEGORY(MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_CATEGORY_LIST_ITEM),
+        GRID_CATEGORY(MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_CATEGORY_GRID_ITEM);
         final int mBundleValue;
         ContentStyle(int value) {
             mBundleValue = value;
@@ -222,8 +223,10 @@ public class TmaMediaItem {
             extras.putAll(metadataDescription.getExtras());
         }
 
-        extras.putInt(MediaKeys.CONTENT_STYLE_PLAYABLE_HINT, mPlayableStyle.mBundleValue);
-        extras.putInt(MediaKeys.CONTENT_STYLE_BROWSABLE_HINT, mBrowsableStyle.mBundleValue);
+        extras.putInt(MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_PLAYABLE,
+                mPlayableStyle.mBundleValue);
+        extras.putInt(MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_BROWSABLE,
+                mBrowsableStyle.mBundleValue);
 
         bob.setExtras(extras);
         return bob.build();

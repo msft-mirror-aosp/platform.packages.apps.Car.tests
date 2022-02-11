@@ -35,6 +35,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.media.MediaBrowserServiceCompat;
 import androidx.media.session.MediaButtonReceiver;
+import androidx.media.utils.MediaConstants;
 
 import com.android.car.media.testmediaapp.loader.TmaLoader;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaAccountType;
@@ -180,8 +181,10 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
             Log.e(TAG, "Client " + clientPackageName + " didn't set rootHints.");
             throw new NullPointerException("rootHints is null");
         }
-        Log.i(TAG, "onGetroot client: " + clientPackageName + " EXTRA_MEDIA_ART_SIZE_HINT_PIXELS: "
-                + rootHints.getInt(MediaKeys.EXTRA_MEDIA_ART_SIZE_HINT_PIXELS, 0));
+        Log.i(TAG, "onGetroot client: " + clientPackageName
+                + " BROWSER_ROOT_HINTS_KEY_MEDIA_ART_SIZE_PIXELS: "
+                + rootHints.getInt(MediaConstants.BROWSER_ROOT_HINTS_KEY_MEDIA_ART_SIZE_PIXELS
+                , 0));
         return mRoot;
     }
 
