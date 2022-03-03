@@ -82,6 +82,26 @@
         "ART_URI": "drawable/ic_location"
       },
       "CUSTOM_ACTIONS": ["REQUEST_LOCATION"]
+    },
+    {
+      "FLAGS": "browsable",
+      "PLAYABLE_HINT": "LIST",
+      "BROWSABLE_HINT": "LIST",
+      "METADATA": {
+        "MEDIA_ID": "progress node",
+        "DISPLAY_TITLE": "Progress List"
+      },
+      "INCLUDE": "media_items/progress_list.json"
+    },
+    {
+      "FLAGS": "browsable",
+      "PLAYABLE_HINT": "GRID",
+      "BROWSABLE_HINT": "GRID_CATEGORY",
+      "METADATA": {
+        "MEDIA_ID": "progress node",
+        "DISPLAY_TITLE": "Progress Grid"
+      },
+      "INCLUDE": "media_items/progress_list.json"
     }
   ]
 }

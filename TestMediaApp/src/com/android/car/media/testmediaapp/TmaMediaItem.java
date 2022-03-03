@@ -20,6 +20,9 @@ import static android.support.v4.media.MediaBrowserCompat.MediaItem.FLAG_PLAYABL
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION;
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID;
 
+import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.METADATA_KEY_PLAYBACK_PROGRESS;
+import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.METADATA_KEY_PLAYBACK_STATUS;
+
 import android.os.Bundle;
 import android.support.v4.media.MediaBrowserCompat.MediaItem;
 import android.support.v4.media.MediaDescriptionCompat;
@@ -204,6 +207,9 @@ public class TmaMediaItem {
         return MediaSessionCompat.QueueItem.UNKNOWN_ID;
     }
 
+    public static final String DESCRIPTION_EXTRAS_KEY_COMPLETION_PERCENTAGE =
+            "androidx.media.MediaItem.Extras.COMPLETION_PERCENTAGE";
+
     private MediaDescriptionCompat buildDescription() {
 
         // Use the default media description but add our extras.
@@ -227,6 +233,14 @@ public class TmaMediaItem {
                 mPlayableStyle.mBundleValue);
         extras.putInt(MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_BROWSABLE,
                 mBrowsableStyle.mBundleValue);
+
+        int playbackStatus = (int) mMediaMetadata.getBundle().getLong(METADATA_KEY_PLAYBACK_STATUS,
+                2);
+        double playbackProgress = mMediaMetadata.getBundle().getLong(METADATA_KEY_PLAYBACK_PROGRESS,
+                -1) / 100.0;
+
+        extras.putInt(MediaConstants.DESCRIPTION_EXTRAS_KEY_COMPLETION_STATUS, playbackStatus);
+        extras.putDouble(DESCRIPTION_EXTRAS_KEY_COMPLETION_PERCENTAGE, playbackProgress);
 
         bob.setExtras(extras);
         return bob.build();

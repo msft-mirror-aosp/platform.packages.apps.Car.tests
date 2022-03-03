@@ -49,6 +49,8 @@ import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_WRITER;
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_YEAR;
 
 import static com.android.car.media.testmediaapp.loader.TmaLoaderUtils.enumNamesToValues;
+import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.METADATA_KEY_PLAYBACK_PROGRESS;
+import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.METADATA_KEY_PLAYBACK_STATUS;
 
 import android.support.v4.media.MediaMetadataCompat;
 import android.util.Log;
@@ -107,7 +109,9 @@ class TmaMediaMetadataReader {
         BT_FOLDER_TYPE      (METADATA_KEY_BT_FOLDER_TYPE,       ValueType.LONG),
         MEDIA_URI           (METADATA_KEY_MEDIA_URI,            ValueType.TEXT),
         ADVERTISEMENT       (METADATA_KEY_ADVERTISEMENT,        ValueType.LONG),
-        DOWNLOAD_STATUS     (METADATA_KEY_DOWNLOAD_STATUS,      ValueType.LONG);
+        DOWNLOAD_STATUS     (METADATA_KEY_DOWNLOAD_STATUS,      ValueType.LONG),
+        PLAYBACK_PROGRESS   (METADATA_KEY_PLAYBACK_PROGRESS,    ValueType.LONG),
+        PLAYBACK_STATUS     (METADATA_KEY_PLAYBACK_STATUS,      ValueType.LONG);
 
         /** The full name of the key in {@link MediaMetadataCompat}. */
         final String mLongName;
