@@ -1,0 +1,62 @@
+{
+  "FLAGS": "browsable",
+  "PLAYABLE_HINT": "LIST_CATEGORY",
+  "BROWSABLE_HINT": "LIST_CATEGORY",
+
+  "METADATA": {
+    "MEDIA_ID": "progress list",
+    "DISPLAY_TITLE": "ProgressBar List"
+  },
+
+  "CHILDREN": [
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "No Progress bar No New indicator",
+        "DISPLAY_TITLE": "No progress bar, no new indicator",
+        "DURATION": 1500000,
+        "PLAYBACK_STATUS": 2
+      }
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "No Progress bar, with new Dot",
+        "DISPLAY_TITLE": "New indicator only",
+        "DURATION": 1500000,
+        "PLAYBACK_STATUS": 0
+      }
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "With Progress No New Indicator",
+        "DISPLAY_TITLE": "Progress bar only",
+        "DURATION": 1500000,
+        "PLAYBACK_PROGRESS": 33
+      }
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "With Progress With new Indicator",
+        "DISPLAY_TITLE": "Progress bar and new indicator",
+        "DURATION": 1500000,
+        "PLAYBACK_PROGRESS": 45,
+        "PLAYBACK_STATUS": 0
+      }
+    },
+    {
+      "FLAGS": "browsable",
+      "METADATA": {
+        "MEDIA_ID": "both",
+        "DISPLAY_TITLE": "Playlist with PB & New",
+        "DISPLAY_SUBTITLE": "Playlist with progress bar, dot and >",
+        "DURATION": 1500000,
+        "PLAYBACK_STATUS": 0,
+        "PLAYBACK_PROGRESS": 66
+      },
+      "INCLUDE":"media_items/empty.json"
+    }
+  ]
+}
