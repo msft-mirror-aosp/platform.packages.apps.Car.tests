@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
  * Copyright (c) 2019, The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,6 +26,9 @@
         will truncate it when needed.
     </string>
 
+    <string name="no_account_short" translatable="false">Please sign in to use Test Media App
+    </string>
+
     <string name="heart_plus_plus" translatable="false">Heart++</string>
 
     <string name="heart_less_less" translatable="false">Heart--</string>
@@ -38,4 +40,18 @@
     <string name="car_settings_header" translatable="false">Test Settings</string>
 
     <string name="car_settings_toggle_item" translatable="false">Toggle setting</string>
+
+    <string name="sign_in_button_label" translatable="false">Sign in</string>
+
+    <string name="username_password_sign_in" translatable="false">Username and password</string>
+
+    <string name="pin_sign_in" translatable="false">PIN sign-in</string>
+
+    <string name="choose_sign_in" translatable="false">Choose sign-in method</string>
+
+    <string name="enter_uname" translatable="false">Enter username</string>
+
+    <string name="enter_pass" translatable="false">Enter password</string>
+
+    <string name="enter_pin" translatable="false">Enter PIN on phone</string>
 </resources>
