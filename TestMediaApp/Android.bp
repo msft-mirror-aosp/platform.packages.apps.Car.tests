@@ -23,13 +23,14 @@ package {
 android_app {
     name: "TestMediaApp",
 
-    srcs: ["src/**/*.java"],
+    srcs: ["common/src/**/*.java"],
 
-    resource_dirs: ["res"],
+    resource_dirs: ["common/res"],
 
     min_sdk_version: "29",
     target_sdk_version: "31",
     sdk_version: "system_current",
+    manifest: "automotive/src/main/AndroidManifest.xml",
 
     certificate: ":com-android-car-apps-test",
 
