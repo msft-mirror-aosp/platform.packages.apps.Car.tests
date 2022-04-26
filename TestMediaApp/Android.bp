@@ -26,6 +26,7 @@ android_app {
     srcs: ["common/src/**/*.java"],
 
     resource_dirs: ["common/res"],
+    asset_dirs: ["common/assets"],
 
     min_sdk_version: "29",
     target_sdk_version: "31",
