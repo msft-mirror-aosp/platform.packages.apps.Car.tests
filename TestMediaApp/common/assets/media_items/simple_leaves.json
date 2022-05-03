@@ -138,6 +138,58 @@
           "POST_DELAY_MS": 3000
         }
       ]
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "simple_leaves short non-fatal playback error message",
+        "DISPLAY_TITLE": "Short playback error message",
+        "DISPLAY_SUBTITLE": "Show a short non-fatal playback error message",
+        "DURATION": 20000
+      },
+      "EVENTS": [
+        {
+          "STATE": "PLAYING",
+          "ERROR_CODE": "APP_ERROR",
+          "ERROR_MESSAGE": "This is a short text non-fatal playback error message",
+          "POST_DELAY_MS": 0
+        }
+      ]
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "simple_leaves long non-fatal playback error message",
+        "DISPLAY_TITLE": "Long playback error message",
+        "DISPLAY_SUBTITLE": "Show a long non-fatal playback error message",
+        "DURATION": 20000
+      },
+      "EVENTS": [
+        {
+          "STATE": "PLAYING",
+          "ERROR_CODE": "APP_ERROR",
+          "ERROR_MESSAGE": "This is a message that is over one hundred and twenty characters, we should not see beyond this. These words should not be visible :)",
+          "POST_DELAY_MS": 0
+        }
+      ]
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+      "MEDIA_ID": "simple_leaves delayed non-fatal playback error message",
+        "DISPLAY_TITLE": "10s delayed playback error message",
+        "DISPLAY_SUBTITLE": "Show a delayed non-fatal playback error message for a multi-media app scenario",
+        "DURATION": 20000
+      },
+      "EVENTS": [
+        { "STATE": "PLAYING", "POST_DELAY_MS": 10000 },
+        {
+          "STATE": "PLAYING",
+          "ERROR_CODE": "APP_ERROR",
+          "ERROR_MESSAGE": "This is a short text non-fatal playback error message.",
+          "POST_DELAY_MS": 0
+        }
+      ]
     }
   ]
 }
