@@ -68,7 +68,7 @@
                 <!-- This button is disabled and is not focusable by RotaryService.
                      The RotaryService can see disabled views but it can't focus them. Android
                      doesn't allow disabled views to be focused.
-                     The focus will skip this button when rotating the rotary countroller. -->
+                     The focus will skip this button when rotating the rotary controller. -->
                 <Button
                     android:background="@color/button_disabled_background_color"
                     android:layout_width="match_parent"
@@ -193,7 +193,10 @@
                  and reverse counterclockwise.
                  By default rotating will go over focusable views in view tree order (e.g., B -> D),
                  but the order can be specified explicitly via attributes like
-                 "android:nextFocusForward" (e.g., B -> C). -->
+                 "android:nextFocusForward" (e.g., B -> C).
+                 Button G is set as the nudgeLeftShortcut. When other buttons in the card are
+                 focused, nudging left should focus on Button G, otherwise it should focus outside
+                 this FocusArea. -->
             <LinearLayout
                 android:background="@color/card_background_color"
                 android:layout_margin="16dp"
@@ -204,14 +207,16 @@
                 <TextView
                     android:layout_height="@dimen/description_height"
                     android:layout_width="match_parent"
-                    android:text="@string/card_that_wraps_around_text" />
+                    android:text="@string/card_that_wraps_around_text"
+                    android:textSize="18dp"/>
                 <!-- Set a negative topBoundOffset so that nudging left from focus_area5 goes to
                      this focus area. -->
                 <com.android.car.ui.ConstraintFocusArea
                     android:id="@+id/card_that_wraps_around"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:topBoundOffset="-200dp"
+                    app:topBoundOffset="-150dp"
+                    app:nudgeLeftShortcut="@+id/button_g"
                     app:nudgeRight="@+id/focus_area5"
                     app:wrapAround="true">
                     <View
@@ -226,85 +231,84 @@
                         android:id="@+id/button_a"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="20dp"
+                        android:padding="10dp"
                         android:text="A"
                         app:layout_constraintCircle="@id/circle_center"
-                        app:layout_constraintCircleAngle="0"
-                        app:layout_constraintCircleRadius="90dp"
+                        app:layout_constraintCircleRadius="70dp"
                         />
                     <Button
                         android:id="@+id/button_b"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:nextFocusForward="@+id/button_c"
-                        android:padding="20dp"
+                        android:padding="10dp"
                         android:text="B"
                         app:layout_constraintCircle="@id/circle_center"
                         app:layout_constraintCircleAngle="45"
-                        app:layout_constraintCircleRadius="90dp"
+                        app:layout_constraintCircleRadius="70dp"
                         />
                     <Button
                         android:id="@+id/button_d"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:nextFocusForward="@+id/button_e"
-                        android:padding="20dp"
+                        android:padding="10dp"
                         android:text="D"
                         app:layout_constraintCircle="@id/circle_center"
                         app:layout_constraintCircleAngle="90"
-                        app:layout_constraintCircleRadius="90dp"
+                        app:layout_constraintCircleRadius="70dp"
                         />
                     <Button
                         android:id="@+id/button_c"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:nextFocusForward="@+id/button_d"
-                        android:padding="20dp"
+                        android:padding="10dp"
                         android:text="C"
                         app:layout_constraintCircle="@id/circle_center"
                         app:layout_constraintCircleAngle="135"
-                        app:layout_constraintCircleRadius="90dp"
+                        app:layout_constraintCircleRadius="70dp"
                         />
                     <Button
                         android:id="@+id/button_e"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:nextFocusForward="@+id/button_f"
-                        android:padding="20dp"
+                        android:padding="10dp"
                         android:text="E"
                         app:layout_constraintCircle="@id/circle_center"
                         app:layout_constraintCircleAngle="180"
-                        app:layout_constraintCircleRadius="90dp"
+                        app:layout_constraintCircleRadius="70dp"
                         />
                     <Button
                         android:id="@+id/button_f"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="20dp"
+                        android:padding="10dp"
                         android:text="F"
                         app:layout_constraintCircle="@id/circle_center"
                         app:layout_constraintCircleAngle="225"
-                        app:layout_constraintCircleRadius="90dp"
+                        app:layout_constraintCircleRadius="70dp"
                         />
                     <Button
                         android:id="@+id/button_g"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="20dp"
+                        android:padding="10dp"
                         android:text="G"
                         app:layout_constraintCircle="@id/circle_center"
                         app:layout_constraintCircleAngle="270"
-                        app:layout_constraintCircleRadius="90dp"
+                        app:layout_constraintCircleRadius="70dp"
                         />
                     <Button
                         android:id="@+id/button_h"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="20dp"
+                        android:padding="10dp"
                         android:text="H"
                         app:layout_constraintCircle="@id/circle_center"
                         app:layout_constraintCircleAngle="315"
-                        app:layout_constraintCircleRadius="90dp"
+                        app:layout_constraintCircleRadius="70dp"
                         />
                 </com.android.car.ui.ConstraintFocusArea>
             </LinearLayout>
@@ -320,8 +324,7 @@
                     focus.
                  Don't disable the focused view, otherwise Android framework will focus on another
                  view. A workaround is to use a custom state to replace android:state_disabled so
-                 that it appears disabled but is not disabled actually.
-            -->
+                 that it appears disabled but is not disabled actually. -->
             <com.android.car.ui.FocusArea
                 android:id="@+id/focus_area5"
                 android:background="@color/card_background_color"
@@ -390,6 +393,53 @@
                     android:layout_height="50dp"
                     android:text="Button"/>
             </LinearLayout>
+            <!-- A FocusArea with nudgeDownShortcut set to Button3. Nudging down
+                 from Button1 and Button2 should go to Button3, but NudgeDown from Button3, Button4,
+                 and Button5 should move focus out of this FocusArea. -->
+            <com.android.car.ui.FocusArea
+                android:id="@+id/focus_area6"
+                android:background="@color/card_background_color"
+                android:layout_margin="16dp"
+                android:layout_width="@dimen/card_width"
+                android:layout_height="match_parent"
+                android:padding="@dimen/card_padding"
+                android:orientation="vertical"
+                app:nudgeDownShortcut="@+id/button_6c">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/card_with_nudge_shortcut"/>
+                <Button
+                    android:id="@+id/button_6a"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="button1"/>
+                <Button
+                    android:id="@+id/button_6b"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="button2"/>
+                <Button
+                    android:id="@+id/button_6c"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="button3 (shortcut)"/>
+                <Button
+                    android:id="@+id/button_6d"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="button4"/>
+                <Button
+                    android:id="@+id/button_6e"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="button5"/>
+            </com.android.car.ui.FocusArea>
         </LinearLayout>
     </HorizontalScrollView>
 </LinearLayout>
