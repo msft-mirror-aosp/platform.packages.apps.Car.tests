@@ -98,6 +98,25 @@
     {
       "FLAGS": "playable",
       "METADATA": {
+        "MEDIA_ID": "simple_leaves delayed error",
+        "DISPLAY_TITLE": "Delayed Error after 30 seconds",
+        "ARTIST": "DJ Error",
+        "ALBUM": "Error at the disco",
+        "DURATION": 60000
+      },
+      "EVENTS": [
+        { "STATE": "PLAYING", "POST_DELAY_MS": 0 },
+        {
+          "STATE": "PAUSED",
+          "ERROR_CODE": "APP_ERROR",
+          "ERROR_MESSAGE": "Fatal Playback Source Error",
+          "POST_DELAY_MS": 30000
+        }
+      ]
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
         "MEDIA_ID": "simple_leaves premium required",
         "DISPLAY_TITLE": "Paid account required at 1s",
         "DISPLAY_SUBTITLE": "Show a dialog",
