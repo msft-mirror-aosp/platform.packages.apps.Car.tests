@@ -68,7 +68,7 @@ import java.util.Set;
 
 class TmaMediaMetadataReader {
 
-    private final static String TAG = "TmaMetadataReader";
+    private static final String TAG = "TmaMetadataReader";
 
     private enum ValueType {
         LONG,
@@ -126,7 +126,7 @@ class TmaMediaMetadataReader {
 
     private static TmaMediaMetadataReader sInstance;
 
-    synchronized static TmaMediaMetadataReader getInstance() {
+    static synchronized TmaMediaMetadataReader getInstance() {
         if (sInstance == null) {
             sInstance = new TmaMediaMetadataReader();
         }
