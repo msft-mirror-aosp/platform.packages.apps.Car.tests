@@ -54,6 +54,8 @@ class TmaLibrary {
         mRootAssetPaths.put(TmaBrowseNodeType.LEAF_CHILDREN, "media_items/simple_leaves.json");
         mRootAssetPaths.put(TmaBrowseNodeType.MIXED_CHILDREN, "media_items/mixed.json");
         mRootAssetPaths.put(TmaBrowseNodeType.UNTAGGED, "media_items/untagged.json");
+        // Preload favorites into cache, as it's not necessarily accessed via the browse tree
+        loadAssetFile("media_items/favorites.json");
     }
 
     @Nullable
