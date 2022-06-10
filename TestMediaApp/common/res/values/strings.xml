@@ -54,4 +54,6 @@
     <string name="enter_pass" translatable="false">Enter password</string>
 
     <string name="enter_pin" translatable="false">Enter PIN on phone</string>
+
+    <string name="favorites_title" translatable="false">TMA Faves</string>
 </resources>

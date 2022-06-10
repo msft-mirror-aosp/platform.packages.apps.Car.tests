@@ -78,6 +78,7 @@ public class TmaMediaItem {
     private final MediaMetadataCompat mMediaMetadata;
     private final ContentStyle mPlayableStyle;
     private final ContentStyle mBrowsableStyle;
+    private final ContentStyle mSingleItemStyle;
     private final int mSelfUpdateMs;
 
 
@@ -92,19 +93,20 @@ public class TmaMediaItem {
     /** References another json file where to get extra children from. */
     final String mInclude;
 
-    private @Nullable TmaMediaItem mParent;
+    @Nullable private TmaMediaItem mParent;
     int mHearts;
     int mRevealCounter;
     boolean mIsHidden = false;
 
 
     public TmaMediaItem(int flags, ContentStyle playableStyle, ContentStyle browsableStyle,
-            MediaMetadataCompat metadata, int selfUpdateMs,
+            ContentStyle singleItemStyle, MediaMetadataCompat metadata, int selfUpdateMs,
             List<TmaCustomAction> customActions, List<TmaMediaEvent> mediaEvents,
             List<TmaMediaItem> children, String include) {
         mFlags = flags;
         mPlayableStyle = playableStyle;
         mBrowsableStyle = browsableStyle;
+        mSingleItemStyle = singleItemStyle;
         mMediaMetadata = metadata;
         mSelfUpdateMs = selfUpdateMs;
         mCustomActions = Collections.unmodifiableList(customActions);
@@ -207,9 +209,6 @@ public class TmaMediaItem {
         return MediaSessionCompat.QueueItem.UNKNOWN_ID;
     }
 
-    public static final String DESCRIPTION_EXTRAS_KEY_COMPLETION_PERCENTAGE =
-            "androidx.media.MediaItem.Extras.COMPLETION_PERCENTAGE";
-
     private MediaDescriptionCompat buildDescription() {
 
         // Use the default media description but add our extras.
@@ -233,6 +232,8 @@ public class TmaMediaItem {
                 mPlayableStyle.mBundleValue);
         extras.putInt(MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_BROWSABLE,
                 mBrowsableStyle.mBundleValue);
+        extras.putInt(MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_SINGLE_ITEM,
+                mSingleItemStyle.mBundleValue);
 
         int playbackStatus = (int) mMediaMetadata.getBundle().getLong(METADATA_KEY_PLAYBACK_STATUS,
                 2);
@@ -240,7 +241,8 @@ public class TmaMediaItem {
                 -1) / 100.0;
 
         extras.putInt(MediaConstants.DESCRIPTION_EXTRAS_KEY_COMPLETION_STATUS, playbackStatus);
-        extras.putDouble(DESCRIPTION_EXTRAS_KEY_COMPLETION_PERCENTAGE, playbackProgress);
+        extras.putDouble(MediaConstants.DESCRIPTION_EXTRAS_KEY_COMPLETION_PERCENTAGE,
+                playbackProgress);
 
         bob.setExtras(extras);
         return bob.build();

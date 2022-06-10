@@ -1,0 +1,80 @@
+{
+  "FLAGS": "browsable",
+  "PLAYABLE_HINT": "LIST",
+  "BROWSABLE_HINT": "LIST",
+
+  "METADATA": {
+    "MEDIA_ID": "single",
+    "DISPLAY_TITLE": "Single Item Styling"
+  },
+
+  "CHILDREN": [
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "default playable hint",
+        "DISPLAY_TITLE": "Default playable hint",
+        "DURATION": 15000,
+        "PLAYBACK_PROGRESS": 33
+      }
+    },
+    {
+      "FLAGS": "playable",
+      "SINGLE_ITEM_HINT": "LIST",
+      "METADATA": {
+        "MEDIA_ID": "playable list",
+        "DISPLAY_TITLE": "Single Playable List",
+        "DURATION": 15000,
+        "PLAYBACK_PROGRESS": 33
+      }
+    },
+    {
+      "FLAGS": "playable",
+      "SINGLE_ITEM_HINT": "GRID",
+      "METADATA": {
+        "MEDIA_ID": "playable grid",
+        "DISPLAY_TITLE": "Single Playable Grid",
+        "DURATION": 20000,
+        "PLAYBACK_PROGRESS": 33
+      }
+    },
+    {
+      "FLAGS": "browsable",
+      "METADATA": {
+        "MEDIA_ID": "default browsable hint",
+        "DISPLAY_TITLE": "Default Browsable Hint",
+        "DURATION": 20000
+      }
+    },
+    {
+      "FLAGS": "browsable",
+      "SINGLE_ITEM_HINT": "LIST",
+      "METADATA": {
+        "MEDIA_ID": "browsable list",
+        "DISPLAY_TITLE": "Single Browsable List",
+        "DURATION": 20000
+      }
+    },
+
+    {
+      "FLAGS": "browsable",
+      "SINGLE_ITEM_HINT": "GRID",
+      "METADATA": {
+        "MEDIA_ID": "browse grid",
+        "DISPLAY_TITLE": "Single Browsable Grid",
+        "DURATION": 20000
+      }
+    },
+    {
+      "FLAGS": "browsable",
+      "SINGLE_ITEM_HINT": "GRID",
+      "PLAYABLE_HINT": "LIST",
+      "BROWSABLE_HINT": "LIST",
+      "METADATA": {
+        "MEDIA_ID": "grid single, browse/play list hint",
+        "DISPLAY_TITLE": "Single grid style children do not inherit single item hint"
+      },
+      "INCLUDE":"media_items/simple_leaves.json"
+    }
+  ]
+}
