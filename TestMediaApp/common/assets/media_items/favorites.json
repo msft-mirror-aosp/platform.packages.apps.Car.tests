@@ -1,0 +1,27 @@
+{
+  "FLAGS": "browsable",
+
+  "METADATA": {
+    "MEDIA_ID": "favorites",
+    "DISPLAY_TITLE": "TMA Faves"
+  },
+
+  "CHILDREN": [
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "fave",
+        "DISPLAY_TITLE": "TMA Favorite Song",
+        "DURATION": 5000
+      }
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "fave2",
+        "DISPLAY_TITLE": "Another Favorite Song",
+        "DURATION": 50000
+      }
+    }
+  ]
+}

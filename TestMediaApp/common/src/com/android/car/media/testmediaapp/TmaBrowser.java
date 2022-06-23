@@ -15,6 +15,8 @@
  */
 package com.android.car.media.testmediaapp;
 
+import static androidx.media.utils.MediaConstants.BROWSER_SERVICE_EXTRAS_KEY_SEARCH_SUPPORTED;
+
 import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaBrowseNodeType.LEAF_CHILDREN;
 import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaBrowseNodeType.QUEUE_ONLY;
 import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaLoginEventOrder.PLAYBACK_STATE_UPDATE_FIRST;
@@ -24,6 +26,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.media.MediaDescription;
+import android.media.browse.MediaBrowser;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.media.MediaBrowserCompat.MediaItem;
@@ -64,12 +68,15 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     private static final int MAX_SEARCH_DEPTH = 4;
     private static final String MEDIA_SESSION_TAG = "TEST_MEDIA_SESSION";
     private static final String ROOT_ID = "_ROOT_ID_";
-    private static final String SEARCH_SUPPORTED = "android.media.browse.SEARCH_SUPPORTED";
+
+    // TODO(b/235362454): remove this once it's available in MediaConstants
+    private static final String FAVORITES_MEDIA_ITEM =
+            "androidx.media.BrowserRoot.Extras.FAVORITES_MEDIA_ITEM";
     /**
      * Extras key to allow Android Auto to identify the browse service from the media session.
      */
     private static final String BROWSE_SERVICE_FOR_SESSION_KEY =
-        "android.media.session.BROWSE_SERVICE";
+            "android.media.session.BROWSE_SERVICE";
 
     private TmaPrefs mPrefs;
     private Handler mHandler;
@@ -114,7 +121,8 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
         mPrefs.mRootReplyDelay.registerChangeListener(mOnReplyDelayChanged);
 
         Bundle browserRootExtras = new Bundle();
-        browserRootExtras.putBoolean(SEARCH_SUPPORTED, true);
+        browserRootExtras.putBoolean(BROWSER_SERVICE_EXTRAS_KEY_SEARCH_SUPPORTED, true);
+        browserRootExtras.putParcelable(FAVORITES_MEDIA_ITEM, getFavoritesMediaItem());
         mRoot = new BrowserRoot(ROOT_ID, browserRootExtras);
 
         updatePlaybackState(mPrefs.mAccountType.getValue());
@@ -241,7 +249,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
                 } else {
                     int selfUpdateDelay = node.getSelfUpdateDelay();
                     int toShow = (selfUpdateDelay > 0) ? 1 + node.mRevealCounter : childrenCount;
-                    for (int childIndex = 0 ; childIndex < toShow; childIndex++) {
+                    for (int childIndex = 0; childIndex < toShow; childIndex++) {
                         TmaMediaItem child = children.get(childIndex);
                         if (child.mIsHidden) {
                             continue;
@@ -302,6 +310,14 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
             }
             notifyChildrenChanged(parentId);
         }
+    }
+
+    private MediaBrowser.MediaItem getFavoritesMediaItem() {
+        MediaDescription.Builder builder = new MediaDescription.Builder();
+        builder.setMediaId("favorites"); // corresponds to "favorites.json"
+        builder.setTitle(getResources().getString(R.string.favorites_title));
+
+        return new MediaBrowser.MediaItem(builder.build(), MediaBrowser.MediaItem.FLAG_BROWSABLE);
     }
 
     private class UpdateNodeTask implements Runnable {

@@ -102,6 +102,16 @@
         "DISPLAY_TITLE": "Progress Grid"
       },
       "INCLUDE": "media_items/progress_list.json"
+    },
+    {
+      "FLAGS": "browsable",
+      "PLAYABLE_HINT": "LIST",
+      "BROWSABLE_HINT": "LIST",
+      "METADATA": {
+        "MEDIA_ID": "single style node",
+        "DISPLAY_TITLE": "Single Items styling"
+      },
+      "INCLUDE": "media_items/single_item_styling.json"
     }
   ]
 }

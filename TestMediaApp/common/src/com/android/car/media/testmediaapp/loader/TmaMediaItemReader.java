@@ -55,6 +55,7 @@ class TmaMediaItemReader {
         FLAGS,
         PLAYABLE_HINT,
         BROWSABLE_HINT,
+        SINGLE_ITEM_HINT,
         METADATA,
         SELF_UPDATE_MS,
         CHILDREN,
@@ -65,7 +66,7 @@ class TmaMediaItemReader {
 
     private static TmaMediaItemReader sInstance;
 
-    synchronized static TmaMediaItemReader getInstance() {
+    static synchronized TmaMediaItemReader getInstance() {
         if (sInstance == null) {
             sInstance = new TmaMediaItemReader();
         }
@@ -111,10 +112,10 @@ class TmaMediaItemReader {
                 mediaItems.add(fromJson(children.getJSONObject(i)));
             }
 
-
             return new TmaMediaItem(TmaLoaderUtils.parseFlags(getString(json, Keys.FLAGS), mFlags),
                     getEnum(json, Keys.PLAYABLE_HINT, mContentStyles, ContentStyle.NONE),
                     getEnum(json, Keys.BROWSABLE_HINT, mContentStyles, ContentStyle.NONE),
+                    getEnum(json, Keys.SINGLE_ITEM_HINT, mContentStyles, ContentStyle.NONE),
                     mMediaMetadataReader.fromJson(json.getJSONObject(Keys.METADATA.name())),
                     getInt(json, Keys.SELF_UPDATE_MS),
                     getEnumArray(json, Keys.CUSTOM_ACTIONS, mCustomActions),
