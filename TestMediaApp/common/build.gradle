@@ -44,6 +44,9 @@ android{
             keyPassword 'carapps'
         }
     }
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
