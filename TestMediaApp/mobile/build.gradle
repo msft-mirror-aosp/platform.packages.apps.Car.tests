@@ -41,6 +41,36 @@ android {
             minifyEnabled false
         }
     }
+
+    signingConfigs {
+        "default" {
+            storeFile file(gradle.ext.aaosCertPath)
+            storePassword 'carapps'
+            keyAlias 'carapps'
+            keyPassword 'carapps'
+        }
+
+        platform {
+            storeFile file(gradle.ext.platformCertPath)
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+    }
+
+    flavorDimensions "signingkey"
+    productFlavors {
+        "default" {
+            dimension "signingkey"
+            signingConfig signingConfigs.default
+        }
+        platform {
+            dimension "signingkey"
+            if (file(gradle.ext.platformCertPath).exists()) {
+                signingConfig signingConfigs.platform
+            }
+        }
+    }
 }
 
 dependencies {
