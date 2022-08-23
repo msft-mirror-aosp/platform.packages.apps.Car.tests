@@ -22,8 +22,8 @@ android {
         applicationId "com.android.car.rotaryime"
         minSdkVersion 30
         targetSdkVersion 32
-        versionCode 1
-        versionName "1.0"
+        versionCode gradle.ext.getVersionCode()
+        versionName gradle.ext.getVersionName()
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
