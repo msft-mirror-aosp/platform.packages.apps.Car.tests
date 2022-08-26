@@ -37,7 +37,7 @@ android{
     }
 
     signingConfigs {
-        "default" {
+        aaos {
             storeFile file(gradle.ext.aaosCertPath)
             storePassword 'carapps'
             keyAlias 'carapps'
@@ -45,24 +45,24 @@ android{
         }
 
         platform {
-            storeFile file(gradle.ext.platformCertPath)
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
+            if (file(gradle.ext.platformCertPath).exists()) {
+                storeFile file(gradle.ext.platformCertPath)
+                storePassword 'android'
+                keyAlias 'androiddebugkey'
+                keyPassword 'android'
+            }
         }
     }
 
     flavorDimensions "signingkey"
     productFlavors {
-        "default" {
+        aaos {
             dimension "signingkey"
-            signingConfig signingConfigs.default
+            signingConfig signingConfigs.aaos
         }
         platform {
             dimension "signingkey"
-            if (file(gradle.ext.platformCertPath).exists()) {
-                signingConfig signingConfigs.platform
-            }
+            signingConfig signingConfigs.platform
         }
     }
 
