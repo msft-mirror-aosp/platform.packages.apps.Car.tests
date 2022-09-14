@@ -50,14 +50,16 @@ import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_YEAR;
 
 import static androidx.media.utils.MediaConstants.METADATA_KEY_IS_EXPLICIT;
 
+import static com.android.car.media.testmediaapp.MediaConstants.KEY_DESCRIPTION_LINK_MEDIA_ID;
+import static com.android.car.media.testmediaapp.MediaConstants.KEY_SUBTITLE_LINK_MEDIA_ID;
+import static com.android.car.media.testmediaapp.TmaMediaItem.MULTI_ID_SEPARATOR;
+import static com.android.car.media.testmediaapp.TmaMediaItem.TREE_PATH_SEPARATOR;
 import static com.android.car.media.testmediaapp.loader.TmaLoaderUtils.enumNamesToValues;
 import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.METADATA_KEY_PLAYBACK_PROGRESS;
 import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.METADATA_KEY_PLAYBACK_STATUS;
 
 import android.support.v4.media.MediaMetadataCompat;
 import android.util.Log;
-
-import androidx.media.utils.MediaConstants;
 
 import com.android.car.media.testmediaapp.TmaPublicProvider;
 
@@ -116,7 +118,9 @@ class TmaMediaMetadataReader {
         DOWNLOAD_STATUS     (METADATA_KEY_DOWNLOAD_STATUS,      ValueType.LONG),
         PLAYBACK_PROGRESS   (METADATA_KEY_PLAYBACK_PROGRESS,    ValueType.LONG),
         PLAYBACK_STATUS     (METADATA_KEY_PLAYBACK_STATUS,      ValueType.LONG),
-        EXPLICIT            (METADATA_KEY_IS_EXPLICIT,          ValueType.LONG);
+        EXPLICIT            (METADATA_KEY_IS_EXPLICIT,          ValueType.LONG),
+        SUBTITLE_LINK_MEDIA_ID      (KEY_SUBTITLE_LINK_MEDIA_ID,  ValueType.TEXT),
+        DESCRIPTION_LINK_MEDIA_ID   (KEY_DESCRIPTION_LINK_MEDIA_ID,  ValueType.TEXT);
 
         /** The full name of the key in {@link MediaMetadataCompat}. */
         final String mLongName;
@@ -161,6 +165,9 @@ class TmaMediaMetadataReader {
                         break;
                     case TEXT:
                         String value = object.getString(jsonKey);
+                        if (key == MetadataKey.MEDIA_ID) {
+                            validateMediaId(value);
+                        }
                         if (mUriKeys.contains(key)) {
                             value = TmaPublicProvider.buildUriString(value);
                         }
@@ -176,5 +183,16 @@ class TmaMediaMetadataReader {
             }
         }
         return builder.build();
+    }
+
+    private void validateMediaId(String value) {
+        if (value.indexOf(TREE_PATH_SEPARATOR) > 0) {
+            throw new IllegalStateException("Illegal " + TREE_PATH_SEPARATOR +
+                    " in media id: " + value);
+        }
+        if (value.indexOf(MULTI_ID_SEPARATOR) > 0) {
+            throw new IllegalStateException("Illegal " + MULTI_ID_SEPARATOR +
+                    " in media id: " + value);
+        }
     }
 }

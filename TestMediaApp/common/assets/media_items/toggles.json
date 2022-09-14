@@ -2,7 +2,7 @@
   "FLAGS": "browsable",
 
   "METADATA": {
-    "MEDIA_ID": "toggles",
+    "MEDIA_ID": "media_items/toggles.json",
     "DISPLAY_TITLE": "Toggles"
   },
 
@@ -10,57 +10,69 @@
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "toggles Toggle Empty tab",
+        "MEDIA_ID": "Toggle Empty tab",
         "DISPLAY_TITLE": "Toggle Empty tab on play",
         "DURATION": 3000000
       },
       "EVENTS": [
-        { "STATE": "PLAYING", "TOGGLE_ITEM": "only_nodes empty node 1" }
+        { "STATE": "PLAYING", "TOGGLE_ITEM": "_ROOT_#empty#" }
       ]
     },
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "toggles Toggle node toggles",
+        "MEDIA_ID": "Toggle node toggles",
         "DISPLAY_TITLE": "Toggle Node toggles node on play",
         "DURATION": 3000000
       },
       "EVENTS": [
-        { "STATE": "PLAYING", "TOGGLE_ITEM": "advanced toggles" }
+        { "STATE": "PLAYING", "TOGGLE_ITEM": "_ROOT_#advanced#toggles#" }
       ]
     },
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "toggles Toggle Album Art",
+        "MEDIA_ID": "Toggle Album Art",
         "DISPLAY_TITLE": "Toggle Album Art on play",
         "DURATION": 3000000
       },
       "EVENTS": [
-        { "STATE": "PLAYING", "TOGGLE_ITEM": "advanced art nodes" }
+        { "STATE": "PLAYING", "TOGGLE_ITEM": "_ROOT_#advanced#art nodes#" }
       ]
     },
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "toggles Toggle Nature 64",
+        "MEDIA_ID": "Toggle Nature 64",
         "DISPLAY_TITLE": "Toggle Nature 64 on play",
         "DURATION": 3000000
       },
       "EVENTS": [
-        { "STATE": "PLAYING", "TOGGLE_ITEM": "album_art/art_nodes nature 64" }
+        { "STATE": "PLAYING", "TOGGLE_ITEM": "_ROOT_#advanced#art nodes#art_nature_64" }
       ]
     },
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "toggles Toggle Advanced tab",
+        "MEDIA_ID": "Toggle Advanced tab",
         "DISPLAY_TITLE": "Toggle Advanced tab on play",
         "DURATION": 3000000
       },
       "EVENTS": [
-        { "STATE": "PLAYING", "TOGGLE_ITEM": "only_nodes advanced" }
+        { "STATE": "PLAYING", "TOGGLE_ITEM": "_ROOT_#advanced#" }
       ]
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "npv links",
+        "DISPLAY_TITLE": "NPV links",
+        "DISPLAY_SUBTITLE": "go to Album Art",
+        "DISPLAY_DESCRIPTION": "go to Nature files",
+        "DURATION": 3600000,
+        "SUBTITLE_LINK_MEDIA_ID": "_ROOT_#advanced#art nodes#|media_items/album_art/art_nodes.json#",
+        "DESCRIPTION_LINK_MEDIA_ID": "_ROOT_#advanced#art nodes#art_nature_files#|media_items/album_art/art_nodes.json#art_nature_files#"
+      }
     }
   ]
 }

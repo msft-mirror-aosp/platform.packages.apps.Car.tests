@@ -2,7 +2,7 @@
   "FLAGS": "browsable",
 
   "METADATA": {
-    "MEDIA_ID": "favorites",
+    "MEDIA_ID": "media_items/favorites.json",
     "DISPLAY_TITLE": "TMA Faves"
   },
 

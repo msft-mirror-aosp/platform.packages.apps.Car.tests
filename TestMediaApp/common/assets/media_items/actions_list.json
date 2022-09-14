@@ -3,7 +3,7 @@
     "PLAYABLE_HINT": "LIST_CATEGORY",
     "BROWSABLE_HINT": "LIST_CATEGORY",
     "METADATA": {
-        "MEDIA_ID": "action list",
+        "MEDIA_ID": "media_items/actions_list.json",
         "DISPLAY_TITLE": "Browse Custom Actions"
     },
     "CHILDREN": [

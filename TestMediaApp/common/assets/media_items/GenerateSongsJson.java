@@ -41,7 +41,7 @@ public class GenerateSongsJson {
     sb.append("{ \n");
     sb.append("  \"FLAGS\": \"browsable\", \n\n");
     sb.append("  \"METADATA\": { \n");
-    sb.append("	\"MEDIA_ID\": \"hundreds_songs\", \n");
+    sb.append("	\"MEDIA_ID\": \"media_items/hundreds_songs.json\", \n");
     sb.append("    \"DISPLAY_TITLE\": \"More songs\" \n");
     sb.append("  },\n\n");
     sb.append("  \"CHILDREN\": [ \n");
@@ -52,7 +52,7 @@ public class GenerateSongsJson {
       sb.append("    { \n  ");
       sb.append("    \"FLAGS\": \"playable\",\n");
       sb.append("      \"METADATA\": { \n");
-      sb.append("     	\"MEDIA_ID\": \"hundreds_songs normal " + num2 + "s song" + i +"\",\n");
+      sb.append("     	\"MEDIA_ID\": \"normal " + num2 + "s song" + i +"\",\n");
       sb.append(" 		\"DISPLAY_TITLE\": \"Normal " + num2 + "s song" + i + "\",\n");
       sb.append(" 		\"DURATION\": " + num1 + "\n");
       sb.append("      } \n");

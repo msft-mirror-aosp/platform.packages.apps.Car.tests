@@ -2,21 +2,21 @@
   "FLAGS": "browsable",
 
   "METADATA": {
-    "MEDIA_ID": "untagged",
+    "MEDIA_ID": "media_items/untagged.json",
     "DISPLAY_TITLE": "Untagged media items"
   },
 
   "CHILDREN": [
     {
       "METADATA": {
-        "MEDIA_ID": "untagged normal 10s song",
+        "MEDIA_ID": "normal 10s song",
         "DISPLAY_TITLE": "A normal 10s song with a long title. A normal 10s song with a long title. A normal 10s song with a long title. ",
         "DURATION": 10000
       }
     },
     {
       "METADATA": {
-        "MEDIA_ID": "untagged normal 1H song",
+        "MEDIA_ID": "normal 1H song",
         "DISPLAY_TITLE": "A normal 1H song",
         "ARTIST": "Artist",
         "ALBUM":"Album",

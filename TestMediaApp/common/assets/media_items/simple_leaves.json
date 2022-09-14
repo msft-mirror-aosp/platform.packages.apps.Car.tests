@@ -2,7 +2,7 @@
   "FLAGS": "browsable",
 
   "METADATA": {
-    "MEDIA_ID": "simple_leaves",
+    "MEDIA_ID": "media_items/simple_leaves.json",
     "DISPLAY_TITLE": "Simple leaves"
   },
 
@@ -10,7 +10,7 @@
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "simple_leaves normal 1H song",
+        "MEDIA_ID": "normal 1H song",
         "DISPLAY_TITLE": "A normal 1H song",
         "DISPLAY_SUBTITLE": "Normal subtitle",
         "DISPLAY_DESCRIPTION": "Description of the song",
@@ -23,7 +23,7 @@
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "simple_leaves normal 10s song",
+        "MEDIA_ID": "normal 10s song",
         "DISPLAY_TITLE": "A normal 10s song with a long title. A normal 10s song with a long title. A normal 10s song with a long title. ",
         "DURATION": 10000
       }
@@ -31,7 +31,19 @@
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "simple_leaves slow connection",
+        "MEDIA_ID": "npv links",
+        "DISPLAY_TITLE": "NPV links",
+        "DISPLAY_SUBTITLE": "go to Album Art",
+        "DISPLAY_DESCRIPTION": "go to Nature files",
+        "DURATION": 3600000,
+        "SUBTITLE_LINK_MEDIA_ID": "_ROOT_#advanced#art nodes#|media_items/album_art/art_nodes.json#",
+        "DESCRIPTION_LINK_MEDIA_ID": "_ROOT_#advanced#art nodes#art_nature_files#|media_items/album_art/art_nodes.json#art_nature_files#"
+      }
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "slow connection",
         "TITLE": "Connects and buffers for 4s each",
         "ARTIST": "This is a very long artist name. This is a very long artist name. This is a very long artist name.",
         "ALBUM":"Album",
@@ -46,7 +58,7 @@
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "simple_leaves poor internet",
+        "MEDIA_ID": "poor internet",
         "TITLE": "Poor internet quality at 2s",
         "ARTIST": "Artist - should be shown",
         "ALBUM":"Album - should be shown",
@@ -65,7 +77,7 @@
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "simple_leaves cache failure",
+        "MEDIA_ID": "cache failure",
         "DISPLAY_TITLE": "Caching failure at 2s",
         "DISPLAY_SUBTITLE": "Show a toast",
         "DISPLAY_DESCRIPTION":"This is a very long description. This is a very long description. This is a very long description.",
@@ -84,7 +96,7 @@
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "simple_leaves error code",
+        "MEDIA_ID": "error code",
         "DISPLAY_TITLE": "Parental Control error code at 1s",
         "DISPLAY_SUBTITLE": "Show a toast",
         "DURATION": 10000
@@ -101,7 +113,7 @@
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "simple_leaves delayed error",
+        "MEDIA_ID": "delayed error",
         "TITLE": "Delayed Error after 30 seconds",
         "ARTIST": "DJ Error",
         "ALBUM": "Error at the disco",
@@ -120,7 +132,7 @@
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "simple_leaves premium required",
+        "MEDIA_ID": "premium required",
         "DISPLAY_TITLE": "Paid account required at 1s",
         "DISPLAY_SUBTITLE": "Show a dialog",
         "DURATION": 50000
@@ -140,7 +152,7 @@
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "simple_leaves bluetooth disconnected and reconnected",
+        "MEDIA_ID": "bluetooth disconnected and reconnected",
         "DISPLAY_TITLE": "Bluetooth disconnected at 2s and reconnected at 8s",
         "DURATION": 20000
       },
@@ -164,7 +176,7 @@
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "simple_leaves short non-fatal playback error message",
+        "MEDIA_ID": "short non-fatal playback error message",
         "DISPLAY_TITLE": "Short playback error message",
         "DISPLAY_SUBTITLE": "Show a short non-fatal playback error message",
         "DURATION": 20000
@@ -181,7 +193,7 @@
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "simple_leaves long non-fatal playback error message",
+        "MEDIA_ID": "long non-fatal playback error message",
         "DISPLAY_TITLE": "Long playback error message",
         "DISPLAY_SUBTITLE": "Show a long non-fatal playback error message",
         "DURATION": 20000
@@ -198,7 +210,7 @@
     {
       "FLAGS": "playable",
       "METADATA": {
-      "MEDIA_ID": "simple_leaves delayed non-fatal playback error message",
+      "MEDIA_ID": "delayed non-fatal playback error message",
         "DISPLAY_TITLE": "10s delayed playback error message",
         "DISPLAY_SUBTITLE": "Show a delayed non-fatal playback error message for a multi-media app scenario",
         "DURATION": 20000

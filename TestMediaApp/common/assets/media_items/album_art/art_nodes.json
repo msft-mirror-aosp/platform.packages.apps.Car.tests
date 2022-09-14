@@ -3,7 +3,7 @@
   "BROWSABLE_HINT": "GRID_CATEGORY",
 
   "METADATA": {
-    "MEDIA_ID": "album_art/art_nodes",
+    "MEDIA_ID": "media_items/album_art/art_nodes.json",
     "DISPLAY_TITLE": "Album Art"
   },
 
@@ -12,7 +12,7 @@
       "FLAGS": "browsable",
       "PLAYABLE_HINT": "GRID",
       "METADATA": {
-        "MEDIA_ID": "album_art/art_nodes nature 64",
+        "MEDIA_ID": "art_nature_64",
         "DISPLAY_TITLE": "Nature 64"
       },
       "INCLUDE":"media_items/album_art/nature/art_nature_64.json"
@@ -21,7 +21,7 @@
       "FLAGS": "browsable",
       "PLAYABLE_HINT": "GRID",
       "METADATA": {
-        "MEDIA_ID": "album_art/art_nodes nature 128",
+        "MEDIA_ID": "art_nature_128",
         "DISPLAY_TITLE": "Nature 128"
       },
       "INCLUDE":"media_items/album_art/nature/art_nature_128.json"
@@ -30,7 +30,7 @@
       "FLAGS": "browsable",
       "PLAYABLE_HINT": "GRID",
       "METADATA": {
-        "MEDIA_ID": "album_art/art_nodes nature 256",
+        "MEDIA_ID": "art_nature_256",
         "DISPLAY_TITLE": "Nature 256"
       },
       "INCLUDE":"media_items/album_art/nature/art_nature_256.json"
@@ -39,7 +39,7 @@
       "FLAGS": "browsable",
       "PLAYABLE_HINT": "GRID",
       "METADATA": {
-        "MEDIA_ID": "album_art/art_nodes nature 512",
+        "MEDIA_ID": "art_nature_512",
         "DISPLAY_TITLE": "Nature 512"
       },
       "INCLUDE":"media_items/album_art/nature/art_nature_512.json"
@@ -48,7 +48,7 @@
       "FLAGS": "browsable",
       "PLAYABLE_HINT": "GRID",
       "METADATA": {
-        "MEDIA_ID": "album_art/art_nodes nature 1024",
+        "MEDIA_ID": "art_nature_1024",
         "DISPLAY_TITLE": "Nature 1024"
       },
       "INCLUDE":"media_items/album_art/nature/art_nature_1024.json"
@@ -57,7 +57,7 @@
       "FLAGS": "browsable",
       "PLAYABLE_HINT": "GRID",
       "METADATA": {
-        "MEDIA_ID": "album_art/art_nodes nature files",
+        "MEDIA_ID": "art_nature_files",
         "DISPLAY_TITLE": "Nature files"
       },
       "INCLUDE":"media_items/album_art/nature/art_nature_files.json"
@@ -66,7 +66,7 @@
       "FLAGS": "browsable",
       "PLAYABLE_HINT": "GRID",
       "METADATA": {
-        "MEDIA_ID": "album_art/art_nodes nature self updating",
+        "MEDIA_ID": "art_nature_512_self_updating",
         "DISPLAY_TITLE": "Nature self updating"
       },
       "SELF_UPDATE_MS": "2000",
