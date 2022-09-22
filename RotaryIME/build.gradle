@@ -19,7 +19,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 32
     defaultConfig {
-        applicationId "com.android.car.rotaryplayground"
+        applicationId "com.android.car.rotaryime"
         minSdkVersion 30
         targetSdkVersion 32
         versionCode gradle.ext.getVersionCode()

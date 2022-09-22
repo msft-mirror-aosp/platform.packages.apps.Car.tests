@@ -243,6 +243,11 @@ public class TmaMediaItem {
         extras.putInt(MediaConstants.DESCRIPTION_EXTRAS_KEY_COMPLETION_STATUS, playbackStatus);
         extras.putDouble(MediaConstants.DESCRIPTION_EXTRAS_KEY_COMPLETION_PERCENTAGE,
                 playbackProgress);
+        if (mMediaMetadata.containsKey(MediaConstants.METADATA_KEY_IS_EXPLICIT)) {
+            extras.putLong(MediaConstants.METADATA_KEY_IS_EXPLICIT,
+                    mMediaMetadata.getLong(MediaConstants.METADATA_KEY_IS_EXPLICIT));
+        }
+
 
         bob.setExtras(extras);
         return bob.build();

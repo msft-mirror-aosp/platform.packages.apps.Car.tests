@@ -42,5 +42,12 @@ android_app {
 
     optimize: {
         enabled: false,
-    }
+    },
+
+    // TODO(b/243434672): can we remove this?
+    // This was added to ensure the output APK has uncompressed dex. Soong expects prebuilt APKs
+    // to have uncompressed dex.
+    // Remove this if you're not planning to distribute RotaryPlayground as a prebuilt.
+    privileged: true,
+
 }
