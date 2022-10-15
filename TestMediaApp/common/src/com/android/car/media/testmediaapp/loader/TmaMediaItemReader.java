@@ -32,6 +32,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.android.car.media.testmediaapp.TmaMediaEvent;
+import com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction;
 import com.android.car.media.testmediaapp.TmaMediaItem.TmaCustomAction;
 import com.android.car.media.testmediaapp.TmaMediaItem;
 import com.android.car.media.testmediaapp.TmaMediaItem.ContentStyle;
@@ -44,6 +45,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 class TmaMediaItemReader {
@@ -61,7 +63,8 @@ class TmaMediaItemReader {
         CHILDREN,
         INCLUDE,
         CUSTOM_ACTIONS,
-        EVENTS
+        EVENTS,
+        BROWSE_ACTIONS
     }
 
     private static TmaMediaItemReader sInstance;
@@ -78,13 +81,14 @@ class TmaMediaItemReader {
     private final Map<String, Integer> mFlags = new HashMap<>(2);
     private final Map<String, ContentStyle> mContentStyles;
     private final Map<String, TmaCustomAction> mCustomActions;
+    private final Map<String, TmaBrowseAction> mBrowseActions;
 
     private TmaMediaItemReader() {
         mMediaMetadataReader = TmaMediaMetadataReader.getInstance();
         mMediaEventReader = TmaMediaEventReader.getInstance();
         mContentStyles = enumNamesToValues(ContentStyle.values());
         mCustomActions = enumNamesToValues(TmaMediaItem.TmaCustomAction.values());
-
+        mBrowseActions = enumNamesToValues(TmaBrowseAction.values());
         mFlags.put("browsable", FLAG_BROWSABLE);
         mFlags.put("playable", FLAG_PLAYABLE);
     }
@@ -119,6 +123,10 @@ class TmaMediaItemReader {
                     mMediaMetadataReader.fromJson(json.getJSONObject(Keys.METADATA.name())),
                     getInt(json, Keys.SELF_UPDATE_MS),
                     getEnumArray(json, Keys.CUSTOM_ACTIONS, mCustomActions),
+                    getEnumArray(json, Keys.BROWSE_ACTIONS, mBrowseActions)
+                            .stream()
+                            .map(action -> action.mId)
+                            .collect(Collectors.toList()),
                     mediaEvents, mediaItems, getString(json, Keys.INCLUDE));
         } catch (JSONException e) {
             Log.e(TAG, "Json failure: " + e);

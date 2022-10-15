@@ -33,6 +33,27 @@
 
     <string name="heart_less_less" translatable="false">Heart--</string>
 
+    <!-- Custom Browse Actions -->
+    <string name="action_performed" translatable="false"> performed!</string>
+    <string name="download" translatable="false">Download</string>
+    <string name="downloading" translatable="false">Downloading</string>
+    <string name="downloaded" translatable="false">Downloaded</string>
+    <string name="favorite" translatable="false">Favorite</string>
+    <string name="favorited" translatable="false">Remove Favorite</string>
+    <string name="add_to_queue" translatable="false">Add To Queue</string>
+    <string name="remove_from_queue" translatable="false">Remove From Queue</string>
+    <string name="error_action" translatable="false">Error Action</string>
+    <string name="browse_action" translatable="false">Browse Action</string>
+    <string name="pbv_action" translatable="false">PBV Action</string>
+
+    <string name="action_result_string_download_complete">Download Complete</string>
+    <string name="action_result_string_download_removed">Download Removed</string>
+    <string name="action_result_string_added_favorite">Added to Favorites</string>
+    <string name="action_result_string_removed_favorite">Removed from Favorites</string>
+    <string name="action_result_string_error">Error message!</string>
+    <string name="action_result_string_invalid">Invalid Action</string>
+
+
     <string name="location" translatable="false">Location</string>
 
     <string name="car_service_name" translatable="false">Test Media Car App Service</string>
