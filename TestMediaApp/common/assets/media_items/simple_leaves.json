@@ -12,8 +12,11 @@
       "METADATA": {
         "MEDIA_ID": "simple_leaves normal 1H song",
         "DISPLAY_TITLE": "A normal 1H song",
-        "ARTIST": "Artist",
-        "ALBUM":"Album",
+        "DISPLAY_SUBTITLE": "Normal subtitle",
+        "DISPLAY_DESCRIPTION": "Description of the song",
+        "TITLE": "TITLE -  should NOT be shown!",
+        "ARTIST": "Artist - should NOT be shown!",
+        "ALBUM":"Album - should NOT be shown!",
         "DURATION": 3600000
       }
     },
@@ -29,8 +32,7 @@
       "FLAGS": "playable",
       "METADATA": {
         "MEDIA_ID": "simple_leaves slow connection",
-        "DISPLAY_TITLE": "Connects and buffers for 4s each",
-        "DISPLAY_SUBTITLE": "A very long subtitle. A very long subtitle. A very long subtitle. A very long subtitle. A very long subtitle. A very long subtitle. ",
+        "TITLE": "Connects and buffers for 4s each",
         "ARTIST": "This is a very long artist name. This is a very long artist name. This is a very long artist name.",
         "ALBUM":"Album",
         "DURATION": 30000
@@ -45,8 +47,9 @@
       "FLAGS": "playable",
       "METADATA": {
         "MEDIA_ID": "simple_leaves poor internet",
-        "DISPLAY_TITLE": "Poor internet quality at 2s",
-        "ARTIST": "Artist",
+        "TITLE": "Poor internet quality at 2s",
+        "ARTIST": "Artist - should be shown",
+        "ALBUM":"Album - should be shown",
         "DURATION": 30000
       },
       "EVENTS": [
@@ -65,7 +68,7 @@
         "MEDIA_ID": "simple_leaves cache failure",
         "DISPLAY_TITLE": "Caching failure at 2s",
         "DISPLAY_SUBTITLE": "Show a toast",
-        "ALBUM":"This is a very long album title. This is a very long album title. This is a very long album title.",
+        "DISPLAY_DESCRIPTION":"This is a very long description. This is a very long description. This is a very long description.",
         "DURATION": 30000
       },
       "EVENTS": [
@@ -99,7 +102,7 @@
       "FLAGS": "playable",
       "METADATA": {
         "MEDIA_ID": "simple_leaves delayed error",
-        "DISPLAY_TITLE": "Delayed Error after 30 seconds",
+        "TITLE": "Delayed Error after 30 seconds",
         "ARTIST": "DJ Error",
         "ALBUM": "Error at the disco",
         "DURATION": 60000

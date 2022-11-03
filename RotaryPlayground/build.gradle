@@ -22,8 +22,8 @@ android {
         applicationId "com.android.car.rotaryplayground"
         minSdkVersion 30
         targetSdkVersion 32
-        versionCode 1
-        versionName "1.0"
+        versionCode gradle.ext.getVersionCode()
+        versionName gradle.ext.getVersionName()
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -32,7 +32,41 @@ android {
     lintOptions {
         abortOnError false
     }
+
+    signingConfigs {
+        aaos {
+            storeFile file(gradle.ext.aaosCertPath)
+            storePassword 'carapps'
+            keyAlias 'carapps'
+            keyPassword 'carapps'
+        }
+
+        platform {
+            storeFile file(gradle.ext.platformCertPath)
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+    }
+
+    flavorDimensions "signingkey"
+    productFlavors {
+        aaos {
+            dimension "signingkey"
+            signingConfig signingConfigs.aaos
+        }
+        platform {
+            dimension "signingkey"
+            if (file(gradle.ext.platformCertPath).exists()) {
+                signingConfig signingConfigs.platform
+            }
+        }
+    }
+
     buildTypes {
+        debug {
+            signingConfig android.buildTypes.release.signingConfig
+        }
         release {
             minifyEnabled false
         }

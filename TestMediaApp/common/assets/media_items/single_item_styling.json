@@ -25,7 +25,8 @@
         "MEDIA_ID": "playable list",
         "DISPLAY_TITLE": "Single Playable List",
         "DURATION": 15000,
-        "PLAYBACK_PROGRESS": 33
+        "PLAYBACK_PROGRESS": 33,
+        "EXPLICIT": 1
       }
     },
     {
@@ -35,7 +36,8 @@
         "MEDIA_ID": "playable grid",
         "DISPLAY_TITLE": "Single Playable Grid",
         "DURATION": 20000,
-        "PLAYBACK_PROGRESS": 33
+        "PLAYBACK_PROGRESS": 33,
+        "EXPLICIT": 1
       }
     },
     {
