@@ -88,7 +88,7 @@
       "PLAYABLE_HINT": "LIST",
       "BROWSABLE_HINT": "LIST",
       "METADATA": {
-        "MEDIA_ID": "progress node",
+        "MEDIA_ID": "progress node list",
         "DISPLAY_TITLE": "Progress List"
       },
       "INCLUDE": "media_items/progress_list.json"
@@ -98,10 +98,20 @@
       "PLAYABLE_HINT": "GRID",
       "BROWSABLE_HINT": "GRID_CATEGORY",
       "METADATA": {
-        "MEDIA_ID": "progress node",
+        "MEDIA_ID": "progress node grid",
         "DISPLAY_TITLE": "Progress Grid"
       },
       "INCLUDE": "media_items/progress_list.json"
+    },
+    {
+      "FLAGS": "browsable",
+      "PLAYABLE_HINT": "LIST",
+      "BROWSABLE_HINT": "LIST",
+      "METADATA": {
+        "MEDIA_ID": "action node",
+        "DISPLAY_TITLE": "Browse Custom Actions"
+      },
+      "INCLUDE": "media_items/actions_list.json"
     },
     {
       "FLAGS": "browsable",

@@ -19,7 +19,7 @@ package com.android.car.media.testmediaapp;
 import static android.support.v4.media.MediaBrowserCompat.MediaItem.FLAG_PLAYABLE;
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION;
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID;
-
+import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ITEM_LIST;
 import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.METADATA_KEY_PLAYBACK_PROGRESS;
 import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.METADATA_KEY_PLAYBACK_STATUS;
 
@@ -74,6 +74,58 @@ public class TmaMediaItem {
         }
     }
 
+    public enum TmaBrowseAction {
+        DOWNLOAD("DOWNLOAD", R.string.download,
+                "drawable/ic_download_for_offline"),
+        DOWNLOADING("DOWNLOADING", R.string.downloading,
+                "drawable/ic_downloading"),
+        DOWNLOADED("DOWNLOAD-COMPLETE", R.string.downloaded,
+                "drawable/ic_done_outline"),
+        FAVORITE("FAVORITE", R.string.favorite,
+                "drawable/ic_favorite"),
+        FAVORITED("FAVORITED", R.string.favorited,
+                "drawable/ic_favorited"),
+        ADD_TO_QUEUE("ADD_TO_QUEUE", R.string.add_to_queue,
+                "drawable/ic_playlist_add_check"),
+        REMOVE_FROM_QUEUE("REMOVE_FROM_QUEUE", R.string.remove_from_queue,
+                "drawable/ic_playlist_remove"),
+        ERROR_ACTION("ERROR_ACTION", R.string.error_action,
+                "drawable/ic_close"),
+        BROWSE_ACTION("BROWSE_ACTION", R.string.browse_action,
+                "drawable/ic_subdirectory_arrow_left"),
+        PBV_ACTION("PBV_ACTION", R.string.pbv_action,
+                "drawable/ic_queue_music");
+
+
+        public final String mId;
+        public final int mLabelResId;
+        public final String mIcon;
+
+        TmaBrowseAction(String id, int labelResId, String icon) {
+            mId = CUSTOM_ACTION_PREFIX + id;
+            mLabelResId = labelResId;
+            mIcon = TmaPublicProvider.buildUriString(icon);
+        }
+
+        public static TmaBrowseAction getActionById(String actionId){
+            for(TmaBrowseAction action: TmaBrowseAction.values()){
+                if(action.mId.equals(actionId)){
+                    return action;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        public String toString() {
+            return "TmaBrowseActions{" +
+                    "mId='" + mId + '\'' +
+                    ", mNameId=" + mLabelResId +
+                    ", mIcon='" + mIcon + '\'' +
+                    '}';
+        }
+    }
+
     private final int mFlags;
     private final MediaMetadataCompat mMediaMetadata;
     private final ContentStyle mPlayableStyle;
@@ -92,6 +144,8 @@ public class TmaMediaItem {
     final List<TmaMediaEvent> mMediaEvents;
     /** References another json file where to get extra children from. */
     final String mInclude;
+    /** List of browse custom actions */
+    final List<String> mBrowseActions;
 
     @Nullable private TmaMediaItem mParent;
     int mHearts;
@@ -101,8 +155,8 @@ public class TmaMediaItem {
 
     public TmaMediaItem(int flags, ContentStyle playableStyle, ContentStyle browsableStyle,
             ContentStyle singleItemStyle, MediaMetadataCompat metadata, int selfUpdateMs,
-            List<TmaCustomAction> customActions, List<TmaMediaEvent> mediaEvents,
-            List<TmaMediaItem> children, String include) {
+            List<TmaCustomAction> customActions, List<String> browseActions,
+            List<TmaMediaEvent> mediaEvents, List<TmaMediaItem> children, String include) {
         mFlags = flags;
         mPlayableStyle = playableStyle;
         mBrowsableStyle = browsableStyle;
@@ -110,6 +164,7 @@ public class TmaMediaItem {
         mMediaMetadata = metadata;
         mSelfUpdateMs = selfUpdateMs;
         mCustomActions = Collections.unmodifiableList(customActions);
+        mBrowseActions = browseActions;
         mMediaEvents = Collections.unmodifiableList(mediaEvents);
         mInclude = include;
         setChildren(children);
@@ -209,6 +264,22 @@ public class TmaMediaItem {
         return MediaSessionCompat.QueueItem.UNKNOWN_ID;
     }
 
+    /**
+     * Replace old action with new action if old actions exists in actions list, if old action not
+     * found, add new action to front of list.
+     * @param oldAction
+     * @param newAction
+     */
+    public void replaceAction(TmaBrowseAction oldAction, TmaBrowseAction newAction) {
+        int oldActionIndex = mBrowseActions.indexOf(oldAction.mId);
+        if (oldActionIndex > -1) {
+            mBrowseActions.remove(oldActionIndex);
+            mBrowseActions.add(oldActionIndex, newAction.mId);
+        } else {
+            mBrowseActions.add(newAction.mId);
+        }
+    }
+
     private MediaDescriptionCompat buildDescription() {
 
         // Use the default media description but add our extras.
@@ -248,6 +319,10 @@ public class TmaMediaItem {
                     mMediaMetadata.getLong(MediaConstants.METADATA_KEY_IS_EXPLICIT));
         }
 
+        if(mBrowseActions != null && !mBrowseActions.isEmpty()){
+            extras.putStringArrayList(BROWSE_CUSTOM_ACTIONS_ITEM_LIST,
+                    new ArrayList<>(mBrowseActions));
+        }
 
         bob.setExtras(extras);
         return bob.build();
