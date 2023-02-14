@@ -37,7 +37,7 @@
             "BROWSE_ACTIONS": [
                 "DOWNLOAD"
             ],
-            "INCLUDE": "media_items/empty.json"
+            "INCLUDE": "media_items/actions_list.json"
         },
         {
             "FLAGS": "playable",
@@ -88,7 +88,7 @@
             "BROWSE_ACTIONS": [
                 "DOWNLOAD"
             ],
-            "INCLUDE": "media_items/empty.json"
+            "INCLUDE": "media_items/actions_list.json"
         },
         {
             "FLAGS": "browsable",
@@ -101,7 +101,7 @@
             "BROWSE_ACTIONS": [
                 "DOWNLOAD"
             ],
-            "INCLUDE": "media_items/empty.json"
+            "INCLUDE": "media_items/actions_list.json"
         },
         {
             "FLAGS": "playable",
@@ -124,7 +124,7 @@
             "BROWSE_ACTIONS": [
                 "DOWNLOAD", "FAVORITE"
             ],
-            "INCLUDE": "media_items/empty.json"
+            "INCLUDE": "media_items/actions_list.json"
         },
         {
             "FLAGS": "playable",
@@ -175,7 +175,7 @@
             "BROWSE_ACTIONS": [
                 "DOWNLOAD", "FAVORITE"
             ],
-            "INCLUDE": "media_items/empty.json"
+            "INCLUDE": "media_items/actions_list.json"
         },
         {
             "FLAGS": "browsable",
@@ -188,7 +188,7 @@
             "BROWSE_ACTIONS": [
                 "DOWNLOAD", "FAVORITE"
             ],
-            "INCLUDE": "media_items/empty.json"
+            "INCLUDE": "media_items/actions_list.json"
         },
         {
             "FLAGS": "playable",
@@ -211,7 +211,7 @@
             "BROWSE_ACTIONS": [
                 "DOWNLOAD", "FAVORITE", "ADD_TO_QUEUE", "ERROR_ACTION", "BROWSE_ACTION", "PBV_ACTION"
             ],
-            "INCLUDE": "media_items/empty.json"
+            "INCLUDE": "media_items/actions_list.json"
         },
         {
             "FLAGS": "playable",
@@ -261,7 +261,7 @@
             "BROWSE_ACTIONS": [
                 "DOWNLOAD", "FAVORITE", "ADD_TO_QUEUE", "ERROR_ACTION", "BROWSE_ACTION", "PBV_ACTION"
             ],
-            "INCLUDE": "media_items/empty.json"
+            "INCLUDE": "media_items/actions_list.json"
         },
         {
             "FLAGS": "browsable",
@@ -275,7 +275,7 @@
             "BROWSE_ACTIONS": [
                 "DOWNLOAD", "FAVORITE", "ADD_TO_QUEUE", "ERROR_ACTION", "BROWSE_ACTION", "PBV_ACTION"
             ],
-            "INCLUDE": "media_items/empty.json"
+            "INCLUDE": "media_items/actions_list.json"
         }
     ]
 }
