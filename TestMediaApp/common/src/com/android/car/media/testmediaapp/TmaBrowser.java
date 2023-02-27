@@ -17,6 +17,13 @@ package com.android.car.media.testmediaapp;
 
 import static androidx.media.utils.MediaConstants.BROWSER_SERVICE_EXTRAS_KEY_SEARCH_SUPPORTED;
 
+import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.*;
+import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ACTION_EXTRAS;
+import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ACTION_ICON;
+import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ACTION_ID;
+import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ACTION_LABEL;
+import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_MEDIA_ITEM_ID;
+import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ROOT_LIST;
 import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaBrowseNodeType.LEAF_CHILDREN;
 import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaBrowseNodeType.QUEUE_ONLY;
 import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaLoginEventOrder.PLAYBACK_STATE_UPDATE_FIRST;
@@ -30,6 +37,7 @@ import android.media.MediaDescription;
 import android.media.browse.MediaBrowser;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaBrowserCompat.MediaItem;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
@@ -41,6 +49,7 @@ import androidx.media.MediaBrowserServiceCompat;
 import androidx.media.session.MediaButtonReceiver;
 import androidx.media.utils.MediaConstants;
 
+import com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction;
 import com.android.car.media.testmediaapp.loader.TmaLoader;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaAccountType;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaBrowseNodeType;
@@ -94,7 +103,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     public void onCreate() {
         super.onCreate();
         mPrefs = TmaPrefs.getInstance(this);
-        mHandler = new Handler();
+        mHandler = new Handler(getMainLooper());
 
         ComponentName mbrComponent = MediaButtonReceiver.getMediaButtonReceiverComponent(this);
         Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
@@ -121,11 +130,28 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
         mPrefs.mRootReplyDelay.registerChangeListener(mOnReplyDelayChanged);
 
         Bundle browserRootExtras = new Bundle();
+        browserRootExtras.putParcelableArrayList(BROWSE_CUSTOM_ACTIONS_ROOT_LIST,
+                new ArrayList<>(createCustomActionsList()));
         browserRootExtras.putBoolean(BROWSER_SERVICE_EXTRAS_KEY_SEARCH_SUPPORTED, true);
         browserRootExtras.putParcelable(FAVORITES_MEDIA_ITEM, getFavoritesMediaItem());
         mRoot = new BrowserRoot(ROOT_ID, browserRootExtras);
 
         updatePlaybackState(mPrefs.mAccountType.getValue());
+    }
+
+    private List<Bundle> createCustomActionsList() {
+        ArrayList<Bundle> browseActionsBundle = new ArrayList<>();
+        for (TmaBrowseAction browseAction : values()) {
+            Bundle action = new Bundle();
+            action.putString(BROWSE_CUSTOM_ACTIONS_ACTION_ID, browseAction.mId);
+            action.putString(BROWSE_CUSTOM_ACTIONS_ACTION_LABEL,
+                    getString(browseAction.mLabelResId));
+            action.putString(BROWSE_CUSTOM_ACTIONS_ACTION_ICON, browseAction.mIcon);
+            Bundle bundle = new Bundle();
+            action.putBundle(BROWSE_CUSTOM_ACTIONS_ACTION_EXTRAS, bundle);
+            browseActionsBundle.add(action);
+        }
+        return browseActionsBundle;
     }
 
     @Override
@@ -146,9 +172,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
                     invalidateRoot();
                 } else {
                     invalidateRoot();
-                    (new Handler()).postDelayed(() -> {
-                        updatePlaybackState(newValue);
-                    }, 3000);
+                    (new Handler()).postDelayed(() -> updatePlaybackState(newValue), 3000);
                 }
             };
 
@@ -210,6 +234,19 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     }
 
     @Override
+    public void onLoadItem(String itemId, @NonNull Result<MediaBrowserCompat.MediaItem> result) {
+        Runnable task = () -> {
+            TmaMediaItem node = mLibrary.getMediaItemById(itemId);
+            if (node == null) {
+                result.sendResult(null);
+            } else {
+                result.sendResult(node.toMediaItem());
+            }
+        };
+        runTaskAndSendResultWithDelay(task, result);
+    }
+
+    @Override
     public void onSearch(@NonNull String query, Bundle extras,
             @NonNull Result<List<MediaItem>> result) {
         getMediaItemsWithDelay(ROOT_ID, result, query);
@@ -222,7 +259,6 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     private void getMediaItemsWithDelay(@NonNull String parentId,
             @NonNull Result<List<MediaItem>> result, @Nullable String filter) {
         // TODO: allow per item override of the delay ?
-        TmaReplyDelay delay = mPrefs.mRootReplyDelay.getValue();
         Runnable task = () -> {
             TmaMediaItem node;
             if (TmaAccountType.NONE.equals(mPrefs.mAccountType.getValue())) {
@@ -265,6 +301,11 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
                 }
             }
         };
+        runTaskAndSendResultWithDelay(task, result);
+    }
+
+    private void runTaskAndSendResultWithDelay(Runnable task, @NonNull Result<?> result) {
+        TmaReplyDelay delay = mPrefs.mRootReplyDelay.getValue();
         if (delay == TmaReplyDelay.NONE) {
             task.run();
         } else {
@@ -331,6 +372,115 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
         @Override
         public void run() {
             notifyChildrenChanged(mNodeId);
+        }
+    }
+
+    @Override
+    public void onCustomAction(
+            @NonNull String action, Bundle extras, @NonNull Result<Bundle> result) {
+        TmaBrowseAction browseAction = getActionById(action);
+        Bundle resultBundle = new Bundle();
+        String mediaId = extras.getString(BROWSE_CUSTOM_ACTIONS_MEDIA_ITEM_ID);
+        TmaMediaItem node = mLibrary.getMediaItemById(mediaId);
+        if (browseAction == null || node == null) {
+            Log.e(TAG, "onCustomAction invalid action or node");
+            result.sendError(resultBundle);
+            return;
+        }
+        result.detach();
+        switch (browseAction) {
+            case DOWNLOAD:
+                new ActionResultSender(this, mHandler)
+                        .setRefreshMediaId(mediaId)
+                        .sendTo(DOWNLOAD, result::sendProgressUpdate)
+                        .onComplete(() -> node.replaceAction(DOWNLOAD, DOWNLOADING))
+                        .send();
+                new ActionResultSender(this, mHandler).setRefreshMediaId(mediaId)
+                        .setMessage(R.string.action_result_string_download_complete)
+                        .sendToDelayed(DOWNLOADING, 5_000, result::sendResult)
+                        .onComplete(() -> node.replaceAction(DOWNLOADING, DOWNLOADED))
+                        .send();
+                break;
+            case DOWNLOADING:
+            case DOWNLOADED:
+                new ActionResultSender(this, mHandler)
+                        .setRefreshMediaId(mediaId)
+                        .setMessage(R.string.action_result_string_download_removed)
+                        .sendTo(DOWNLOADING, result::sendResult)
+                        .onComplete(() -> node.replaceAction(browseAction, DOWNLOAD))
+                        .send();
+                break;
+            case FAVORITE:
+                new ActionResultSender(this, mHandler)
+                        .setRefreshMediaId(mediaId)
+                        .setMessage(R.string.action_result_string_added_favorite)
+                        .sendTo(result::sendResult)
+                        .onComplete(() -> node.replaceAction(browseAction, FAVORITED))
+                        .send();
+                break;
+            case FAVORITED:
+                new ActionResultSender(this, mHandler)
+                        .setRefreshMediaId(mediaId)
+                        .setMessage(R.string.action_result_string_removed_favorite)
+                        .sendTo(result::sendResult)
+                        .onComplete(() -> node.replaceAction(browseAction, FAVORITE))
+                        .send();
+                break;
+            case ADD_TO_QUEUE:
+                // show PBV with mediaItem
+                List<MediaSessionCompat.QueueItem> queue = node.getParent().buildQueue();
+                queue.add(new MediaSessionCompat
+                        .QueueItem(node.toMediaItem().getDescription(), 0));
+                mSession.setQueue(queue);
+
+                new ActionResultSender(this, mHandler)
+                        .setRefreshMediaId(mediaId)
+                        .setShowPlaybackView(true)
+                        .sendTo(result::sendResult)
+                        .onComplete(() -> node.replaceAction(ADD_TO_QUEUE, REMOVE_FROM_QUEUE))
+                        .send();
+                break;
+            case REMOVE_FROM_QUEUE:
+                // Show PBV without Media Item
+                List<MediaSessionCompat.QueueItem> queue2 = node.getParent().buildQueue();
+                queue2.remove(new MediaSessionCompat
+                        .QueueItem(node.toMediaItem().getDescription(), 0));
+                mSession.setQueue(queue2);
+
+                new ActionResultSender(this, mHandler)
+                        .setRefreshMediaId(mediaId)
+                        .setShowPlaybackView(true)
+                        .sendTo(result::sendResult)
+                        .onComplete(() -> node.replaceAction(REMOVE_FROM_QUEUE, ADD_TO_QUEUE))
+                        .send();
+                break;
+            case ERROR_ACTION:
+                new ActionResultSender(this, mHandler)
+                        .setRefreshMediaId(mediaId)
+                        .setMessage(R.string.action_result_string_error)
+                        .sendTo(result::sendError)
+                        .send();
+                break;
+            case BROWSE_ACTION:
+                new ActionResultSender(this, mHandler)
+                        .setRefreshMediaId(mediaId)
+                        .setBrowseNode(mediaId)
+                        .sendTo(result::sendResult)
+                        .send();
+                break;
+            case PBV_ACTION:
+                new ActionResultSender(this, mHandler)
+                        .setRefreshMediaId(mediaId)
+                        .setShowPlaybackView(true)
+                        .sendTo(result::sendResult)
+                        .send();
+                break;
+            default:
+                new ActionResultSender(this, mHandler)
+                        .setRefreshMediaId(mediaId)
+                        .setMessage(R.string.action_result_string_invalid)
+                        .sendTo(result::sendError)
+                        .send();
         }
     }
 }

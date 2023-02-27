@@ -1,0 +1,281 @@
+{
+    "FLAGS": "browsable",
+    "PLAYABLE_HINT": "LIST_CATEGORY",
+    "BROWSABLE_HINT": "LIST_CATEGORY",
+    "METADATA": {
+        "MEDIA_ID": "action list",
+        "DISPLAY_TITLE": "Browse Custom Actions"
+    },
+    "CHILDREN": [
+        {
+            "FLAGS": "playable",
+            "METADATA": {
+                "MEDIA_ID": "0 custom action",
+                "DISPLAY_TITLE": "0 custom action",
+                "DURATION": 1500000,
+                "PLAYBACK_STATUS": 2
+            }
+        },
+        {
+            "FLAGS": "playable",
+            "METADATA": {
+                "MEDIA_ID": "1 custom action",
+                "DISPLAY_TITLE": "1 custom action",
+                "DURATION": 1500000
+            },
+            "BROWSE_ACTIONS": [
+                "DOWNLOAD"
+            ]
+        },
+        {
+            "FLAGS": "browsable",
+            "METADATA": {
+                "MEDIA_ID": "1 custom action with >",
+                "DISPLAY_TITLE": "1 custom action with >",
+                "DURATION": 1500000
+            },
+            "BROWSE_ACTIONS": [
+                "DOWNLOAD"
+            ],
+            "INCLUDE": "media_items/actions_list.json"
+        },
+        {
+            "FLAGS": "playable",
+            "METADATA": {
+                "MEDIA_ID": "1 custom action with new dot",
+                "DISPLAY_TITLE": "1 custom action with dot",
+                "DURATION": 1500000,
+                "PLAYBACK_STATUS": 0
+            },
+            "BROWSE_ACTIONS": [
+                "DOWNLOAD"
+            ]
+        },
+        {
+            "FLAGS": "playable",
+            "METADATA": {
+                "MEDIA_ID": "1 custom action with progress",
+                "DISPLAY_TITLE": "1 custom action with progress",
+                "DURATION": 1500000,
+                "PLAYBACK_PROGRESS": 33
+            },
+            "BROWSE_ACTIONS": [
+                "DOWNLOAD"
+            ]
+        },
+        {
+            "FLAGS": "playable",
+            "METADATA": {
+                "MEDIA_ID": "1 custom action with dot,progress",
+                "DISPLAY_TITLE": "1 custom action with dot,progress",
+                "DURATION": 1500000,
+                "PLAYBACK_STATUS": 0,
+                "PLAYBACK_PROGRESS": 33
+            },
+            "BROWSE_ACTIONS": [
+                "DOWNLOAD"
+            ]
+        },
+        {
+            "FLAGS": "browsable",
+            "METADATA": {
+                "MEDIA_ID": "1 custom action with dot,progress,>",
+                "DISPLAY_TITLE": "1 custom action with dot,progress,>",
+                "DURATION": 1500000,
+                "PLAYBACK_STATUS": 0,
+                "PLAYBACK_PROGRESS": 33
+            },
+            "BROWSE_ACTIONS": [
+                "DOWNLOAD"
+            ],
+            "INCLUDE": "media_items/actions_list.json"
+        },
+        {
+            "FLAGS": "browsable",
+            "METADATA": {
+                "MEDIA_ID": "1 custom action with dot,>",
+                "DISPLAY_TITLE": "1 custom action with dot,>",
+                "DURATION": 1500000,
+                "PLAYBACK_STATUS": 0
+            },
+            "BROWSE_ACTIONS": [
+                "DOWNLOAD"
+            ],
+            "INCLUDE": "media_items/actions_list.json"
+        },
+        {
+            "FLAGS": "playable",
+            "METADATA": {
+                "MEDIA_ID": "2 custom actions",
+                "DISPLAY_TITLE": "2 custom actions",
+                "DURATION": 1500000
+            },
+            "BROWSE_ACTIONS": [
+                "DOWNLOAD", "FAVORITE"
+            ]
+        },
+        {
+            "FLAGS": "browsable",
+            "METADATA": {
+                "MEDIA_ID": "2 custom actions with >",
+                "DISPLAY_TITLE": "2 custom actions >",
+                "DURATION": 1500000
+            },
+            "BROWSE_ACTIONS": [
+                "DOWNLOAD", "FAVORITE"
+            ],
+            "INCLUDE": "media_items/actions_list.json"
+        },
+        {
+            "FLAGS": "playable",
+            "METADATA": {
+                "MEDIA_ID": "2 custom actions with new dot",
+                "DISPLAY_TITLE": "2 custom actions with dot",
+                "DURATION": 1500000,
+                "PLAYBACK_STATUS": 0
+            },
+            "BROWSE_ACTIONS": [
+                "DOWNLOAD", "FAVORITE"
+            ]
+        },
+        {
+            "FLAGS": "playable",
+            "METADATA": {
+                "MEDIA_ID": "2 custom actions with progress",
+                "DISPLAY_TITLE": "2 custom actions with progress",
+                "DURATION": 1500000,
+                "PLAYBACK_PROGRESS": 33
+            },
+            "BROWSE_ACTIONS": [
+                "DOWNLOAD", "FAVORITE"
+            ]
+        },
+        {
+            "FLAGS": "playable",
+            "METADATA": {
+                "MEDIA_ID": "2 custom actions with dot,progress",
+                "DISPLAY_TITLE": "2 custom actions with dot,progress",
+                "DURATION": 1500000,
+                "PLAYBACK_STATUS": 0,
+                "PLAYBACK_PROGRESS": 33
+            },
+            "BROWSE_ACTIONS": [
+                "DOWNLOAD", "FAVORITE"
+            ]
+        },
+        {
+            "FLAGS": "browsable",
+            "METADATA": {
+                "MEDIA_ID": "2 custom actions with dot,progress,>",
+                "DISPLAY_TITLE": "2 custom actions with dot,progress,>",
+                "DURATION": 1500000,
+                "PLAYBACK_STATUS": 0,
+                "PLAYBACK_PROGRESS": 33
+            },
+            "BROWSE_ACTIONS": [
+                "DOWNLOAD", "FAVORITE"
+            ],
+            "INCLUDE": "media_items/actions_list.json"
+        },
+        {
+            "FLAGS": "browsable",
+            "METADATA": {
+                "MEDIA_ID": "2 custom actions with dot,>",
+                "DISPLAY_TITLE": "2 custom actions with dot,>",
+                "DURATION": 1500000,
+                "PLAYBACK_STATUS": 0
+            },
+            "BROWSE_ACTIONS": [
+                "DOWNLOAD", "FAVORITE"
+            ],
+            "INCLUDE": "media_items/actions_list.json"
+        },
+        {
+            "FLAGS": "playable",
+            "METADATA": {
+                "MEDIA_ID": "6 custom actions",
+                "DISPLAY_TITLE": "6 custom actions",
+                "DURATION": 1500000
+            },
+            "BROWSE_ACTIONS": [
+                "DOWNLOAD", "FAVORITE", "ADD_TO_QUEUE", "ERROR_ACTION", "BROWSE_ACTION", "PBV_ACTION"
+            ]
+        },
+        {
+            "FLAGS": "browsable",
+            "METADATA": {
+                "MEDIA_ID": "6 custom actions with >",
+                "DISPLAY_TITLE": "6 custom actions with >",
+                "DURATION": 1500000
+            },
+            "BROWSE_ACTIONS": [
+                "DOWNLOAD", "FAVORITE", "ADD_TO_QUEUE", "ERROR_ACTION", "BROWSE_ACTION", "PBV_ACTION"
+            ],
+            "INCLUDE": "media_items/actions_list.json"
+        },
+        {
+            "FLAGS": "playable",
+            "METADATA": {
+                "MEDIA_ID": "6 custom actions with new dot",
+                "DISPLAY_TITLE": "6 custom actions with dot",
+                "DURATION": 1500000,
+                "PLAYBACK_STATUS": 0
+            },
+            "BROWSE_ACTIONS": [
+                "DOWNLOAD", "FAVORITE", "ADD_TO_QUEUE", "ERROR_ACTION", "BROWSE_ACTION", "PBV_ACTION"
+            ]
+        },
+        {
+            "FLAGS": "playable",
+            "METADATA": {
+                "MEDIA_ID": "6 custom actions with progress",
+                "DISPLAY_TITLE": "6 custom actions with progress",
+                "DURATION": 1500000,
+                "PLAYBACK_PROGRESS": 33
+            },
+            "BROWSE_ACTIONS": [
+                "DOWNLOAD", "FAVORITE", "ADD_TO_QUEUE", "ERROR_ACTION", "BROWSE_ACTION", "PBV_ACTION"
+            ]
+        },
+        {
+            "FLAGS": "playable",
+            "METADATA": {
+                "MEDIA_ID": "6 custom actions with dot,progress",
+                "DISPLAY_TITLE": "6 custom actions with dot,progress",
+                "DURATION": 1500000,
+                "PLAYBACK_STATUS": 0,
+                "PLAYBACK_PROGRESS": 33
+            },
+            "BROWSE_ACTIONS": [
+                "DOWNLOAD", "FAVORITE", "ADD_TO_QUEUE", "ERROR_ACTION", "BROWSE_ACTION", "PBV_ACTION"
+            ]
+        },
+        {
+            "FLAGS": "browsable",
+            "METADATA": {
+                "MEDIA_ID": "6 custom actions with dot,>",
+                "DISPLAY_TITLE": "6 custom actions with dot,>",
+                "DURATION": 1500000,
+                "PLAYBACK_STATUS": 0
+            },
+            "BROWSE_ACTIONS": [
+                "DOWNLOAD", "FAVORITE", "ADD_TO_QUEUE", "ERROR_ACTION", "BROWSE_ACTION", "PBV_ACTION"
+            ],
+            "INCLUDE": "media_items/actions_list.json"
+        },
+        {
+            "FLAGS": "browsable",
+            "METADATA": {
+                "MEDIA_ID": "6 custom actions with dot,progress,>",
+                "DISPLAY_TITLE": "6 custom actions with dot,progress,>",
+                "DURATION": 1500000,
+                "PLAYBACK_STATUS": 0,
+                "PLAYBACK_PROGRESS": 33
+            },
+            "BROWSE_ACTIONS": [
+                "DOWNLOAD", "FAVORITE", "ADD_TO_QUEUE", "ERROR_ACTION", "BROWSE_ACTION", "PBV_ACTION"
+            ],
+            "INCLUDE": "media_items/actions_list.json"
+        }
+    ]
+}
