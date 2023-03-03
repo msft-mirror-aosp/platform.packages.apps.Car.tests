@@ -258,7 +258,9 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
             @NonNull Result<List<MediaItem>> result, @Nullable String filter) {
         // TODO: allow per item override of the delay ?
         Runnable task = () -> {
-            TmaMediaItem node = mLibrary.getMediaItemById(parentId);
+            TmaMediaItem node = TmaAccountType.NONE.equals(mPrefs.mAccountType.getValue()) ? null :
+                    mLibrary.getMediaItemById(parentId);
+
             if (node == null) {
                 result.sendResult(null);
             } else if (filter != null) {
