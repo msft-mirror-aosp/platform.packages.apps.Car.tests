@@ -31,6 +31,15 @@
     {
       "FLAGS": "playable",
       "METADATA": {
+        "MEDIA_ID": "Title+Description",
+        "DISPLAY_TITLE": "This song has no subtitle...",
+        "DISPLAY_DESCRIPTION": "... only a description ",
+        "DURATION": 3600000
+      }
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
         "MEDIA_ID": "npv links",
         "DISPLAY_TITLE": "NPV links",
         "DISPLAY_SUBTITLE": "go to Album Art",
