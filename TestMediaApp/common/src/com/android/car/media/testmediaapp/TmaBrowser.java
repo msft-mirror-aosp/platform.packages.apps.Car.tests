@@ -17,6 +17,7 @@ package com.android.car.media.testmediaapp;
 
 import static androidx.media.utils.MediaConstants.BROWSER_SERVICE_EXTRAS_KEY_SEARCH_SUPPORTED;
 
+import static com.android.car.media.testmediaapp.TmaLibrary.ROOT_PATH;
 import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.*;
 import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ACTION_EXTRAS;
 import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ACTION_ICON;
@@ -28,6 +29,7 @@ import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaBrowseNod
 import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaBrowseNodeType.QUEUE_ONLY;
 import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaLoginEventOrder.PLAYBACK_STATE_UPDATE_FIRST;
 
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
@@ -76,7 +78,6 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
 
     private static final int MAX_SEARCH_DEPTH = 4;
     private static final String MEDIA_SESSION_TAG = "TEST_MEDIA_SESSION";
-    private static final String ROOT_ID = "_ROOT_ID_";
 
     // TODO(b/235362454): remove this once it's available in MediaConstants
     private static final String FAVORITES_MEDIA_ITEM =
@@ -134,7 +135,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
                 new ArrayList<>(createCustomActionsList()));
         browserRootExtras.putBoolean(BROWSER_SERVICE_EXTRAS_KEY_SEARCH_SUPPORTED, true);
         browserRootExtras.putParcelable(FAVORITES_MEDIA_ITEM, getFavoritesMediaItem());
-        mRoot = new BrowserRoot(ROOT_ID, browserRootExtras);
+        mRoot = new BrowserRoot(ROOT_PATH, browserRootExtras);
 
         updatePlaybackState(mPrefs.mAccountType.getValue());
     }
@@ -177,7 +178,10 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
             };
 
     private final TmaPrefs.PrefValueChangedListener<TmaBrowseNodeType> mOnRootNodeTypeChanged =
-            (oldValue, newValue) -> invalidateRoot();
+            (oldValue, newValue) -> {
+                invalidateRoot();
+                mLibrary.setBrowseRoot(newValue);
+            };
 
     private final TmaPrefs.PrefValueChangedListener<TmaReplyDelay> mOnReplyDelayChanged =
             (oldValue, newValue) -> invalidateRoot();
@@ -203,7 +207,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     }
 
     private void invalidateRoot() {
-        notifyChildrenChanged(ROOT_ID);
+        notifyChildrenChanged(ROOT_PATH);
     }
 
     @Override
@@ -224,12 +228,10 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     public void onLoadChildren(@NonNull String parentId, @NonNull Result<List<MediaItem>> result) {
         getMediaItemsWithDelay(parentId, result, null);
 
-        if (QUEUE_ONLY.equals(mPrefs.mRootNodeType.getValue()) && ROOT_ID.equals(parentId)) {
-            TmaMediaItem queue = mLibrary.getRoot(LEAF_CHILDREN);
-            if (queue != null) {
-                mSession.setQueue(queue.buildQueue());
-                mPlayer.prepareMediaItem(queue.getPlayableByIndex(0));
-            }
+        if (QUEUE_ONLY.equals(mPrefs.mRootNodeType.getValue()) && ROOT_PATH.equals(parentId)) {
+            mPlayer.buildQueue(mLibrary.getPath(LEAF_CHILDREN));
+            mPlayer.setActiveQueueItem(null);
+            mPlayer.prepareActiveItem();
         }
     }
 
@@ -240,7 +242,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
             if (node == null) {
                 result.sendResult(null);
             } else {
-                result.sendResult(node.toMediaItem());
+                result.sendResult(node.toSessionItem(mLibrary.getParentPath(itemId)));
             }
         };
         runTaskAndSendResultWithDelay(task, result);
@@ -249,35 +251,25 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     @Override
     public void onSearch(@NonNull String query, Bundle extras,
             @NonNull Result<List<MediaItem>> result) {
-        getMediaItemsWithDelay(ROOT_ID, result, query);
-    }
-
-    private TmaMediaItem getRoot() {
-        return mLibrary.getRoot(mPrefs.mRootNodeType.getValue());
+        getMediaItemsWithDelay(ROOT_PATH, result, query);
     }
 
     private void getMediaItemsWithDelay(@NonNull String parentId,
             @NonNull Result<List<MediaItem>> result, @Nullable String filter) {
         // TODO: allow per item override of the delay ?
         Runnable task = () -> {
-            TmaMediaItem node;
-            if (TmaAccountType.NONE.equals(mPrefs.mAccountType.getValue())) {
-                node = null;
-            } else if (ROOT_ID.equals(parentId)) {
-                node = getRoot();
-            } else {
-                node = mLibrary.getMediaItemById(parentId);
-            }
+            TmaMediaItem node = TmaAccountType.NONE.equals(mPrefs.mAccountType.getValue()) ? null :
+                    mLibrary.getMediaItemById(parentId);
 
             if (node == null) {
                 result.sendResult(null);
             } else if (filter != null) {
                 List<MediaItem> hits = new ArrayList<>(50);
                 Pattern pat = Pattern.compile(Pattern.quote(filter), Pattern.CASE_INSENSITIVE);
-                addSearchResults(node, pat.matcher(""), hits, MAX_SEARCH_DEPTH);
+                addSearchResults(parentId, node, pat.matcher(""), hits, MAX_SEARCH_DEPTH);
                 result.sendResult(hits);
             } else {
-                List<TmaMediaItem> children = node.getChildren();
+                List<TmaMediaItem> children = mLibrary.getAllChildren(node);
                 int childrenCount = children.size();
                 List<MediaItem> items = new ArrayList<>(childrenCount);
                 if (childrenCount <= 0) {
@@ -290,7 +282,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
                         if (child.mIsHidden) {
                             continue;
                         }
-                        items.add(child.toMediaItem());
+                        items.add(child.toSessionItem(parentId));
                     }
                     result.sendResult(items);
 
@@ -314,17 +306,17 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
         }
     }
 
-    private void addSearchResults(@Nullable TmaMediaItem node, Matcher matcher,
-            List<MediaItem> hits, int currentDepth) {
+    private void addSearchResults(@NonNull String mediaPath, @Nullable TmaMediaItem node,
+            Matcher matcher, List<MediaItem> hits, int currentDepth) {
         if (node == null || currentDepth <= 0) {
             return;
         }
 
-        for (TmaMediaItem child : node.getChildren()) {
+        for (TmaMediaItem child : mLibrary.getAllChildren(node)) {
             if (child.mIsHidden) {
                 continue;
             }
-            MediaItem item = child.toMediaItem();
+            MediaItem item = child.toSessionItem(mediaPath);
             CharSequence title = item.getDescription().getTitle();
             if (title != null) {
                 matcher.reset(title);
@@ -332,25 +324,19 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
                     hits.add(item);
                 }
             }
-
-            // Ask the library to load the grand children
-            child = mLibrary.getMediaItemById(child.getMediaId());
-            addSearchResults(child, matcher, hits, currentDepth - 1);
+            addSearchResults(child.getPath(mediaPath), child, matcher, hits, currentDepth - 1);
         }
     }
 
-    void toggleItem(@Nullable TmaMediaItem item) {
+    void toggleItem(@NonNull String mediaId) {
+        TmaMediaItem item = mLibrary.getMediaItemById(mediaId);
         if (item == null) {
+            Log.e(TAG, "toggleItem can't find: " + mediaId);
             return;
         }
         item.mIsHidden = !item.mIsHidden;
-        if (item.getParent() != null) {
-            String parentId = item.getParent().getMediaId();
-            if (Objects.equals(parentId, getRoot().getMediaId())) {
-                parentId = ROOT_ID;
-            }
-            notifyChildrenChanged(parentId);
-        }
+
+        notifyChildrenChanged(mLibrary.getParentPath(mediaId));
     }
 
     private MediaBrowser.MediaItem getFavoritesMediaItem() {
@@ -428,10 +414,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
                 break;
             case ADD_TO_QUEUE:
                 // show PBV with mediaItem
-                List<MediaSessionCompat.QueueItem> queue = node.getParent().buildQueue();
-                queue.add(new MediaSessionCompat
-                        .QueueItem(node.toMediaItem().getDescription(), 0));
-                mSession.setQueue(queue);
+                mPlayer.addItemToQueue(mediaId);
 
                 new ActionResultSender(this, mHandler)
                         .setRefreshMediaId(mediaId)
@@ -442,10 +425,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
                 break;
             case REMOVE_FROM_QUEUE:
                 // Show PBV without Media Item
-                List<MediaSessionCompat.QueueItem> queue2 = node.getParent().buildQueue();
-                queue2.remove(new MediaSessionCompat
-                        .QueueItem(node.toMediaItem().getDescription(), 0));
-                mSession.setQueue(queue2);
+                mPlayer.removeItemFromQueue(mediaId);
 
                 new ActionResultSender(this, mHandler)
                         .setRefreshMediaId(mediaId)

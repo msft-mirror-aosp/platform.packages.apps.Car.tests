@@ -2,7 +2,7 @@
   "FLAGS": "browsable",
 
   "METADATA": {
-    "MEDIA_ID": "art_nature_512",
+    "MEDIA_ID": "media_items/album_art/nature/art_nature_512.json",
     "DISPLAY_TITLE": "Art nature 512"
   },
 
@@ -10,7 +10,7 @@
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "art_nature_512 bee",
+        "MEDIA_ID": "bee",
         "DISPLAY_TITLE": "Bee",
         "DURATION": 10000,
         "ART_URI": "assets/bitmaps/nature-512/bee.jpg"
@@ -19,7 +19,7 @@
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "art_nature_512 clouds",
+        "MEDIA_ID": "clouds",
         "DISPLAY_TITLE": "Clouds",
         "DURATION": 10000,
         "ART_URI": "assets/bitmaps/nature-512/clouds.jpg"
@@ -28,7 +28,7 @@
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "art_nature_512 flower1",
+        "MEDIA_ID": "flower1",
         "DISPLAY_TITLE": "Flower 1",
         "DURATION": 10000,
         "ART_URI": "assets/bitmaps/nature-512/flower1.jpg"
@@ -37,7 +37,7 @@
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "art_nature_512 flower2",
+        "MEDIA_ID": "flower2",
         "DISPLAY_TITLE": "Flower 2",
         "DURATION": 10000,
         "ART_URI": "assets/bitmaps/nature-512/flower2.jpg"
@@ -46,7 +46,7 @@
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "art_nature_512 flower3",
+        "MEDIA_ID": "flower3",
         "DISPLAY_TITLE": "Flower3 ",
         "DURATION": 10000,
         "ART_URI": "assets/bitmaps/nature-512/flower3.jpg"
@@ -55,7 +55,7 @@
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "art_nature_512 flowers",
+        "MEDIA_ID": "flowers",
         "DISPLAY_TITLE": "Flowers",
         "DURATION": 10000,
         "ART_URI": "assets/bitmaps/nature-512/flowers.jpg"
@@ -64,7 +64,7 @@
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "art_nature_512 leaves",
+        "MEDIA_ID": "leaves",
         "DISPLAY_TITLE": "Leaves",
         "DURATION": 10000,
         "ART_URI": "assets/bitmaps/nature-512/leaves.jpg"
@@ -73,7 +73,7 @@
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "art_nature_512 sage",
+        "MEDIA_ID": "sage",
         "DISPLAY_TITLE": "Sage",
         "DURATION": 10000,
         "ART_URI": "assets/bitmaps/nature-512/sage.jpg"
@@ -82,7 +82,7 @@
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "art_nature_512 tree",
+        "MEDIA_ID": "tree",
         "DISPLAY_TITLE": "Tree",
         "DURATION": 10000,
         "ART_URI": "assets/bitmaps/nature-512/tree.jpg"

@@ -2,7 +2,7 @@
   "FLAGS": "browsable",
 
   "METADATA": {
-    "MEDIA_ID": "exceptions",
+    "MEDIA_ID": "media_items/exceptions.json",
     "DISPLAY_TITLE": "Exceptions"
   },
 
@@ -10,7 +10,7 @@
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "exceptions play NPE",
+        "MEDIA_ID": "play NPE",
         "DISPLAY_TITLE": "Throw NPE on play",
         "DURATION": 30000
       },

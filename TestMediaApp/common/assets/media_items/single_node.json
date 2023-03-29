@@ -4,7 +4,7 @@
   "BROWSABLE_HINT": "GRID",
 
   "METADATA": {
-    "MEDIA_ID": "single_node",
+    "MEDIA_ID": "media_items/single_node.json",
     "DISPLAY_TITLE": "A lonely tab"
   },
 
@@ -12,7 +12,7 @@
     {
       "FLAGS": "browsable",
       "METADATA": {
-        "MEDIA_ID": "single_node simple_leaves",
+        "MEDIA_ID": "simple_leaves",
         "DISPLAY_TITLE": "Basic songs",
         "ART_URI": "drawable/ic_heart_plus_plus"
       },

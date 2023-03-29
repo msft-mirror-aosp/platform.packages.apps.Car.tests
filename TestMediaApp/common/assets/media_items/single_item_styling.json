@@ -4,7 +4,7 @@
   "BROWSABLE_HINT": "LIST",
 
   "METADATA": {
-    "MEDIA_ID": "single",
+    "MEDIA_ID": "media_items/single_item_styling.json",
     "DISPLAY_TITLE": "Single Item Styling"
   },
 
@@ -73,7 +73,7 @@
       "PLAYABLE_HINT": "LIST",
       "BROWSABLE_HINT": "LIST",
       "METADATA": {
-        "MEDIA_ID": "grid single, browse/play list hint",
+        "MEDIA_ID": "grid single, browse or play list hint",
         "DISPLAY_TITLE": "Single grid style children do not inherit single item hint"
       },
       "INCLUDE":"media_items/simple_leaves.json"

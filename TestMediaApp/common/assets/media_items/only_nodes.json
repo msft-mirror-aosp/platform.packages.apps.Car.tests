@@ -4,7 +4,7 @@
   "BROWSABLE_HINT": "GRID",
 
   "METADATA": {
-    "MEDIA_ID": "only_nodes",
+    "MEDIA_ID": "media_items/only_nodes.json",
     "DISPLAY_TITLE": "Only nodes"
   },
 
@@ -12,7 +12,7 @@
     {
       "FLAGS": "browsable",
       "METADATA": {
-        "MEDIA_ID": "only_nodes simple_leaves",
+        "MEDIA_ID": "simple_leaves",
         "DISPLAY_TITLE": "Basic songs",
         "ART_URI": "drawable/ic_heart_plus_plus"
       },
@@ -23,7 +23,7 @@
       "PLAYABLE_HINT": "LIST",
       "BROWSABLE_HINT": "LIST",
       "METADATA": {
-        "MEDIA_ID": "only_nodes advanced",
+        "MEDIA_ID": "advanced",
         "DISPLAY_TITLE": "Advanced",
         "ART_URI": "drawable/ic_heart_less_less"
       },
@@ -34,7 +34,7 @@
       "PLAYABLE_HINT": "GRID",
       "BROWSABLE_HINT": "LIST_CATEGORY",
       "METADATA": {
-        "MEDIA_ID": "only_nodes rabbit hole",
+        "MEDIA_ID": "rabbit hole",
         "DISPLAY_TITLE": "Rabbit hole 2"
       },
       "INCLUDE":"media_items/mixed.json"
@@ -42,8 +42,8 @@
     {
       "FLAGS": "browsable",
       "METADATA": {
-        "MEDIA_ID": "only_nodes empty node 1",
-        "DISPLAY_TITLE": "Empty node 1"
+        "MEDIA_ID": "empty",
+        "DISPLAY_TITLE": "Empty"
       }
     }
   ]

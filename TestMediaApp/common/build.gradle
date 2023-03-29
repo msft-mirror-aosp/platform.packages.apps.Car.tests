@@ -22,6 +22,8 @@ android{
     compileSdkVersion gradle.ext.aaosLatestSDK
     defaultConfig{
         minSdkVersion 28
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments clearPackageData: 'true', coverage: 'true'
     }
     namespace "com.android.car.media.testmediaapp"
 
@@ -33,6 +35,14 @@ android{
             renderscript.srcDirs = ['src']
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
+        }
+
+        androidTest{
+            java.srcDirs += 'tests/instrumenttests/src'
+        }
+
+        test {
+            java.srcDirs += 'tests/unittests/src'
         }
     }
 
@@ -69,6 +79,17 @@ android{
     lintOptions {
         abortOnError false
     }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+        animationsDisabled = true
+    }
+
+    useLibrary 'android.test.runner'
+    useLibrary 'android.test.base'
+    useLibrary 'android.test.mock'
 }
 
 dependencies {
@@ -77,4 +98,11 @@ dependencies {
     implementation 'androidx.media:media:1.6.0'
     implementation 'androidx.preference:preference:1.2.0'
     implementation 'androidx.car.app:app:1.1.0'
+
+    testImplementation 'androidx.test.ext:junit:1.1.3'
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.robolectric:robolectric:4.8'
+    testImplementation "org.mockito:mockito-core:2.19.0"
+    testImplementation 'androidx.test:runner:1.4.0'
+    testImplementation 'androidx.test:rules:1.4.0'
 }
