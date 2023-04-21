@@ -22,14 +22,18 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 
 import androidx.preference.PreferenceManager;
 
+import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.EnumPrefFlag;
+import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaAnalyticsState;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaAccountType;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaBrowseNodeType;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaLoginEventOrder;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaReplyDelay;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 
 /** Singleton class to access the application's preferences. */
@@ -49,6 +53,8 @@ public class TmaPrefs {
     /** Media apps event (update playback state, load browse tree) order after login. */
     public final PrefEntry<TmaLoginEventOrder> mLoginEventOrder;
 
+    /** Analytics state. Contains list of enums*/
+    public final PrefEntry<TmaAnalyticsState> mAnalyticsState;
 
     public synchronized static TmaPrefs getInstance(Context context) {
         if (sPrefs == null) {
@@ -67,7 +73,8 @@ public class TmaPrefs {
         ROOT_NODE_TYPE_KEY,
         ROOT_REPLY_DELAY_KEY,
         ASSET_REPLY_DELAY_KEY,
-        LOGIN_EVENT_ORDER_KEY
+        LOGIN_EVENT_ORDER_KEY,
+        ANALYTICS_STATE_KEY
     }
 
     /**
@@ -99,7 +106,8 @@ public class TmaPrefs {
                                 String key) {
                             if (mKey.equals(key)) {
                                 T newValue = getValue();
-                                if (!Objects.equals(mOldValue, newValue)) {
+                                if (!Objects.equals(mOldValue, newValue)
+                                        || newValue instanceof TmaAnalyticsState) {
                                     listener.onValueChanged(mOldValue, newValue);
                                     mOldValue = newValue;
                                 }
@@ -149,12 +157,14 @@ public class TmaPrefs {
 
         mLoginEventOrder = new EnumPrefEntry<>(TmaPrefKey.LOGIN_EVENT_ORDER_KEY,
                 TmaLoginEventOrder.values(), TmaLoginEventOrder.PLAYBACK_STATE_UPDATE_FIRST);
+
+        mAnalyticsState = new FlagPrefEntry<>(TmaPrefKey.ANALYTICS_STATE_KEY,
+                new TmaAnalyticsState());
     }
 
 
     /** Handles the conversion between the enum values and the shared preferences. */
-    private class EnumPrefEntry<T extends Enum & TmaEnumPrefs.EnumPrefValue>
-            extends PrefEntry<T> {
+    private class EnumPrefEntry<T extends Enum & TmaEnumPrefs.EnumPrefValue> extends PrefEntry<T> {
 
         private final T[] mEnumValues;
         private final T mDefaultValue;
@@ -184,4 +194,25 @@ public class TmaPrefs {
         }
     }
 
+    private class FlagPrefEntry<R, T extends Set<R>, S extends EnumPrefFlag<R, T>>
+            extends PrefEntry<S> {
+
+        private final S mState;
+        FlagPrefEntry(TmaPrefKey prefKey, S state) {
+            super(prefKey);
+            mState = state;
+        }
+        @Override
+        public S getValue() {
+            Set<String> flags = mSharedPrefs.getStringSet(mKey, new HashSet<>());
+            mState.getFlags().clear();
+            mState.getFlags().addAll((T)flags);
+            return mState;
+        }
+
+        @Override
+        public void setValue(S value) {
+            mSharedPrefs.edit().putStringSet(mKey, (Set<String>) value.getFlags()).commit();
+        }
+    }
 }

@@ -121,6 +121,14 @@
             </intent-filter>
         </receiver>
 
+        <receiver
+                android:name="com.android.car.media.testmediaapp.analytics.TmaAnalyticsBroadcastReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="androidx.car.app.media.mediaextensions.analytics.action" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
