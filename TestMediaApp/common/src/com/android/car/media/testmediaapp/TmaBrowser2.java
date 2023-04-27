@@ -96,7 +96,7 @@ public class TmaBrowser2 extends MediaBrowserServiceCompat {
     @Override
     public void onLoadChildren(@NonNull String parentId,
             @NonNull Result<List<MediaBrowserCompat.MediaItem>> result) {
-        result.sendResult(Collections.EMPTY_LIST);
+        result.sendResult(Collections.emptyList());
     }
 
     private PendingIntent getCarSettingsIntent() {

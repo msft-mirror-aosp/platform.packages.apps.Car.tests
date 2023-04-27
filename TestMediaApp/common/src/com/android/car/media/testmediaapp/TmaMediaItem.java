@@ -16,21 +16,23 @@
 
 package com.android.car.media.testmediaapp;
 
-import static android.support.v4.media.MediaBrowserCompat.MediaItem.FLAG_PLAYABLE;
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION;
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID;
+import static com.android.car.media.testmediaapp.MediaConstants.KEY_DESCRIPTION_LINK_MEDIA_ID;
+import static com.android.car.media.testmediaapp.MediaConstants.KEY_SUBTITLE_LINK_MEDIA_ID;
 import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ITEM_LIST;
 import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.METADATA_KEY_PLAYBACK_PROGRESS;
 import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.METADATA_KEY_PLAYBACK_STATUS;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.v4.media.MediaBrowserCompat.MediaItem;
+import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
-import android.support.v4.media.session.MediaSessionCompat.QueueItem;
+import android.text.TextUtils;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 import androidx.media.utils.MediaConstants;
 
 import java.util.ArrayList;
@@ -41,6 +43,15 @@ import java.util.List;
 public class TmaMediaItem {
 
     private static final String CUSTOM_ACTION_PREFIX = "com.android.car.media.testmediaapp.";
+
+    /**
+     * The character used to separate short media ids (returned by {@link #getMediaId} from
+     * different {@link TmaMediaItem} instances to form a full path. See {@link #getPath}.
+     */
+    public static final char TREE_PATH_SEPARATOR = '#';
+
+    /** Separates multiple media ids (eg: in links). See {@link #selectLink} */
+    public static final char MULTI_ID_SEPARATOR = '|';
 
     /** The name of each entry is the value used in the json file. */
     public enum ContentStyle {
@@ -133,11 +144,9 @@ public class TmaMediaItem {
     private final ContentStyle mSingleItemStyle;
     private final int mSelfUpdateMs;
 
+    /** Read only list, doesn't contain the children from {@link #mInclude}. */
+    private final List<TmaMediaItem> mChildren;
 
-    /** Internally modifiable list (for includes). */
-    private final List<TmaMediaItem> mChildren = new ArrayList<>();
-    /** Internally modifiable list (for includes). */
-    private final List<TmaMediaItem> mPlayableChildren = new ArrayList<>();
     /** Read only list. */
     final List<TmaCustomAction> mCustomActions;
     /** Read only list. Events triggered when starting the playback. */
@@ -147,7 +156,6 @@ public class TmaMediaItem {
     /** List of browse custom actions */
     final List<String> mBrowseActions;
 
-    @Nullable private TmaMediaItem mParent;
     int mHearts;
     int mRevealCounter;
     boolean mIsHidden = false;
@@ -167,52 +175,31 @@ public class TmaMediaItem {
         mBrowseActions = browseActions;
         mMediaEvents = Collections.unmodifiableList(mediaEvents);
         mInclude = include;
-        setChildren(children);
-    }
-
-    private void setParent(@Nullable TmaMediaItem parent) {
-        mParent = parent;
+        mChildren = Collections.unmodifiableList(children);
     }
 
     int getSelfUpdateDelay() {
         return mSelfUpdateMs;
     }
 
+    boolean testFlag(int flag) {
+        return (mFlags & flag) != 0;
+    }
+
+    int getFlags() {
+        return mFlags;
+    }
+
     List<TmaMediaItem> getChildren() {
-        return Collections.unmodifiableList(mChildren);
-    }
-
-    @Nullable
-    TmaMediaItem getParent() {
-        return mParent;
-    }
-
-    @Nullable
-    TmaMediaItem getPlayableByIndex(long index) {
-        if (index < 0 || index >= mPlayableChildren.size()) {
-            return null;
-        }
-        return mPlayableChildren.get((int)index);
-    }
-
-    @Nullable
-    TmaMediaItem getPrevious() {
-        if (mParent == null) return null;
-        List<TmaMediaItem> queueItems = mParent.mPlayableChildren;
-        int myIndex = queueItems.indexOf(this);
-        return (myIndex > 0) ? queueItems.get(myIndex - 1) : null;
-    }
-
-    @Nullable
-    TmaMediaItem getNext() {
-        if (mParent == null) return null;
-        List<TmaMediaItem> queueItems = mParent.mPlayableChildren;
-        int myIndex = queueItems.indexOf(this);
-        return (myIndex < queueItems.size() - 1) ? queueItems.get(myIndex + 1) : null;
+        return mChildren;
     }
 
     String getMediaId() {
         return mMediaMetadata.getString(METADATA_KEY_MEDIA_ID);
+    }
+
+    String getPath(String parentPath) {
+        return parentPath + getMediaId() + TREE_PATH_SEPARATOR;
     }
 
     /** Returns -1 if the duration key is unspecified or <= 0. */
@@ -222,53 +209,21 @@ public class TmaMediaItem {
         return result;
     }
 
-    void setChildren(List<TmaMediaItem> children) {
-        mChildren.clear();
-        mChildren.addAll(children);
-
-        List<TmaMediaItem> playableChildren = new ArrayList<>(children.size());
-        for (TmaMediaItem child: mChildren) {
-            child.setParent(this);
-            if ((child.mFlags & FLAG_PLAYABLE) != 0) {
-                playableChildren.add(child);
-            }
-        }
-        mPlayableChildren.clear();
-        mPlayableChildren.addAll(playableChildren);
+    void updateSessionMetadata(TmaLibrary lib, MediaSessionCompat session) {
+        MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder(mMediaMetadata);
+        selectLink(lib, builder, KEY_SUBTITLE_LINK_MEDIA_ID);
+        selectLink(lib, builder, KEY_DESCRIPTION_LINK_MEDIA_ID);
+        session.setMetadata(builder.build());
     }
 
-    void updateSessionMetadata(MediaSessionCompat session) {
-        session.setMetadata(mMediaMetadata);
-    }
-
-    MediaItem toMediaItem() {
-        return new MediaItem(buildDescription(), mFlags);
-    }
-
-    List<QueueItem> buildQueue() {
-        int count = mPlayableChildren.size();
-        List<QueueItem> queue = new ArrayList<>(count);
-        for (int i = 0 ; i < count; i++) {
-            TmaMediaItem child = mPlayableChildren.get(i);
-            queue.add(new QueueItem(child.buildDescription(), i));
-        }
-        return queue;
-    }
-
-    /** Returns the id of the item in the queue. */
-    long getQueueId() {
-        if (mParent != null) {
-            int index = mParent.mPlayableChildren.indexOf(this);
-            if (index >= 0) return index;
-        }
-        return MediaSessionCompat.QueueItem.UNKNOWN_ID;
+    @SuppressLint("WrongConstant")
+    MediaBrowserCompat.MediaItem toSessionItem(@NonNull String mediaPath) {
+        return new MediaBrowserCompat.MediaItem(buildDescription(mediaPath), getFlags());
     }
 
     /**
      * Replace old action with new action if old actions exists in actions list, if old action not
      * found, add new action to front of list.
-     * @param oldAction
-     * @param newAction
      */
     public void replaceAction(TmaBrowseAction oldAction, TmaBrowseAction newAction) {
         int oldActionIndex = mBrowseActions.indexOf(oldAction.mId);
@@ -280,13 +235,13 @@ public class TmaMediaItem {
         }
     }
 
-    private MediaDescriptionCompat buildDescription() {
+    MediaDescriptionCompat buildDescription(@NonNull String parentPath) {
 
         // Use the default media description but add our extras.
         MediaDescriptionCompat metadataDescription = mMediaMetadata.getDescription();
 
         MediaDescriptionCompat.Builder bob = new MediaDescriptionCompat.Builder();
-        bob.setMediaId(metadataDescription.getMediaId());
+        bob.setMediaId(getPath(parentPath));
         bob.setTitle(metadataDescription.getTitle());
         bob.setSubtitle(metadataDescription.getSubtitle());
         bob.setDescription(metadataDescription.getDescription());
@@ -326,5 +281,34 @@ public class TmaMediaItem {
 
         bob.setExtras(extras);
         return bob.build();
+    }
+
+    /**
+     * TLdr: selects the first link that works with the current config.
+     *
+     * The same file can be included in multiple places, so most links start with _ROOT_ and will
+     * resolved to the current root node (eg: _ROOT_#advanced#art nodes#art_nature_files#).
+     *
+     * However with Queue Only, the current root is empty, so links need to point explicitly to a
+     * specific file (eg: media_items/album_art/art_nodes.json#art_nature_files#).
+     *
+     * However, an absolutely linked item and its "corresponding item in a non empty browse tree
+     * are not recognised as being the same because their ids are different, which lets CarMediaApp
+     * push the node twice on the stack...
+     *
+     * Soo.. the json files usually include both link forms separated by {@link #MULTI_ID_SEPARATOR}
+     * and this method selects the fist form that works.
+     */
+    private void selectLink(@NonNull TmaLibrary lib, MediaMetadataCompat.Builder bob, String key) {
+        String value = mMediaMetadata.getString(key);
+        if (!TextUtils.isEmpty(value)) {
+            String[] idsList = value.split("\\" + MULTI_ID_SEPARATOR);
+            for (String mediaId : idsList) {
+                if (lib.getMediaItemById(mediaId) != null) {
+                    bob.putString(key, mediaId);
+                    return;
+                }
+            }
+        }
     }
 }

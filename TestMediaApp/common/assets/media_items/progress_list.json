@@ -4,7 +4,7 @@
   "BROWSABLE_HINT": "LIST_CATEGORY",
 
   "METADATA": {
-    "MEDIA_ID": "progress list",
+    "MEDIA_ID": "media_items/progress_list.json",
     "DISPLAY_TITLE": "ProgressBar List"
   },
 
