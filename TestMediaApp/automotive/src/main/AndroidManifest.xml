@@ -58,6 +58,7 @@
                 <action android:name="android.media.browse.MediaBrowserService"/>
                 <action android:name="android.intent.action.MEDIA_BUTTON"/>
             </intent-filter>
+            <meta-data android:name="androidx.car.app.launchable" android:value="true" />
         </service>
 
         <service android:name=".TmaForegroundService"
@@ -75,6 +76,7 @@
                 <action android:name="android.media.browse.MediaBrowserService"/>
                 <action android:name="android.intent.action.MEDIA_BUTTON"/>
             </intent-filter>
+            <meta-data android:name="androidx.car.app.launchable" android:value="true" />
         </service>
 
         <activity android:name=".prefs.TmaPrefsActivity"
