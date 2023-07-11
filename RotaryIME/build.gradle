@@ -17,11 +17,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion gradle.ext.aaosLatestSDK
     defaultConfig {
         applicationId "com.android.car.rotaryime"
         minSdkVersion 30
-        targetSdkVersion 32
+        targetSdkVersion gradle.ext.aaosTargetSDK
         versionCode gradle.ext.getVersionCode()
         versionName gradle.ext.getVersionName()
     }
@@ -81,6 +81,10 @@ android {
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
         }
+    }
+    buildFeatures {
+        renderScript true
+        aidl true
     }
 }
 
