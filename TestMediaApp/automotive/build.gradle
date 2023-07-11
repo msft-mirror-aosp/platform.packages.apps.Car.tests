@@ -24,7 +24,7 @@ android {
     defaultConfig {
         applicationId "com.android.car.media.testmediaapp"
         minSdkVersion 29
-        targetSdkVersion 32
+        targetSdkVersion gradle.ext.aaosTargetSDK
         versionCode gradle.ext.getVersionCode()
         versionName gradle.ext.getVersionName()
     }
