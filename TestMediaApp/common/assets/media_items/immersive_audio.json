@@ -1,0 +1,92 @@
+{
+  "FLAGS": "browsable",
+
+  "METADATA": {
+    "MEDIA_ID": "media_items/immersive_audio.json",
+    "DISPLAY_TITLE": "Immersive Audio"
+  },
+
+  "CHILDREN": [
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "tintable",
+        "DISPLAY_TITLE": "Tintable",
+        "DISPLAY_SUBTITLE": "large & small icons",
+        "DURATION": 3600000,
+        "IMMERSIVE_AUDIO": 1,
+        "FORMAT_TINTABLE_LARGE_ICON": "drawable/iam_3d_logo",
+        "FORMAT_TINTABLE_SMALL_ICON": "drawable/iam_3d_logo_small"
+      }
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "tintable_no_duration",
+        "DISPLAY_TITLE": "Tintable No duration",
+        "DISPLAY_SUBTITLE": "large & small icons",
+        "IMMERSIVE_AUDIO": 1,
+        "FORMAT_TINTABLE_LARGE_ICON": "drawable/iam_3d_logo",
+        "FORMAT_TINTABLE_SMALL_ICON": "drawable/iam_3d_logo_small"
+      }
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "longTitle",
+        "DISPLAY_TITLE": "This is a very long title to test text truncation",
+        "DISPLAY_SUBTITLE": "short subtitle",
+        "DURATION": 3600000,
+        "IMMERSIVE_AUDIO": 1,
+        "FORMAT_TINTABLE_LARGE_ICON": "drawable/iam_3d_logo",
+        "FORMAT_TINTABLE_SMALL_ICON": "drawable/iam_3d_logo_small"
+      }
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "longSubtitle",
+        "DISPLAY_TITLE": "Short title",
+        "DISPLAY_SUBTITLE": "This is a very long subtitle to test text truncation",
+        "DURATION": 3600000,
+        "IMMERSIVE_AUDIO": 1,
+        "FORMAT_TINTABLE_LARGE_ICON": "drawable/iam_3d_logo",
+        "FORMAT_TINTABLE_SMALL_ICON": "drawable/iam_3d_logo_small"
+      }
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "non-tintable",
+        "DISPLAY_TITLE": "Non Tintable",
+        "DISPLAY_SUBTITLE": "large & small icons",
+        "DURATION": 3600000,
+        "IMMERSIVE_AUDIO": 1,
+        "FORMAT_DARK_MODE_LARGE_ICON": "drawable/iam_3d_logo_dark",
+        "FORMAT_LIGHT_MODE_LARGE_ICON": "drawable/iam_3d_logo_light",
+        "FORMAT_DARK_MODE_SMALL_ICON": "drawable/iam_3d_logo_small_dark",
+        "FORMAT_LIGHT_MODE_SMALL_ICON": "drawable/iam_3d_logo_small_light"
+      }
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "everything",
+        "DISPLAY_TITLE": "Everything",
+        "DISPLAY_SUBTITLE": "large & small icons",
+        "DISPLAY_DESCRIPTION": "Both tintable and non",
+        "DURATION": 3600000,
+        "IMMERSIVE_AUDIO": 1,
+        "FORMAT_TINTABLE_LARGE_ICON": "drawable/iam_3d_logo",
+        "FORMAT_TINTABLE_SMALL_ICON": "drawable/iam_3d_logo_small",
+        "FORMAT_DARK_MODE_LARGE_ICON": "drawable/iam_3d_logo_dark",
+        "FORMAT_LIGHT_MODE_LARGE_ICON": "drawable/iam_3d_logo_light",
+        "FORMAT_DARK_MODE_SMALL_ICON": "drawable/iam_3d_logo_small_dark",
+        "FORMAT_LIGHT_MODE_SMALL_ICON": "drawable/iam_3d_logo_small_light"
+      }
+    }
+  ]
+}
+
+
+

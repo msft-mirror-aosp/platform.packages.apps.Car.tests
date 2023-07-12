@@ -50,7 +50,14 @@ import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_YEAR;
 
 import static androidx.media.utils.MediaConstants.METADATA_KEY_IS_EXPLICIT;
 
+import static com.android.car.media.testmediaapp.MediaConstants.KEY_CONTENT_FORMAT_DARK_MODE_LARGE_ICON_URI;
+import static com.android.car.media.testmediaapp.MediaConstants.KEY_CONTENT_FORMAT_DARK_MODE_SMALL_ICON_URI;
+import static com.android.car.media.testmediaapp.MediaConstants.KEY_CONTENT_FORMAT_LIGHT_MODE_LARGE_ICON_URI;
+import static com.android.car.media.testmediaapp.MediaConstants.KEY_CONTENT_FORMAT_LIGHT_MODE_SMALL_ICON_URI;
+import static com.android.car.media.testmediaapp.MediaConstants.KEY_CONTENT_FORMAT_TINTABLE_LARGE_ICON_URI;
+import static com.android.car.media.testmediaapp.MediaConstants.KEY_CONTENT_FORMAT_TINTABLE_SMALL_ICON_URI;
 import static com.android.car.media.testmediaapp.MediaConstants.KEY_DESCRIPTION_LINK_MEDIA_ID;
+import static com.android.car.media.testmediaapp.MediaConstants.KEY_IMMERSIVE_AUDIO;
 import static com.android.car.media.testmediaapp.MediaConstants.KEY_SUBTITLE_LINK_MEDIA_ID;
 import static com.android.car.media.testmediaapp.TmaMediaItem.MULTI_ID_SEPARATOR;
 import static com.android.car.media.testmediaapp.TmaMediaItem.TREE_PATH_SEPARATOR;
@@ -79,6 +86,7 @@ class TmaMediaMetadataReader {
     private enum ValueType {
         LONG,
         TEXT,
+        URI,
         BITMAP,
         RATING
     }
@@ -101,26 +109,33 @@ class TmaMediaMetadataReader {
         DISC_NUMBER         (METADATA_KEY_DISC_NUMBER,          ValueType.LONG),
         ALBUM_ARTIST        (METADATA_KEY_ALBUM_ARTIST,         ValueType.TEXT),
         ART                 (METADATA_KEY_ART,                  ValueType.BITMAP),
-        ART_URI             (METADATA_KEY_ART_URI,              ValueType.TEXT),
+        ART_URI             (METADATA_KEY_ART_URI,              ValueType.URI),
         ALBUM_ART           (METADATA_KEY_ALBUM_ART,            ValueType.BITMAP),
-        ALBUM_ART_URI       (METADATA_KEY_ALBUM_ART_URI,        ValueType.TEXT),
+        ALBUM_ART_URI       (METADATA_KEY_ALBUM_ART_URI,        ValueType.URI),
         USER_RATING         (METADATA_KEY_USER_RATING,          ValueType.RATING),
         RATING              (METADATA_KEY_RATING,               ValueType.RATING),
         DISPLAY_TITLE       (METADATA_KEY_DISPLAY_TITLE,        ValueType.TEXT),
         DISPLAY_SUBTITLE    (METADATA_KEY_DISPLAY_SUBTITLE,     ValueType.TEXT),
         DISPLAY_DESCRIPTION (METADATA_KEY_DISPLAY_DESCRIPTION,  ValueType.TEXT),
         DISPLAY_ICON        (METADATA_KEY_DISPLAY_ICON,         ValueType.BITMAP),
-        DISPLAY_ICON_URI    (METADATA_KEY_DISPLAY_ICON_URI,     ValueType.TEXT),
+        DISPLAY_ICON_URI    (METADATA_KEY_DISPLAY_ICON_URI,     ValueType.URI),
         MEDIA_ID            (METADATA_KEY_MEDIA_ID,             ValueType.TEXT),
         BT_FOLDER_TYPE      (METADATA_KEY_BT_FOLDER_TYPE,       ValueType.LONG),
-        MEDIA_URI           (METADATA_KEY_MEDIA_URI,            ValueType.TEXT),
+        MEDIA_URI           (METADATA_KEY_MEDIA_URI,            ValueType.URI),
         ADVERTISEMENT       (METADATA_KEY_ADVERTISEMENT,        ValueType.LONG),
         DOWNLOAD_STATUS     (METADATA_KEY_DOWNLOAD_STATUS,      ValueType.LONG),
         PLAYBACK_PROGRESS   (METADATA_KEY_PLAYBACK_PROGRESS,    ValueType.LONG),
         PLAYBACK_STATUS     (METADATA_KEY_PLAYBACK_STATUS,      ValueType.LONG),
         EXPLICIT            (METADATA_KEY_IS_EXPLICIT,          ValueType.LONG),
         SUBTITLE_LINK_MEDIA_ID      (KEY_SUBTITLE_LINK_MEDIA_ID,  ValueType.TEXT),
-        DESCRIPTION_LINK_MEDIA_ID   (KEY_DESCRIPTION_LINK_MEDIA_ID,  ValueType.TEXT);
+        DESCRIPTION_LINK_MEDIA_ID   (KEY_DESCRIPTION_LINK_MEDIA_ID,  ValueType.TEXT),
+        IMMERSIVE_AUDIO     (KEY_IMMERSIVE_AUDIO,               ValueType.LONG),
+        FORMAT_TINTABLE_LARGE_ICON(KEY_CONTENT_FORMAT_TINTABLE_LARGE_ICON_URI,      ValueType.URI),
+        FORMAT_TINTABLE_SMALL_ICON(KEY_CONTENT_FORMAT_TINTABLE_SMALL_ICON_URI,      ValueType.URI),
+        FORMAT_DARK_MODE_LARGE_ICON(KEY_CONTENT_FORMAT_DARK_MODE_LARGE_ICON_URI,    ValueType.URI),
+        FORMAT_LIGHT_MODE_LARGE_ICON(KEY_CONTENT_FORMAT_LIGHT_MODE_LARGE_ICON_URI,  ValueType.URI),
+        FORMAT_DARK_MODE_SMALL_ICON(KEY_CONTENT_FORMAT_DARK_MODE_SMALL_ICON_URI,    ValueType.URI),
+        FORMAT_LIGHT_MODE_SMALL_ICON(KEY_CONTENT_FORMAT_LIGHT_MODE_SMALL_ICON_URI,  ValueType.URI);
 
         /** The full name of the key in {@link MediaMetadataCompat}. */
         final String mLongName;
@@ -143,12 +158,9 @@ class TmaMediaMetadataReader {
     }
 
     private final Map<String, MetadataKey> mMetadataKeys;
-    private final Set<MetadataKey> mUriKeys;
 
     private TmaMediaMetadataReader() {
         mMetadataKeys = enumNamesToValues(MetadataKey.values());
-        mUriKeys = EnumSet.of(MetadataKey.ART_URI, MetadataKey.ALBUM_ART_URI,
-                MetadataKey.DISPLAY_ICON_URI, MetadataKey.MEDIA_URI);
     }
 
 
@@ -168,10 +180,11 @@ class TmaMediaMetadataReader {
                         if (key == MetadataKey.MEDIA_ID) {
                             validateMediaId(value);
                         }
-                        if (mUriKeys.contains(key)) {
-                            value = TmaPublicProvider.buildUriString(value);
-                        }
                         builder.putString(key.mLongName, value);
+                        break;
+                    case URI:
+                        String uri = TmaPublicProvider.buildUriString(object.getString(jsonKey));
+                        builder.putString(key.mLongName, uri);
                         break;
                     case BITMAP:
                     case RATING:
