@@ -57,6 +57,15 @@
     },
     {
       "FLAGS": "browsable",
+      "BROWSABLE_HINT": "LIST",
+      "METADATA": {
+        "MEDIA_ID": "immersive audio",
+        "DISPLAY_TITLE": "Immersive Audio"
+      },
+      "INCLUDE":"media_items/immersive_audio.json"
+    },
+    {
+      "FLAGS": "browsable",
       "PLAYABLE_HINT": "LIST",
       "METADATA": {
         "MEDIA_ID": "more songs",
