@@ -15,8 +15,8 @@
         "DISPLAY_SUBTITLE": "large & small icons",
         "DURATION": 3600000,
         "IMMERSIVE_AUDIO": 1,
-        "FORMAT_TINTABLE_LARGE_ICON": "drawable/iam_3d_logo",
-        "FORMAT_TINTABLE_SMALL_ICON": "drawable/iam_3d_logo_small"
+        "FORMAT_TINTABLE_LARGE_ICON": "drawable/hda_logo",
+        "FORMAT_TINTABLE_SMALL_ICON": "drawable/hda_logo_small"
       }
     },
     {
@@ -26,8 +26,8 @@
         "DISPLAY_TITLE": "Tintable No duration",
         "DISPLAY_SUBTITLE": "large & small icons",
         "IMMERSIVE_AUDIO": 1,
-        "FORMAT_TINTABLE_LARGE_ICON": "drawable/iam_3d_logo",
-        "FORMAT_TINTABLE_SMALL_ICON": "drawable/iam_3d_logo_small"
+        "FORMAT_TINTABLE_LARGE_ICON": "drawable/hda_logo",
+        "FORMAT_TINTABLE_SMALL_ICON": "drawable/hda_logo_small"
       }
     },
     {
@@ -38,8 +38,8 @@
         "DISPLAY_SUBTITLE": "short subtitle",
         "DURATION": 3600000,
         "IMMERSIVE_AUDIO": 1,
-        "FORMAT_TINTABLE_LARGE_ICON": "drawable/iam_3d_logo",
-        "FORMAT_TINTABLE_SMALL_ICON": "drawable/iam_3d_logo_small"
+        "FORMAT_TINTABLE_LARGE_ICON": "drawable/hda_logo",
+        "FORMAT_TINTABLE_SMALL_ICON": "drawable/hda_logo_small"
       }
     },
     {
@@ -50,39 +50,27 @@
         "DISPLAY_SUBTITLE": "This is a very long subtitle to test text truncation",
         "DURATION": 3600000,
         "IMMERSIVE_AUDIO": 1,
-        "FORMAT_TINTABLE_LARGE_ICON": "drawable/iam_3d_logo",
-        "FORMAT_TINTABLE_SMALL_ICON": "drawable/iam_3d_logo_small"
+        "FORMAT_TINTABLE_LARGE_ICON": "drawable/hda_logo",
+        "FORMAT_TINTABLE_SMALL_ICON": "drawable/hda_logo_small"
       }
     },
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "non-tintable",
-        "DISPLAY_TITLE": "Non Tintable",
-        "DISPLAY_SUBTITLE": "large & small icons",
+        "MEDIA_ID": "noSubTitle",
+        "DISPLAY_TITLE": "No subtitle",
         "DURATION": 3600000,
         "IMMERSIVE_AUDIO": 1,
-        "FORMAT_DARK_MODE_LARGE_ICON": "drawable/iam_3d_logo_dark",
-        "FORMAT_LIGHT_MODE_LARGE_ICON": "drawable/iam_3d_logo_light",
-        "FORMAT_DARK_MODE_SMALL_ICON": "drawable/iam_3d_logo_small_dark",
-        "FORMAT_LIGHT_MODE_SMALL_ICON": "drawable/iam_3d_logo_small_light"
+        "FORMAT_TINTABLE_LARGE_ICON": "drawable/hda_logo",
+        "FORMAT_TINTABLE_SMALL_ICON": "drawable/hda_logo_small"
       }
     },
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "everything",
-        "DISPLAY_TITLE": "Everything",
-        "DISPLAY_SUBTITLE": "large & small icons",
-        "DISPLAY_DESCRIPTION": "Both tintable and non",
-        "DURATION": 3600000,
-        "IMMERSIVE_AUDIO": 1,
-        "FORMAT_TINTABLE_LARGE_ICON": "drawable/iam_3d_logo",
-        "FORMAT_TINTABLE_SMALL_ICON": "drawable/iam_3d_logo_small",
-        "FORMAT_DARK_MODE_LARGE_ICON": "drawable/iam_3d_logo_dark",
-        "FORMAT_LIGHT_MODE_LARGE_ICON": "drawable/iam_3d_logo_light",
-        "FORMAT_DARK_MODE_SMALL_ICON": "drawable/iam_3d_logo_small_dark",
-        "FORMAT_LIGHT_MODE_SMALL_ICON": "drawable/iam_3d_logo_small_light"
+        "MEDIA_ID": "noSubTitle",
+        "DISPLAY_TITLE": "No subtitle, no logo",
+        "DURATION": 3600000
       }
     }
   ]
