@@ -33,12 +33,4 @@ public class MediaConstants {
             "androidx.car.app.mediaextensions.KEY_CONTENT_FORMAT_TINTABLE_LARGE_ICON_URI";
     public static final String KEY_CONTENT_FORMAT_TINTABLE_SMALL_ICON_URI =
             "androidx.car.app.mediaextensions.KEY_CONTENT_FORMAT_TINTABLE_SMALL_ICON_URI";
-    public static final String KEY_CONTENT_FORMAT_DARK_MODE_LARGE_ICON_URI =
-            "androidx.car.app.mediaextensions.KEY_CONTENT_FORMAT_DARK_MODE_LARGE_ICON_URI";
-    public static final String KEY_CONTENT_FORMAT_LIGHT_MODE_LARGE_ICON_URI =
-            "androidx.car.app.mediaextensions.KEY_CONTENT_FORMAT_LIGHT_MODE_LARGE_ICON_URI";
-    public static final String KEY_CONTENT_FORMAT_DARK_MODE_SMALL_ICON_URI =
-            "androidx.car.app.mediaextensions.KEY_CONTENT_FORMAT_DARK_MODE_SMALL_ICON_URI";
-    public static final String KEY_CONTENT_FORMAT_LIGHT_MODE_SMALL_ICON_URI =
-            "androidx.car.app.mediaextensions.KEY_CONTENT_FORMAT_LIGHT_MODE_SMALL_ICON_URI";
 }
