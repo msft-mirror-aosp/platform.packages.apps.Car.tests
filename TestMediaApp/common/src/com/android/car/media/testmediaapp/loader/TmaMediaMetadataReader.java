@@ -50,10 +50,6 @@ import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_YEAR;
 
 import static androidx.media.utils.MediaConstants.METADATA_KEY_IS_EXPLICIT;
 
-import static com.android.car.media.testmediaapp.MediaConstants.KEY_CONTENT_FORMAT_DARK_MODE_LARGE_ICON_URI;
-import static com.android.car.media.testmediaapp.MediaConstants.KEY_CONTENT_FORMAT_DARK_MODE_SMALL_ICON_URI;
-import static com.android.car.media.testmediaapp.MediaConstants.KEY_CONTENT_FORMAT_LIGHT_MODE_LARGE_ICON_URI;
-import static com.android.car.media.testmediaapp.MediaConstants.KEY_CONTENT_FORMAT_LIGHT_MODE_SMALL_ICON_URI;
 import static com.android.car.media.testmediaapp.MediaConstants.KEY_CONTENT_FORMAT_TINTABLE_LARGE_ICON_URI;
 import static com.android.car.media.testmediaapp.MediaConstants.KEY_CONTENT_FORMAT_TINTABLE_SMALL_ICON_URI;
 import static com.android.car.media.testmediaapp.MediaConstants.KEY_DESCRIPTION_LINK_MEDIA_ID;
@@ -131,11 +127,7 @@ class TmaMediaMetadataReader {
         DESCRIPTION_LINK_MEDIA_ID   (KEY_DESCRIPTION_LINK_MEDIA_ID,  ValueType.TEXT),
         IMMERSIVE_AUDIO     (KEY_IMMERSIVE_AUDIO,               ValueType.LONG),
         FORMAT_TINTABLE_LARGE_ICON(KEY_CONTENT_FORMAT_TINTABLE_LARGE_ICON_URI,      ValueType.URI),
-        FORMAT_TINTABLE_SMALL_ICON(KEY_CONTENT_FORMAT_TINTABLE_SMALL_ICON_URI,      ValueType.URI),
-        FORMAT_DARK_MODE_LARGE_ICON(KEY_CONTENT_FORMAT_DARK_MODE_LARGE_ICON_URI,    ValueType.URI),
-        FORMAT_LIGHT_MODE_LARGE_ICON(KEY_CONTENT_FORMAT_LIGHT_MODE_LARGE_ICON_URI,  ValueType.URI),
-        FORMAT_DARK_MODE_SMALL_ICON(KEY_CONTENT_FORMAT_DARK_MODE_SMALL_ICON_URI,    ValueType.URI),
-        FORMAT_LIGHT_MODE_SMALL_ICON(KEY_CONTENT_FORMAT_LIGHT_MODE_SMALL_ICON_URI,  ValueType.URI);
+        FORMAT_TINTABLE_SMALL_ICON(KEY_CONTENT_FORMAT_TINTABLE_SMALL_ICON_URI,      ValueType.URI);
 
         /** The full name of the key in {@link MediaMetadataCompat}. */
         final String mLongName;
