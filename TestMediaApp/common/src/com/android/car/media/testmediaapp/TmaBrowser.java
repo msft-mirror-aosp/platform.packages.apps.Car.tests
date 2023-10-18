@@ -244,6 +244,15 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
         notifyChildrenChanged(ROOT_PATH);
     }
 
+    private String stringify(Bundle bundle) {
+        StringBuilder builder = new StringBuilder();
+        for (String key : bundle.keySet()) {
+            String shortKey = key.substring(key.lastIndexOf('.'));
+            builder.append("\n").append(shortKey).append(": ").append(bundle.get(key));
+        }
+        return builder.toString();
+    }
+
     @Override
     public BrowserRoot onGetRoot(
             @NonNull String clientPackageName, int clientUid, Bundle rootHints) {
@@ -251,16 +260,21 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
             Log.e(TAG, "Client " + clientPackageName + " didn't set rootHints.");
             throw new NullPointerException("rootHints is null");
         }
-        Log.i(TAG, "onGetroot client: " + clientPackageName
-                + " BROWSER_ROOT_HINTS_KEY_MEDIA_ART_SIZE_PIXELS: "
-                + rootHints.getInt(MediaConstants.BROWSER_ROOT_HINTS_KEY_MEDIA_ART_SIZE_PIXELS
-                , 0));
+        Log.i(TAG, "onGetRoot client: " + clientPackageName + " Hints: " + stringify(rootHints));
         return mRoot;
     }
 
 
     @Override
     public void onLoadChildren(@NonNull String parentId, @NonNull Result<List<MediaItem>> result) {
+        onLoadChildren(parentId, result, new Bundle());
+    }
+
+    @Override
+    public void onLoadChildren(@NonNull String parentId, @NonNull Result<List<MediaItem>> result,
+            @NonNull Bundle options) {
+        Log.i(TAG, "onLoadChildren parentId: " + parentId + " Options: " + stringify(options));
+
         getMediaItemsWithDelay(parentId, result, null);
 
         if (QUEUE_ONLY.equals(mPrefs.mRootNodeType.getValue()) && ROOT_PATH.equals(parentId)) {
@@ -286,6 +300,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     @Override
     public void onSearch(@NonNull String query, Bundle extras,
             @NonNull Result<List<MediaItem>> result) {
+        Log.i(TAG, "onSearch query: " + query + " Extras: " + stringify(extras));
         getMediaItemsWithDelay(ROOT_PATH, result, query);
     }
 
