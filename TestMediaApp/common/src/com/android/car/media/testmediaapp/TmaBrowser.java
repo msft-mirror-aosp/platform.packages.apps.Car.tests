@@ -257,8 +257,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     public BrowserRoot onGetRoot(
             @NonNull String clientPackageName, int clientUid, Bundle rootHints) {
         if (rootHints == null) {
-            Log.e(TAG, "Client " + clientPackageName + " didn't set rootHints.");
-            throw new NullPointerException("rootHints is null");
+            Log.w(TAG, "Client " + clientPackageName + " didn't set rootHints.");
         }
         Log.i(TAG, "onGetRoot client: " + clientPackageName + " Hints: " + stringify(rootHints));
         return mRoot;
