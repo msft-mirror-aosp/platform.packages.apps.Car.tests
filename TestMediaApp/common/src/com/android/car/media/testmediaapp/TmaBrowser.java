@@ -16,18 +16,24 @@
 package com.android.car.media.testmediaapp;
 
 import static androidx.media.utils.MediaConstants.BROWSER_SERVICE_EXTRAS_KEY_SEARCH_SUPPORTED;
-
 import static com.android.car.media.testmediaapp.TmaLibrary.ROOT_PATH;
-
-import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.*;
+import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.ADD_TO_QUEUE;
+import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.DOWNLOAD;
+import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.DOWNLOADED;
+import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.DOWNLOADING;
+import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.FAVORITE;
+import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.FAVORITED;
+import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.REMOVE_FROM_QUEUE;
+import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.getActionById;
+import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.values;
 import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ACTION_EXTRAS;
 import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ACTION_ICON;
 import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ACTION_ID;
 import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ACTION_LABEL;
 import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_MEDIA_ITEM_ID;
 import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ROOT_LIST;
-import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.AnalyticsState.LOG;
 import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.AnalyticsState.ANALYTICS_ON;
+import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.AnalyticsState.LOG;
 import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.AnalyticsState.SHARE_GOOGLE;
 import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.AnalyticsState.SHARE_OEM;
 import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaBrowseNodeType.LEAF_CHILDREN;
@@ -52,14 +58,14 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.OptIn;
+import androidx.car.app.mediaextensions.analytics.client.RootHintsPopulator;
+import androidx.car.app.mediaextensions.analytics.event.AnalyticsEvent;
 import androidx.media.MediaBrowserServiceCompat;
 import androidx.media.session.MediaButtonReceiver;
-import androidx.media.utils.MediaConstants;
 
-import com.android.car.media.extensions.analytics.client.RootHintsUtil;
 import com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction;
 import com.android.car.media.testmediaapp.analytics.TmaAnalyticsBroadcastReceiver;
-import com.android.car.media.extensions.analytics.event.AnalyticsEvent;
 import com.android.car.media.testmediaapp.loader.TmaLoader;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaAccountType;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaAnalyticsState;
@@ -70,6 +76,7 @@ import com.android.car.media.testmediaapp.prefs.TmaPrefs;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -82,6 +89,7 @@ import java.util.regex.Pattern;
  * The media items are cached in the {@link TmaLibrary}, and can be virtually played with
  * {@link TmaPlayer}.
  */
+@OptIn(markerClass = androidx.car.app.annotations2.ExperimentalCarApi.class)
 public class TmaBrowser extends MediaBrowserServiceCompat {
     private static final String TAG = "TmaBrowser";
 
@@ -152,12 +160,13 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
 
         browserRootExtras.putParcelable(FAVORITES_MEDIA_ITEM, getFavoritesMediaItem());
 
-        RootHintsUtil.addAnalyticsRootExtras(browserRootExtras,
-                mPrefs.mAnalyticsState.getValue().getFlags().contains(ANALYTICS_ON.getId()),
-                mPrefs.mAnalyticsState.getValue().getFlags().contains(SHARE_GOOGLE.getId()),
-                mPrefs.mAnalyticsState.getValue().getFlags().contains(SHARE_OEM.getId()),
-                new ComponentName(getApplicationContext(), TmaAnalyticsBroadcastReceiver.class),
-                TmaAnalyticsBroadcastReceiver.SESSION_ID);
+        RootHintsPopulator pope = new RootHintsPopulator(browserRootExtras);
+        Set<String> flags = mPrefs.mAnalyticsState.getValue().getFlags();
+        pope.setAnalyticsOptIn(flags.contains(ANALYTICS_ON.getId()),
+                new ComponentName(getApplicationContext(), TmaAnalyticsBroadcastReceiver.class));
+        pope.setPlatformShare(flags.contains(SHARE_GOOGLE.getId()));
+        pope.setOemShare(flags.contains(SHARE_OEM.getId()));
+        pope.setSessionId(TmaAnalyticsBroadcastReceiver.SESSION_ID);
 
         mRoot = new BrowserRoot(ROOT_PATH, browserRootExtras);
         updatePlaybackState(mPrefs.mAccountType.getValue());

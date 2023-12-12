@@ -16,8 +16,15 @@
 
 package com.android.car.media.testmediaapp.prefs;
 
-import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.AnalyticsState.DISPLAY;
+import static android.text.format.DateFormat.format;
+import static androidx.car.app.mediaextensions.analytics.event.AnalyticsEvent.EVENT_TYPE_BROWSE_NODE_CHANGED_EVENT;
+import static androidx.car.app.mediaextensions.analytics.event.AnalyticsEvent.EVENT_TYPE_ERROR_EVENT;
+import static androidx.car.app.mediaextensions.analytics.event.AnalyticsEvent.EVENT_TYPE_MEDIA_CLICKED_EVENT;
+import static androidx.car.app.mediaextensions.analytics.event.AnalyticsEvent.EVENT_TYPE_UNKNOWN_EVENT;
+import static androidx.car.app.mediaextensions.analytics.event.AnalyticsEvent.EVENT_TYPE_VIEW_CHANGE_EVENT;
+import static androidx.car.app.mediaextensions.analytics.event.AnalyticsEvent.EVENT_TYPE_VISIBLE_ITEMS_EVENT;
 import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.AnalyticsState.ANALYTICS_ON;
+import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.AnalyticsState.DISPLAY;
 
 import android.Manifest;
 import android.app.Activity;
@@ -25,7 +32,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +42,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.OptIn;
+import androidx.car.app.mediaextensions.analytics.event.AnalyticsEvent;
 import androidx.preference.DropDownPreference;
 import androidx.preference.MultiSelectListPreference;
 import androidx.preference.Preference;
@@ -54,6 +62,7 @@ import java.util.ArrayList;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+@OptIn(markerClass = androidx.car.app.annotations2.ExperimentalCarApi.class)
 public class TmaPrefsFragment extends PreferenceFragmentCompat {
 
     private TmaPrefs mPrefs;
@@ -108,16 +117,29 @@ public class TmaPrefsFragment extends PreferenceFragmentCompat {
                         arrayAdapter.addAll(
                                 analyticsEvent
                                         .stream()
-                                        .map(event ->
-                                                mRes.getString(R.string.analytics_prefs_output,
-                                                        DateFormat.format("dd-MM-yyyy hh:mm:ss",
-                                                                event.getTime()).toString(),
-                                                        event.getEventType().toString(),
-                                                        event.getAnalyticsVersion(),
-                                                        event.getSessionId(),
-                                                        event.getComponent()))
+                                        .map(event -> {
+                                            long ms = event.getTimestampMillis();
+                                            return mRes.getString(R.string.analytics_prefs_output,
+                                                    format("dd-MM-yyyy hh:mm:ss", ms).toString(),
+                                                    getEventType(event),
+                                                    event.getAnalyticsVersion(),
+                                                    event.getSessionId(),
+                                                    event.getComponent());
+                                        })
                                         .collect(Collectors.toCollection(ArrayList::new)));
                 });
+    }
+
+    private String getEventType(AnalyticsEvent event) {
+        switch (event.getEventType()) {
+            case EVENT_TYPE_VISIBLE_ITEMS_EVENT: return "VISIBLE_ITEMS";
+            case EVENT_TYPE_MEDIA_CLICKED_EVENT: return "MEDIA_CLICKED";
+            case EVENT_TYPE_BROWSE_NODE_CHANGED_EVENT: return "BROWSE_NODE_CHANGED";
+            case EVENT_TYPE_VIEW_CHANGE_EVENT: return "VIEW_CHANGE";
+            case EVENT_TYPE_ERROR_EVENT: return "ERROR";
+            case EVENT_TYPE_UNKNOWN_EVENT: return "UNKNOWN";
+            default: return "UNEXPECTED!!";
+        }
     }
 
     private boolean isOn() {

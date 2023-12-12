@@ -23,20 +23,23 @@ import android.content.Intent;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.OptIn;
+import androidx.car.app.mediaextensions.analytics.client.AnalyticsBroadcastReceiver;
+import androidx.car.app.mediaextensions.analytics.client.AnalyticsCallback;
+import androidx.car.app.mediaextensions.analytics.event.AnalyticsEvent;
+import androidx.car.app.mediaextensions.analytics.event.BrowseChangeEvent;
+import androidx.car.app.mediaextensions.analytics.event.ErrorEvent;
+import androidx.car.app.mediaextensions.analytics.event.MediaClickedEvent;
+import androidx.car.app.mediaextensions.analytics.event.ViewChangeEvent;
+import androidx.car.app.mediaextensions.analytics.event.VisibleItemsEvent;
 import androidx.lifecycle.MutableLiveData;
 
-import com.android.car.media.extensions.analytics.client.AnalyticsBroadcastReceiver;
-import com.android.car.media.extensions.analytics.client.AnalyticsCallback;
-import com.android.car.media.extensions.analytics.event.AnalyticsEvent;
-import com.android.car.media.extensions.analytics.event.BrowseChangeEvent;
-import com.android.car.media.extensions.analytics.event.MediaClickedEvent;
-import com.android.car.media.extensions.analytics.event.ViewChangeEvent;
-import com.android.car.media.extensions.analytics.event.VisibleItemsEvent;
 import com.android.car.media.testmediaapp.prefs.TmaPrefs;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+@OptIn(markerClass = androidx.car.app.annotations2.ExperimentalCarApi.class)
 public class TmaAnalyticsBroadcastReceiver extends AnalyticsBroadcastReceiver {
 
     public static final String TAG = TmaAnalyticsBroadcastReceiver.class.getSimpleName();
@@ -61,6 +64,11 @@ public class TmaAnalyticsBroadcastReceiver extends AnalyticsBroadcastReceiver {
 
         @Override
         public void onVisibleItemsEvent(@NonNull VisibleItemsEvent event) {
+            handleEvent(event);
+        }
+
+        @Override
+        public void onErrorEvent(@NonNull ErrorEvent event) {
             handleEvent(event);
         }
 
