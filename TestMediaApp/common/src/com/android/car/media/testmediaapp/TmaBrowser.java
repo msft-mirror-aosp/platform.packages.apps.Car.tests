@@ -334,7 +334,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
                     result.sendResult(items);
                 } else {
                     int selfUpdateDelay = node.getSelfUpdateDelay();
-                    int toShow = (selfUpdateDelay > 0) ? 1 + node.mRevealCounter : childrenCount;
+                    int toShow = (selfUpdateDelay > 0) ? node.mRevealCounter : childrenCount;
                     for (int childIndex = 0; childIndex < toShow; childIndex++) {
                         TmaMediaItem child = children.get(childIndex);
                         if (child.mIsHidden) {
