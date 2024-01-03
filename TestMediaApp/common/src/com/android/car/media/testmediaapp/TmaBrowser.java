@@ -16,24 +16,35 @@
 package com.android.car.media.testmediaapp;
 
 import static androidx.media.utils.MediaConstants.BROWSER_SERVICE_EXTRAS_KEY_SEARCH_SUPPORTED;
-
 import static com.android.car.media.testmediaapp.TmaLibrary.ROOT_PATH;
-import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.*;
+import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.ADD_TO_QUEUE;
+import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.DOWNLOAD;
+import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.DOWNLOADED;
+import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.DOWNLOADING;
+import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.FAVORITE;
+import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.FAVORITED;
+import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.REMOVE_FROM_QUEUE;
+import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.getActionById;
+import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.values;
 import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ACTION_EXTRAS;
 import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ACTION_ICON;
 import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ACTION_ID;
 import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ACTION_LABEL;
 import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_MEDIA_ITEM_ID;
 import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ROOT_LIST;
+import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.AnalyticsState.ANALYTICS_ON;
+import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.AnalyticsState.LOG;
+import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.AnalyticsState.SHARE_GOOGLE;
+import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.AnalyticsState.SHARE_OEM;
 import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaBrowseNodeType.LEAF_CHILDREN;
 import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaBrowseNodeType.QUEUE_ONLY;
 import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaLoginEventOrder.PLAYBACK_STATE_UPDATE_FIRST;
 
-import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.media.AudioManager;
 import android.media.MediaDescription;
 import android.media.browse.MediaBrowser;
@@ -47,20 +58,25 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.OptIn;
+import androidx.car.app.mediaextensions.analytics.client.RootHintsPopulator;
+import androidx.car.app.mediaextensions.analytics.event.AnalyticsEvent;
 import androidx.media.MediaBrowserServiceCompat;
 import androidx.media.session.MediaButtonReceiver;
-import androidx.media.utils.MediaConstants;
 
 import com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction;
+import com.android.car.media.testmediaapp.analytics.TmaAnalyticsBroadcastReceiver;
 import com.android.car.media.testmediaapp.loader.TmaLoader;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaAccountType;
+import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaAnalyticsState;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaBrowseNodeType;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaReplyDelay;
 import com.android.car.media.testmediaapp.prefs.TmaPrefs;
 
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
-import java.util.Objects;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -73,6 +89,7 @@ import java.util.regex.Pattern;
  * The media items are cached in the {@link TmaLibrary}, and can be virtually played with
  * {@link TmaPlayer}.
  */
+@OptIn(markerClass = androidx.car.app.annotations2.ExperimentalCarApi.class)
 public class TmaBrowser extends MediaBrowserServiceCompat {
     private static final String TAG = "TmaBrowser";
 
@@ -82,9 +99,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     // TODO(b/235362454): remove this once it's available in MediaConstants
     private static final String FAVORITES_MEDIA_ITEM =
             "androidx.media.BrowserRoot.Extras.FAVORITES_MEDIA_ITEM";
-    /**
-     * Extras key to allow Android Auto to identify the browse service from the media session.
-     */
+    /** Extras key to allow Android Auto to identify the browse service from the media session. */
     private static final String BROWSE_SERVICE_FOR_SESSION_KEY =
             "android.media.session.BROWSE_SERVICE";
 
@@ -93,7 +108,6 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     private MediaSessionCompat mSession;
     private TmaLibrary mLibrary;
     private TmaPlayer mPlayer;
-
     private BrowserRoot mRoot;
 
     public TmaBrowser() {
@@ -129,14 +143,32 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
         mPrefs.mAccountType.registerChangeListener(mOnAccountChanged);
         mPrefs.mRootNodeType.registerChangeListener(mOnRootNodeTypeChanged);
         mPrefs.mRootReplyDelay.registerChangeListener(mOnReplyDelayChanged);
+        mPrefs.mAnalyticsState.registerChangeListener(mOnAnalyticsChanged);
 
+        updateRootExtras();
+
+        TmaAnalyticsBroadcastReceiver.analyticsEventLiveData.observeForever(
+                this::handleAnalyticEvents);
+    }
+
+    private void updateRootExtras() {
         Bundle browserRootExtras = new Bundle();
-        browserRootExtras.putParcelableArrayList(BROWSE_CUSTOM_ACTIONS_ROOT_LIST,
-                new ArrayList<>(createCustomActionsList()));
-        browserRootExtras.putBoolean(BROWSER_SERVICE_EXTRAS_KEY_SEARCH_SUPPORTED, true);
-        browserRootExtras.putParcelable(FAVORITES_MEDIA_ITEM, getFavoritesMediaItem());
-        mRoot = new BrowserRoot(ROOT_PATH, browserRootExtras);
+        browserRootExtras.putParcelableArrayList(
+                BROWSE_CUSTOM_ACTIONS_ROOT_LIST, new ArrayList<>(createCustomActionsList()));
 
+        browserRootExtras.putBoolean(BROWSER_SERVICE_EXTRAS_KEY_SEARCH_SUPPORTED, true);
+
+        browserRootExtras.putParcelable(FAVORITES_MEDIA_ITEM, getFavoritesMediaItem());
+
+        RootHintsPopulator pope = new RootHintsPopulator(browserRootExtras);
+        Set<String> flags = mPrefs.mAnalyticsState.getValue().getFlags();
+        pope.setAnalyticsOptIn(flags.contains(ANALYTICS_ON.getId()),
+                new ComponentName(getApplicationContext(), TmaAnalyticsBroadcastReceiver.class));
+        pope.setPlatformShare(flags.contains(SHARE_GOOGLE.getId()));
+        pope.setOemShare(flags.contains(SHARE_OEM.getId()));
+        pope.setSessionId(TmaAnalyticsBroadcastReceiver.SESSION_ID);
+
+        mRoot = new BrowserRoot(ROOT_PATH, browserRootExtras);
         updatePlaybackState(mPrefs.mAccountType.getValue());
     }
 
@@ -160,6 +192,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
         mPrefs.mAccountType.unregisterChangeListener(mOnAccountChanged);
         mPrefs.mRootNodeType.unregisterChangeListener(mOnRootNodeTypeChanged);
         mPrefs.mRootReplyDelay.unregisterChangeListener(mOnReplyDelayChanged);
+        mPrefs.mAnalyticsState.unregisterChangeListener(mOnAnalyticsChanged);
         mSession.release();
         mHandler = null;
         mPrefs = null;
@@ -170,11 +203,10 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
             (oldValue, newValue) -> {
                 if (PLAYBACK_STATE_UPDATE_FIRST.equals(mPrefs.mLoginEventOrder.getValue())) {
                     updatePlaybackState(newValue);
-                    invalidateRoot();
                 } else {
-                    invalidateRoot();
                     (new Handler()).postDelayed(() -> updatePlaybackState(newValue), 3000);
                 }
+                invalidateRoot();
             };
 
     private final TmaPrefs.PrefValueChangedListener<TmaBrowseNodeType> mOnRootNodeTypeChanged =
@@ -185,6 +217,14 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
 
     private final TmaPrefs.PrefValueChangedListener<TmaReplyDelay> mOnReplyDelayChanged =
             (oldValue, newValue) -> invalidateRoot();
+
+    private final TmaPrefs.PrefValueChangedListener<TmaAnalyticsState> mOnAnalyticsChanged =
+            (oldValue, newValue) -> {
+                updateRootExtras();
+                invalidateRoot();
+                Log.v(TAG, "AnalyticsMode: " + newValue.toString());
+            };
+
 
     private void updatePlaybackState(TmaAccountType accountType) {
         if (accountType == TmaAccountType.NONE) {
@@ -207,25 +247,42 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     }
 
     private void invalidateRoot() {
+        if (mRoot != null && mRoot.getExtras() != null) {
+            mSession.setExtras(mRoot.getExtras());
+        }
         notifyChildrenChanged(ROOT_PATH);
+    }
+
+    private String stringify(Bundle bundle) {
+        StringBuilder builder = new StringBuilder();
+        for (String key : bundle.keySet()) {
+            String shortKey = key.substring(key.lastIndexOf('.'));
+            builder.append("\n").append(shortKey).append(": ").append(bundle.get(key));
+        }
+        return builder.toString();
     }
 
     @Override
     public BrowserRoot onGetRoot(
             @NonNull String clientPackageName, int clientUid, Bundle rootHints) {
         if (rootHints == null) {
-            Log.e(TAG, "Client " + clientPackageName + " didn't set rootHints.");
-            throw new NullPointerException("rootHints is null");
+            Log.w(TAG, "Client " + clientPackageName + " didn't set rootHints.");
         }
-        Log.i(TAG, "onGetroot client: " + clientPackageName
-                + " BROWSER_ROOT_HINTS_KEY_MEDIA_ART_SIZE_PIXELS: "
-                + rootHints.getInt(MediaConstants.BROWSER_ROOT_HINTS_KEY_MEDIA_ART_SIZE_PIXELS
-                , 0));
+        Log.i(TAG, "onGetRoot client: " + clientPackageName + " Hints: " + stringify(rootHints));
         return mRoot;
     }
 
+
     @Override
     public void onLoadChildren(@NonNull String parentId, @NonNull Result<List<MediaItem>> result) {
+        onLoadChildren(parentId, result, new Bundle());
+    }
+
+    @Override
+    public void onLoadChildren(@NonNull String parentId, @NonNull Result<List<MediaItem>> result,
+            @NonNull Bundle options) {
+        Log.i(TAG, "onLoadChildren parentId: " + parentId + " Options: " + stringify(options));
+
         getMediaItemsWithDelay(parentId, result, null);
 
         if (QUEUE_ONLY.equals(mPrefs.mRootNodeType.getValue()) && ROOT_PATH.equals(parentId)) {
@@ -251,6 +308,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     @Override
     public void onSearch(@NonNull String query, Bundle extras,
             @NonNull Result<List<MediaItem>> result) {
+        Log.i(TAG, "onSearch query: " + query + " Extras: " + stringify(extras));
         getMediaItemsWithDelay(ROOT_PATH, result, query);
     }
 
@@ -276,7 +334,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
                     result.sendResult(items);
                 } else {
                     int selfUpdateDelay = node.getSelfUpdateDelay();
-                    int toShow = (selfUpdateDelay > 0) ? 1 + node.mRevealCounter : childrenCount;
+                    int toShow = (selfUpdateDelay > 0) ? node.mRevealCounter : childrenCount;
                     for (int childIndex = 0; childIndex < toShow; childIndex++) {
                         TmaMediaItem child = children.get(childIndex);
                         if (child.mIsHidden) {
@@ -364,11 +422,15 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     @Override
     public void onCustomAction(
             @NonNull String action, Bundle extras, @NonNull Result<Bundle> result) {
-        TmaBrowseAction browseAction = getActionById(action);
-        Bundle resultBundle = new Bundle();
+        handleCustomAction(action, extras, result);
+    }
+
+    private void handleCustomAction(String action, Bundle extras, Result<Bundle> result) {
         String mediaId = extras.getString(BROWSE_CUSTOM_ACTIONS_MEDIA_ITEM_ID);
+        TmaBrowseAction browseAction = getActionById(action);
         TmaMediaItem node = mLibrary.getMediaItemById(mediaId);
         if (browseAction == null || node == null) {
+            Bundle resultBundle = new Bundle();
             Log.e(TAG, "onCustomAction invalid action or node");
             result.sendError(resultBundle);
             return;
@@ -461,6 +523,28 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
                         .setMessage(R.string.action_result_string_invalid)
                         .sendTo(result::sendError)
                         .send();
+        }
+    }
+
+    private boolean isAnalyticsEnabled() {
+        if (mPrefs == null
+                || mPrefs.mAnalyticsState == null
+                || mPrefs.mAnalyticsState.getValue() == null) {
+            return false;
+        }
+        return mPrefs.mAnalyticsState.getValue().getFlags().contains(ANALYTICS_ON.getId());
+    }
+
+    private boolean canLog() {
+        return isAnalyticsEnabled() && mPrefs.mAnalyticsState.getValue().getFlags().contains(
+                LOG.getId());
+    }
+
+    private void handleAnalyticEvents(Deque<AnalyticsEvent> analyticsQueue) {
+        Resources res = getResources();
+        AnalyticsEvent analyticsEvent = analyticsQueue.peekLast();
+        if (canLog() && analyticsEvent != null) {
+            Log.i(TAG, res.getString(R.string.analytics_log_output, analyticsEvent.toString()));
         }
     }
 }
