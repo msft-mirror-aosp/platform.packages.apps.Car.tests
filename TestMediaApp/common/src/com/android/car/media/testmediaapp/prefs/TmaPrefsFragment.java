@@ -118,6 +118,7 @@ public class TmaPrefsFragment extends PreferenceFragmentCompat {
                                 analyticsEvent
                                         .stream()
                                         .map(event -> {
+                                            if(event == null) return null;
                                             long ms = event.getTimestampMillis();
                                             return mRes.getString(R.string.analytics_prefs_output,
                                                     format("dd-MM-yyyy hh:mm:ss", ms).toString(),
