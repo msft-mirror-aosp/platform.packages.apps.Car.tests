@@ -89,8 +89,8 @@ public class TmaPlayer extends MediaSessionCompat.Callback {
     private float mPlaybackSpeed = 1.0f; // TODO: make variable.
     private long mPlaybackStartTimeMs;
     private boolean mIsPlaying;
-    private List<TmaMediaItem> mQueue = Collections.emptyList();
-    private List<QueueItem> mSessionQueue = Collections.emptyList();
+    private List<TmaMediaItem> mQueue = Collections.synchronizedList(new ArrayList<>());
+    private List<QueueItem> mSessionQueue = Collections.synchronizedList(new ArrayList<>());
     private int mActiveItemIndex = -1;
     private int mNextEventIndex = -1;
     private boolean mResumeOnFocusGain;

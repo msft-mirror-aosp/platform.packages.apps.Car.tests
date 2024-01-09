@@ -82,7 +82,7 @@
     <string name="analytics_log_output" translatable="false">Analytics event: %1$s"</string>
     <string name="analytics_prefs_output_title" translatable="false">Analytic events:</string>
     <string name="analytics_prefs_output" translatable="false">
-        %1$s : %2$s ver: %3$.2f sId: %4$d com: %5$s
+        %1$s : %2$s ver: %3$d sId: %4$d com: %5$s
     </string>
     <string name="analytics_prefs_output_date_format" translatable="false">dd-MM-yyyy hh:mm:ss
     </string>
