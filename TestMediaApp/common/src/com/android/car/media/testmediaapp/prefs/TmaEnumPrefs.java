@@ -16,6 +16,10 @@
 
 package com.android.car.media.testmediaapp.prefs;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 /** Various enums saved in the prefs. */
 public class TmaEnumPrefs {
 
@@ -26,6 +30,21 @@ public class TmaEnumPrefs {
 
         /** Stable id for persisting the value. */
         String getId();
+    }
+
+    public interface EnumPrefFlag<T, S extends Set<T>>  {
+        /**
+         * A flag must be an Id of related enum.
+         * <p></p>
+         * These flags are stored as EntryValues in MultiSelectListPreference as a StringSet
+         * using PrefEntry key.
+         * <p><p/>
+         * FlagPrefEntry fetches the entries with same PrefEntry key and updates the state.
+         * <p></p>
+         * Ids much match up for enum and flags in order for all this spaghetti to work.
+         * @return
+         */
+        S getFlags();
     }
 
     public enum TmaAccountType implements EnumPrefValue {
@@ -107,6 +126,46 @@ public class TmaEnumPrefs {
         }
     }
 
+    public enum AnalyticsState implements EnumPrefValue {
+        ANALYTICS_ON("Turn feature on", "on"),
+        LOG("Print events to Log", "log"),
+        DISPLAY("Print events to Settings", "display"),
+        SHARE_GOOGLE("Share to Google", "google"),
+        SHARE_OEM("Share to OEM", "oem");
+
+        private String mTitle;
+        private String mId;
+
+        AnalyticsState(String displayTitle, String  id) {
+            this.mTitle = displayTitle;
+            this.mId = id;
+        }
+        @Override
+        public String getTitle() {
+            return mTitle;
+        }
+        @Override
+        public String getId() {
+            return mId;
+        }
+    }
+
+    /* Settings for analytics */
+    public static class TmaAnalyticsState implements EnumPrefFlag<String, Set<String>> {
+
+        private final PrefFlagImpl<String, HashSet<String>> mPrefValue
+                = new PrefFlagImpl<>(new HashSet<>());
+        @Override
+        public Set<String> getFlags() {
+            return mPrefValue.mFlags;
+        }
+
+        @Override
+        public String toString() {
+            return Arrays.toString(mPrefValue.mFlags.toArray());
+        }
+    }
+
     /* To simulate the events order after login. Media apps should update playback state first, then
      * load the browse tree. But sometims some apps (e.g., GPB) don't follow this order strictly. */
     public enum TmaLoginEventOrder implements EnumPrefValue {
@@ -149,6 +208,19 @@ public class TmaEnumPrefs {
         @Override
         public String getId() {
             return mId;
+        }
+    }
+
+    private static class PrefFlagImpl<T, S extends Set<T>> implements EnumPrefFlag<T, S> {
+        private final S mFlags;
+
+        PrefFlagImpl(S flags) {
+            mFlags = flags;
+        }
+
+        @Override
+        public S getFlags() {
+            return mFlags;
         }
     }
 }
