@@ -129,7 +129,6 @@ public class TmaEnumPrefs {
     public enum AnalyticsState implements EnumPrefValue {
         ANALYTICS_ON("Turn feature on", "on"),
         LOG("Print events to Log", "log"),
-        DISPLAY("Print events to Settings", "display"),
         SHARE_GOOGLE("Share to Google", "google"),
         SHARE_OEM("Share to OEM", "oem");
 
