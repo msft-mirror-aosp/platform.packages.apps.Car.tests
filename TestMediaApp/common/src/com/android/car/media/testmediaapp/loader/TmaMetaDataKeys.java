@@ -41,8 +41,6 @@ public class TmaMetaDataKeys {
             "androidx.media.utils.extras.KEY_CUSTOM_BROWSER_ACTION_LABEL";
     public static final String BROWSE_CUSTOM_ACTIONS_ACTION_ICON =
             "androidx.media.utils.extras.KEY_CUSTOM_BROWSER_ACTION_ICON_URI";
-    public static final String BROWSE_CUSTOM_ACTIONS_ACTION_LIMIT =
-            "androidx.media.MediaBrowserCompat.BROWSE_CUSTOM_ACTIONS_ACTION_LIMIT";
     public static final String BROWSE_CUSTOM_ACTIONS_ACTION_EXTRAS =
             "androidx.media.utils.extras.KEY_CUSTOM_BROWSER_ACTION_EXTRAS";
     public static final String BROWSE_CUSTOM_ACTIONS_EXTRA_RESULT_BROWSE_NODE =

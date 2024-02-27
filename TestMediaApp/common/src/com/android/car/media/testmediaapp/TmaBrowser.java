@@ -33,7 +33,6 @@ import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_C
 import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_MEDIA_ITEM_ID;
 import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ROOT_LIST;
 import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.AnalyticsState.ANALYTICS_ON;
-import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.AnalyticsState.LOG;
 import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.AnalyticsState.SHARE_GOOGLE;
 import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.AnalyticsState.SHARE_OEM;
 import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaBrowseNodeType.LEAF_CHILDREN;
@@ -44,7 +43,6 @@ import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.media.AudioManager;
 import android.media.MediaDescription;
 import android.media.browse.MediaBrowser;
@@ -59,13 +57,13 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.OptIn;
+import androidx.car.app.mediaextensions.analytics.client.AnalyticsParser;
 import androidx.car.app.mediaextensions.analytics.client.RootHintsPopulator;
-import androidx.car.app.mediaextensions.analytics.event.AnalyticsEvent;
 import androidx.media.MediaBrowserServiceCompat;
 import androidx.media.session.MediaButtonReceiver;
 
 import com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction;
-import com.android.car.media.testmediaapp.analytics.TmaAnalyticsBroadcastReceiver;
+import com.android.car.media.testmediaapp.analytics.AnalyticsHandler;
 import com.android.car.media.testmediaapp.loader.TmaLoader;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaAccountType;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaAnalyticsState;
@@ -74,7 +72,6 @@ import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaReplyDelay;
 import com.android.car.media.testmediaapp.prefs.TmaPrefs;
 
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -109,6 +106,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     private TmaLibrary mLibrary;
     private TmaPlayer mPlayer;
     private BrowserRoot mRoot;
+    private AnalyticsHandler mAnalyticsHandler;
 
     public TmaBrowser() {
         super();
@@ -119,6 +117,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
         super.onCreate();
         mPrefs = TmaPrefs.getInstance(this);
         mHandler = new Handler(getMainLooper());
+        mAnalyticsHandler = new AnalyticsHandler(getApplicationContext());
 
         ComponentName mbrComponent = MediaButtonReceiver.getMediaButtonReceiverComponent(this);
         Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
@@ -146,9 +145,6 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
         mPrefs.mAnalyticsState.registerChangeListener(mOnAnalyticsChanged);
 
         updateRootExtras();
-
-        TmaAnalyticsBroadcastReceiver.analyticsEventLiveData.observeForever(
-                this::handleAnalyticEvents);
     }
 
     private void updateRootExtras() {
@@ -160,13 +156,11 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
 
         browserRootExtras.putParcelable(FAVORITES_MEDIA_ITEM, getFavoritesMediaItem());
 
-        RootHintsPopulator pope = new RootHintsPopulator(browserRootExtras);
         Set<String> flags = mPrefs.mAnalyticsState.getValue().getFlags();
-        pope.setAnalyticsOptIn(flags.contains(ANALYTICS_ON.getId()),
-                new ComponentName(getApplicationContext(), TmaAnalyticsBroadcastReceiver.class));
-        pope.setPlatformShare(flags.contains(SHARE_GOOGLE.getId()));
-        pope.setOemShare(flags.contains(SHARE_OEM.getId()));
-        pope.setSessionId(TmaAnalyticsBroadcastReceiver.SESSION_ID);
+        new RootHintsPopulator(browserRootExtras)
+            .setAnalyticsOptIn(flags.contains(ANALYTICS_ON.getId()))
+            .setSharePlatform(flags.contains(SHARE_GOOGLE.getId()))
+            .setShareOem(flags.contains(SHARE_OEM.getId()));
 
         mRoot = new BrowserRoot(ROOT_PATH, browserRootExtras);
         updatePlaybackState(mPrefs.mAccountType.getValue());
@@ -426,6 +420,14 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     }
 
     private void handleCustomAction(String action, Bundle extras, Result<Bundle> result) {
+        // Handle analytics.
+        if (AnalyticsParser.isAnalyticsAction(action)) {
+            AnalyticsParser.parseAnalyticsAction(action, extras, mAnalyticsHandler);
+            result.sendResult(null);
+            return;
+        }
+
+        // Handle non-analytics actions.
         String mediaId = extras.getString(BROWSE_CUSTOM_ACTIONS_MEDIA_ITEM_ID);
         TmaBrowseAction browseAction = getActionById(action);
         TmaMediaItem node = mLibrary.getMediaItemById(mediaId);
@@ -523,28 +525,6 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
                         .setMessage(R.string.action_result_string_invalid)
                         .sendTo(result::sendError)
                         .send();
-        }
-    }
-
-    private boolean isAnalyticsEnabled() {
-        if (mPrefs == null
-                || mPrefs.mAnalyticsState == null
-                || mPrefs.mAnalyticsState.getValue() == null) {
-            return false;
-        }
-        return mPrefs.mAnalyticsState.getValue().getFlags().contains(ANALYTICS_ON.getId());
-    }
-
-    private boolean canLog() {
-        return isAnalyticsEnabled() && mPrefs.mAnalyticsState.getValue().getFlags().contains(
-                LOG.getId());
-    }
-
-    private void handleAnalyticEvents(Deque<AnalyticsEvent> analyticsQueue) {
-        Resources res = getResources();
-        AnalyticsEvent analyticsEvent = analyticsQueue.peekLast();
-        if (canLog() && analyticsEvent != null) {
-            Log.i(TAG, res.getString(R.string.analytics_log_output, analyticsEvent.toString()));
         }
     }
 }
