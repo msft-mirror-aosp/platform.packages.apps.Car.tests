@@ -10,6 +10,15 @@
     {
       "FLAGS": "playable",
       "METADATA": {
+        "MEDIA_ID": "standard_custom_actions",
+        "DISPLAY_TITLE": "Standard Custom Actions",
+        "DURATION": 10000
+      },
+      "CUSTOM_ACTIONS": ["SKIP_FORWARD_30", "SKIP_BACK_15"]
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
         "MEDIA_ID": "custom_action 1",
         "DISPLAY_TITLE": "Custom Action Item 1",
         "DURATION": 10000,
