@@ -48,6 +48,7 @@ import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_USER_RAT
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_WRITER;
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_YEAR;
 
+import static androidx.media.utils.MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE;
 import static androidx.media.utils.MediaConstants.METADATA_KEY_IS_EXPLICIT;
 
 import static com.android.car.media.testmediaapp.MediaConstants.KEY_CONTENT_FORMAT_TINTABLE_LARGE_ICON_URI;
@@ -110,6 +111,7 @@ class TmaMediaMetadataReader {
         ALBUM_ART_URI       (METADATA_KEY_ALBUM_ART_URI,        ValueType.URI),
         USER_RATING         (METADATA_KEY_USER_RATING,          ValueType.RATING),
         RATING              (METADATA_KEY_RATING,               ValueType.RATING),
+        GROUP_TITLE         (DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE, ValueType.TEXT),
         DISPLAY_TITLE       (METADATA_KEY_DISPLAY_TITLE,        ValueType.TEXT),
         DISPLAY_SUBTITLE    (METADATA_KEY_DISPLAY_SUBTITLE,     ValueType.TEXT),
         DISPLAY_DESCRIPTION (METADATA_KEY_DISPLAY_DESCRIPTION,  ValueType.TEXT),
