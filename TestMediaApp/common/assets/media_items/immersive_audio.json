@@ -68,7 +68,7 @@
     {
       "FLAGS": "playable",
       "METADATA": {
-        "MEDIA_ID": "noSubTitle",
+        "MEDIA_ID": "noSubTitleNoLogo",
         "DISPLAY_TITLE": "No subtitle, no logo",
         "DURATION": 3600000
       }

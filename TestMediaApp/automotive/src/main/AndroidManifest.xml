@@ -22,6 +22,7 @@
          android:required="true"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION"/>
 
@@ -52,11 +53,26 @@
              android:exported="true"
              android:authorities="com.android.car.media.testmediaapp.public"/>
 
-        <service android:name=".TmaBrowser"
-             android:icon="@drawable/ic_app_icon"
+        <service android:name=".media1.TmaBrowser1"
+             android:icon="@drawable/ic_browser1_icon"
+             android:foregroundServiceType="mediaPlayback"
              android:exported="true"
              android:label="@string/app_name">
             <intent-filter>
+                <action android:name="android.media.browse.MediaBrowserService"/>
+                <action android:name="android.intent.action.MEDIA_BUTTON"/>
+            </intent-filter>
+            <meta-data android:name="androidx.car.app.launchable" android:value="true" />
+        </service>
+
+        <service android:name=".media3.TmaBrowser3"
+            android:icon="@drawable/ic_browser3_icon"
+            android:foregroundServiceType="mediaPlayback"
+            android:exported="true"
+            android:label="@string/app_name_media3">
+            <!-- Support both services for backwards compatibility with media1 hosts. -->
+            <intent-filter>
+                <action android:name="androidx.media3.session.MediaLibraryService"/>
                 <action android:name="android.media.browse.MediaBrowserService"/>
                 <action android:name="android.intent.action.MEDIA_BUTTON"/>
             </intent-filter>

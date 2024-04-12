@@ -17,17 +17,6 @@
 package com.android.car.media.testmediaapp.loader;
 
 public class TmaMetaDataKeys {
-    /** Keys for the {@link TmaMediaMetadataReader}
-     *  We set them to correct androidx keys in
-     *  {@link com.android.car.media.testmediaapp.TmaMediaItem}
-     *  This is because the reader is using MetaDataCompat keys
-     *      and the keys we want to use are in androidx
-     */
-    //TODO(b/263524275): Convert to androidx constants
-    public static final String METADATA_KEY_PLAYBACK_STATUS =
-            "android.media.metadata.PLAYBACK_STATUS";
-    public static final String METADATA_KEY_PLAYBACK_PROGRESS =
-            "android.media.metadata.PLAYBACK_PROGRESS";
     // TODO(b/222362032): Replace with androidx reference.
     public static final String BROWSE_CUSTOM_ACTIONS_ROOT_LIST =
             "androidx.media.utils.extras.CUSTOM_BROWSER_ACTION_ROOT_LIST";

@@ -62,9 +62,7 @@ public class TmaForegroundService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (doWork()) {
             createNotificationChannel();
-            Intent notificationIntent = new Intent(this, TmaPrefsActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this,
-                    0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+            PendingIntent pendingIntent = TmaPrefsActivity.getPendingIntent(this);
             Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                     .setContentTitle("Foreground Service")
                     .setSmallIcon(R.drawable.ic_app_icon)
@@ -87,7 +85,7 @@ public class TmaForegroundService extends Service {
     public void onDestroy() {
         if (mLocationManager != null) {
             mLocationManager.removeUpdates(mLocationListener);
-            toast("Location is off");
+            message("Location is off");
         }
         super.onDestroy();
     }
@@ -122,39 +120,41 @@ public class TmaForegroundService extends Service {
 
             mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000,
                     0, mLocationListener);
-            toast("Location is on");
+            message("Location is on");
         } catch (Throwable e) {
-            toast("Unable to get location: " + e.getMessage());
+            message("Unable to get location: " + e.getMessage()
+                    + " Make sure location is granted in the preferences.");
         }
         return true;
     }
 
     /**
-     * TODO: replace log by updating the metadata.
+     * We don't use toasts here as they are limited and real application shouldn't be using toasts
+     * from service anyway. TODO: replace log by updating the metadata.
      */
-    private void toast(String message) {
+    private void message(String message) {
         Log.i(TAG, message);
     }
 
     private final LocationListener mLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
-            toast("Location provider: " + location.getLatitude() + ":" + location.getLongitude());
+            message("Location provider: " + location.getLatitude() + ":" + location.getLongitude());
         }
 
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
-            toast("Location provider: " + provider + " status changed to: " + status);
+            message("Location provider: " + provider + " status changed to: " + status);
         }
 
         @Override
         public void onProviderEnabled(String provider) {
-            toast("Location provider enabled: " + provider);
+            message("Location provider enabled: " + provider);
         }
 
         @Override
         public void onProviderDisabled(String provider) {
-            toast("Location provider disabled: " + provider);
+            message("Location provider disabled: " + provider);
         }
     };
 }

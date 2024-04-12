@@ -16,20 +16,21 @@
 
 package com.android.car.media.testmediaapp;
 
-import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID;
 
+import static com.android.car.media.testmediaapp.TmaMediaItem.MetadataKey.MEDIA_ID;
 import static com.android.car.media.testmediaapp.TmaMediaItem.TREE_PATH_SEPARATOR;
 
 import static java.util.Collections.emptyList;
 
-import android.support.v4.media.MediaMetadataCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
+import com.android.car.media.testmediaapp.TmaMediaItem.TmaMetadata;
 import com.android.car.media.testmediaapp.loader.TmaLoader;
+import com.android.car.media.testmediaapp.media1.TmaBrowser1;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaBrowseNodeType;
 
 import java.util.ArrayList;
@@ -37,18 +38,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
  * Delegates the loading of {@link TmaMediaItem}s to {@link TmaLoader} and caches the results
- * for {@link TmaBrowser}.
+ * for {@link TmaBrowser1}.
  */
-class TmaLibrary {
+public class TmaLibrary {
 
     private static final String TAG = "TmaLibrary";
 
-    private static final String ROOT_MEDIA_ID = "_ROOT_";
-    static final String ROOT_PATH = ROOT_MEDIA_ID + TREE_PATH_SEPARATOR;
+    public static final String ROOT_MEDIA_ID = "_ROOT_";
+    public static final String ROOT_PATH = ROOT_MEDIA_ID + TREE_PATH_SEPARATOR;
 
     private final TmaLoader mLoader;
     private final Map<TmaBrowseNodeType, String> mRootAssetPaths = new HashMap<>(5);
@@ -73,14 +75,14 @@ class TmaLibrary {
     }
 
     private static TmaMediaItem newRootItem(String include) {
-        MediaMetadataCompat.Builder bob = new MediaMetadataCompat.Builder();
-        bob.putText(METADATA_KEY_MEDIA_ID, ROOT_MEDIA_ID);
-        return new TmaMediaItem(0, TmaMediaItem.ContentStyle.NONE, TmaMediaItem.ContentStyle.NONE,
-                TmaMediaItem.ContentStyle.NONE, bob.build(), 0, emptyList(), emptyList(),
-                emptyList(), emptyList(), include);
+        TmaMetadata metaMap = new TmaMetadata();
+        metaMap.putString(MEDIA_ID, ROOT_MEDIA_ID);
+        return new TmaMediaItem(true, false, TmaMediaItem.ContentStyle.NONE,
+                TmaMediaItem.ContentStyle.NONE, TmaMediaItem.ContentStyle.NONE, metaMap, 0,
+                emptyList(), emptyList(), emptyList(), emptyList(), include);
     }
 
-    String getPath(TmaBrowseNodeType rootType) {
+    public String getPath(TmaBrowseNodeType rootType) {
         return mRootAssetPaths.get(rootType);
     }
 
@@ -90,6 +92,10 @@ class TmaLibrary {
     }
 
     TmaMediaItem getRoot() {
+        return mBrowseRoot;
+    }
+
+    public TmaMediaItem getBrowseRoot() {
         return mBrowseRoot;
     }
 
@@ -107,11 +113,12 @@ class TmaLibrary {
     }
 
     /** Returns all the children of the node (explicit and included ones). */
-    List<TmaMediaItem> getAllChildren(TmaMediaItem item) {
-        return getAllChildren(item, 0);
+    public List<TmaMediaItem> getAllChildren(TmaMediaItem item) {
+        return getAllChildren(item, null);
     }
 
-    List<TmaMediaItem> getAllChildren(@Nullable TmaMediaItem item, int filterFlag) {
+    public List<TmaMediaItem> getAllChildren(@Nullable TmaMediaItem item,
+            @Nullable Predicate<TmaMediaItem> itemSelector) {
         if (item == null) {
             return emptyList();
         }
@@ -121,14 +128,16 @@ class TmaLibrary {
             children.addAll(loadAssetFile(item.mInclude).getChildren());
         }
 
-        return (filterFlag == 0) ? children :
+        return (itemSelector == null) ? children :
                 children.stream()
-                        .filter(item1 -> item1.testFlag(filterFlag))
+                        .filter(itemSelector)
                         .collect(Collectors.toList());
     }
 
     @Nullable
-    TmaMediaItem getMediaItemById(String mediaId) {
+    public TmaMediaItem getMediaItemById(@Nullable String mediaId) {
+        if (mediaId == null) return null;
+
         String[] nodeIds = mediaId.split(String.valueOf(TREE_PATH_SEPARATOR));
         if (nodeIds.length <= 0) {
             return null;

@@ -50,7 +50,7 @@
              android:exported="true"
              android:authorities="com.android.car.media.testmediaapp.public"/>
 
-        <service android:name=".TmaBrowser"
+        <service android:name=".media1.TmaBrowser1"
              android:icon="@drawable/ic_app_icon"
              android:exported="true"
              android:label="@string/app_name">

@@ -11,9 +11,9 @@ import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.media.utils.MediaConstants;
 
-import com.android.car.media.testmediaapp.TmaBrowser;
-import com.android.car.media.testmediaapp.prefs.TmaPrefsActivity;
 import com.android.car.media.testmediaapp.R;
+import com.android.car.media.testmediaapp.media1.TmaBrowser1;
+import com.android.car.media.testmediaapp.prefs.TmaPrefsActivity;
 
 /**
  * Runs on a phone, thus making the browse tree available to bluetooth.
@@ -41,7 +41,8 @@ public class TmaLauncherActivity extends AppCompatActivity {
         Bundle rootHints = new Bundle();
         // TODO: 256 is just a placeholder. We'd better find a proper value.
         rootHints.putInt(MediaConstants.BROWSER_ROOT_HINTS_KEY_MEDIA_ART_SIZE_PIXELS, 256);
-        mediaBrowser = new MediaBrowserCompat(this, new ComponentName(this, TmaBrowser.class),
+        // TODO(media3) add preference to choose between the media1 and media3 services.
+        mediaBrowser = new MediaBrowserCompat(this, new ComponentName(this, TmaBrowser1.class),
                 mConnectionCallbacks, rootHints);
     }
 

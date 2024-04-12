@@ -22,7 +22,10 @@ package {
 android_app {
     name: "TestMediaApp",
 
-    srcs: ["common/src/**/*.java"],
+    srcs: [
+        "common/src/**/*.java",
+        "common/src/**/*.kt",
+    ],
 
     resource_dirs: ["common/res"],
     asset_dirs: ["common/assets"],

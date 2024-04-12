@@ -17,6 +17,7 @@
 plugins {
     id("com.android.library")
     id("aaosApps.buildLogic")
+    id 'kotlin-android'
     id("buildSrc.jdk.jdk8")
 }
 
@@ -62,6 +63,10 @@ android{
         }
     }
 
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
     lintOptions {
         abortOnError false
     }
@@ -82,7 +87,10 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
     implementation 'androidx.media:media:1.7.0'
-    implementation "androidx.media3:media3-session:1.4.0-alpha01"
+    implementation "androidx.media3:media3-session:1.4.1"
+    // Keep commented out except for experimenting locally with the latest media3 source
+    // See github.com/androidx/media?tab=readme-ov-file#locally
+    // implementation project(':media3-lib-session')
     implementation 'androidx.preference:preference:1.2.0'
     implementation 'androidx.car.app:app:1.1.0'
 
