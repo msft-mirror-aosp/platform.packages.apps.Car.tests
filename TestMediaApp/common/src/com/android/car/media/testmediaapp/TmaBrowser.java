@@ -248,6 +248,9 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
     }
 
     private String stringify(Bundle bundle) {
+        if (bundle == null) {
+            return "null bundle!";
+        }
         StringBuilder builder = new StringBuilder();
         for (String key : bundle.keySet()) {
             String shortKey = key.substring(key.lastIndexOf('.'));
