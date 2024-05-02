@@ -44,6 +44,7 @@
       "FLAGS": "browsable",
       "METADATA": {
         "MEDIA_ID": "default browsable hint",
+        "GROUP_TITLE": "List Group",
         "DISPLAY_TITLE": "Default Browsable Hint",
         "DURATION": 20000
       }
@@ -53,6 +54,7 @@
       "SINGLE_ITEM_HINT": "LIST",
       "METADATA": {
         "MEDIA_ID": "browsable list",
+        "GROUP_TITLE": "List Group",
         "DISPLAY_TITLE": "Single Browsable List",
         "DURATION": 20000
       }
@@ -63,6 +65,7 @@
       "SINGLE_ITEM_HINT": "GRID",
       "METADATA": {
         "MEDIA_ID": "browse grid",
+        "GROUP_TITLE": "Grid Group",
         "DISPLAY_TITLE": "Single Browsable Grid",
         "DURATION": 20000
       }
@@ -74,6 +77,7 @@
       "BROWSABLE_HINT": "LIST",
       "METADATA": {
         "MEDIA_ID": "grid single, browse or play list hint",
+        "GROUP_TITLE": "Grid Group",
         "DISPLAY_TITLE": "Single grid style children do not inherit single item hint"
       },
       "INCLUDE":"media_items/simple_leaves.json"
