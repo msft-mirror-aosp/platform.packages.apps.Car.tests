@@ -18,6 +18,7 @@ package com.android.car.media.testmediaapp;
 
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION;
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID;
+import static androidx.media.utils.MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE;
 import static com.android.car.media.testmediaapp.MediaConstants.KEY_DESCRIPTION_LINK_MEDIA_ID;
 import static com.android.car.media.testmediaapp.MediaConstants.KEY_SUBTITLE_LINK_MEDIA_ID;
 import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ITEM_LIST;
@@ -272,6 +273,10 @@ public class TmaMediaItem {
         if (mMediaMetadata.containsKey(MediaConstants.METADATA_KEY_IS_EXPLICIT)) {
             extras.putLong(MediaConstants.METADATA_KEY_IS_EXPLICIT,
                     mMediaMetadata.getLong(MediaConstants.METADATA_KEY_IS_EXPLICIT));
+        }
+        if (mMediaMetadata.containsKey(DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE)) {
+            extras.putString(DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE,
+                    mMediaMetadata.getString(DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE));
         }
 
         if(mBrowseActions != null && !mBrowseActions.isEmpty()){
