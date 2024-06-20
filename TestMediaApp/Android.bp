@@ -40,6 +40,7 @@ android_app {
         "androidx-constraintlayout_constraintlayout",
         "androidx.preference_preference",
         "androidx.legacy_legacy-support-v4",
+        "androidx.media3.media3-session",
         "androidx.car.app_app-automotive",
         "car-media-extensions-prebuilt",
     ],

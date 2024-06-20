@@ -33,7 +33,7 @@ import androidx.annotation.Nullable;
 
 import com.android.car.media.testmediaapp.TmaMediaEvent;
 import com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction;
-import com.android.car.media.testmediaapp.TmaMediaItem.TmaCustomAction;
+import com.android.car.media.testmediaapp.TmaCustomAction;
 import com.android.car.media.testmediaapp.TmaMediaItem;
 import com.android.car.media.testmediaapp.TmaMediaItem.ContentStyle;
 
@@ -87,7 +87,7 @@ class TmaMediaItemReader {
         mMediaMetadataReader = TmaMediaMetadataReader.getInstance();
         mMediaEventReader = TmaMediaEventReader.getInstance();
         mContentStyles = enumNamesToValues(ContentStyle.values());
-        mCustomActions = enumNamesToValues(TmaMediaItem.TmaCustomAction.values());
+        mCustomActions = enumNamesToValues(TmaCustomAction.values());
         mBrowseActions = enumNamesToValues(TmaBrowseAction.values());
         mFlags.put("browsable", FLAG_BROWSABLE);
         mFlags.put("playable", FLAG_PLAYABLE);
