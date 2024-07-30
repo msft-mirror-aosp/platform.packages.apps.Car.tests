@@ -114,6 +114,17 @@
 
         </activity>
 
+        <activity android:name=".automotive.TmaTrampolineActivity"
+                  android:exported="true">
+            <intent-filter android:label="@string/tma_trampoline_activity_label">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="app"
+                      android:host="com.android.car.media.testmediaapp"/>
+            </intent-filter>
+        </activity>
+
         <receiver android:name="androidx.media.session.MediaButtonReceiver"
              android:exported="true">
             <intent-filter>
