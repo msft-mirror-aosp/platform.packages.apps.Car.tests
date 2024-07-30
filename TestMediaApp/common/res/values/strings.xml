@@ -33,6 +33,9 @@
 
     <string name="heart_less_less" translatable="false">Heart--</string>
 
+    <string name="skip_forward_30" translatable="false">Forward 30s</string>
+    <string name="skip_back_15" translatable="false">Rewind 15s</string>
+
     <!-- Custom Browse Actions -->
     <string name="action_performed" translatable="false"> performed!</string>
     <string name="download" translatable="false">Download</string>

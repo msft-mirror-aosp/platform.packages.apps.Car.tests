@@ -43,7 +43,7 @@ import java.util.List;
 /** Our internal representation of media items. */
 public class TmaMediaItem {
 
-    private static final String CUSTOM_ACTION_PREFIX = "com.android.car.media.testmediaapp.";
+    public static final String CUSTOM_ACTION_PREFIX = "com.android.car.media.testmediaapp.";
 
     /**
      * The character used to separate short media ids (returned by {@link #getMediaId} from
@@ -64,25 +64,6 @@ public class TmaMediaItem {
         final int mBundleValue;
         ContentStyle(int value) {
             mBundleValue = value;
-        }
-    }
-
-    public enum TmaCustomAction {
-        HEART_PLUS_PLUS(CUSTOM_ACTION_PREFIX + "heart_plus_plus", R.string.heart_plus_plus,
-                R.drawable.ic_heart_plus_plus),
-        HEART_LESS_LESS(CUSTOM_ACTION_PREFIX + "heart_less_less", R.string.heart_less_less,
-                R.drawable.ic_heart_less_less),
-        REQUEST_LOCATION(CUSTOM_ACTION_PREFIX + "location", R.string.location,
-                R.drawable.ic_location);
-
-        final String mId;
-        final int mNameId;
-        final int mIcon;
-
-        TmaCustomAction(String id, int name, int icon) {
-            mId = id;
-            mNameId = name;
-            mIcon = icon;
         }
     }
 

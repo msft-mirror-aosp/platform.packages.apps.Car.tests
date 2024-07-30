@@ -33,30 +33,29 @@ import static android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_T
 import static android.support.v4.media.session.PlaybackStateCompat.ERROR_CODE_APP_ERROR;
 import static android.support.v4.media.session.PlaybackStateCompat.STATE_ERROR;
 
-import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.MediaSessionCompat.QueueItem;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.support.v4.media.session.PlaybackStateCompat.CustomAction;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.OptIn;
 import androidx.media.utils.MediaConstants;
+import androidx.media3.common.util.UnstableApi;
 
 import com.android.car.media.testmediaapp.TmaMediaEvent.Action;
 import com.android.car.media.testmediaapp.TmaMediaEvent.EventState;
 import com.android.car.media.testmediaapp.TmaMediaEvent.ResolutionIntent;
-import com.android.car.media.testmediaapp.TmaMediaItem.TmaCustomAction;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaAccountType;
 import com.android.car.media.testmediaapp.prefs.TmaPrefs;
 import com.android.car.media.testmediaapp.prefs.TmaPrefsActivity;
@@ -70,9 +69,14 @@ import java.util.Objects;
 /**
  * This class simulates all media interactions (no sound is actually played).
  */
+@UnstableApi
+@OptIn(markerClass = UnstableApi.class)
 public class TmaPlayer extends MediaSessionCompat.Callback {
 
     private static final String TAG = "TmaPlayer";
+
+    private static final String EXTRAS_KEY_COMMAND_BUTTON_ICON_COMPAT =
+            androidx.media3.session.MediaConstants.EXTRAS_KEY_COMMAND_BUTTON_ICON_COMPAT;
 
     private final TmaBrowser mBrowser;
     private final TmaPrefs mPrefs;
@@ -195,7 +199,15 @@ public class TmaPlayer extends MediaSessionCompat.Callback {
         if (activeItem != null) {
             for (TmaCustomAction action : activeItem.mCustomActions) {
                 String name = mBrowser.getResources().getString(action.mNameId);
-                state.addCustomAction(action.mId, name, action.mIcon);
+
+                Bundle extras = new Bundle();
+                if (action.mIconId != 0) {
+                    extras.putInt(EXTRAS_KEY_COMMAND_BUTTON_ICON_COMPAT, action.mIconId);
+                }
+                CustomAction custom = new CustomAction.Builder(action.mId, name, action.mIcon)
+                        .setExtras(extras)
+                        .build();
+                state.addCustomAction(custom);
             }
             state.setActiveQueueItemId(mActiveItemIndex);
         }
