@@ -24,7 +24,7 @@ android {
     defaultConfig {
         applicationId "com.android.car.rotaryplayground"
         minSdkVersion 30
-        targetSdkVersion gradle.ext.aaosTargetSDK
+        targetSdkVersion 33
         versionCode gradle.ext.getVersionCode()
         versionName gradle.ext.getVersionName()
     }
