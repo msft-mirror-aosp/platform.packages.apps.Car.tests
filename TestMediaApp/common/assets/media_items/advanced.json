@@ -140,6 +140,15 @@
         "DISPLAY_TITLE": "Single Items styling"
       },
       "INCLUDE": "media_items/single_item_styling.json"
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "Exclude in mixed app list",
+        "DISPLAY_TITLE": "No metadata in mixed app list",
+        "DURATION": 10000,
+        "EXCLUDE_ITEM_IN_MIXED_LIST": 1
+      }
     }
   ]
 }

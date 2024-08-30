@@ -47,10 +47,9 @@ import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TRACK_NU
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_USER_RATING;
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_WRITER;
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_YEAR;
-
+import static androidx.car.app.mediaextensions.MetadataExtras.KEY_EXCLUDE_MEDIA_ITEM_FROM_MIXED_APP_LIST;
 import static androidx.media.utils.MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE;
 import static androidx.media.utils.MediaConstants.METADATA_KEY_IS_EXPLICIT;
-
 import static com.android.car.media.testmediaapp.MediaConstants.KEY_CONTENT_FORMAT_TINTABLE_LARGE_ICON_URI;
 import static com.android.car.media.testmediaapp.MediaConstants.KEY_CONTENT_FORMAT_TINTABLE_SMALL_ICON_URI;
 import static com.android.car.media.testmediaapp.MediaConstants.KEY_DESCRIPTION_LINK_MEDIA_ID;
@@ -70,10 +69,8 @@ import com.android.car.media.testmediaapp.TmaPublicProvider;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 
 class TmaMediaMetadataReader {
@@ -129,7 +126,8 @@ class TmaMediaMetadataReader {
         DESCRIPTION_LINK_MEDIA_ID   (KEY_DESCRIPTION_LINK_MEDIA_ID,  ValueType.TEXT),
         IMMERSIVE_AUDIO     (KEY_IMMERSIVE_AUDIO,               ValueType.LONG),
         FORMAT_TINTABLE_LARGE_ICON(KEY_CONTENT_FORMAT_TINTABLE_LARGE_ICON_URI,      ValueType.URI),
-        FORMAT_TINTABLE_SMALL_ICON(KEY_CONTENT_FORMAT_TINTABLE_SMALL_ICON_URI,      ValueType.URI);
+        FORMAT_TINTABLE_SMALL_ICON(KEY_CONTENT_FORMAT_TINTABLE_SMALL_ICON_URI,      ValueType.URI),
+        EXCLUDE_ITEM_IN_MIXED_LIST(KEY_EXCLUDE_MEDIA_ITEM_FROM_MIXED_APP_LIST,     ValueType.LONG);
 
         /** The full name of the key in {@link MediaMetadataCompat}. */
         final String mLongName;
