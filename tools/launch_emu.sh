@@ -42,6 +42,7 @@
 # I: only download and/or install once
 # k: specify an APK, or a ZIP file containing APKs to install upon startup
 # s: specify screen size (default: 1080x720)
+# d: specify display density (default: 120)
 # g: specify the cpu arch, like x86_64 (default: x86)
 # v: emulator options, like, -no-snapshot and -allow-host-audio. More can
 #    be found at https://developer.android.com/studio/run/emulator-comparison
@@ -95,7 +96,7 @@ function echoError() {
 
 ### Help message
 usage="
-Version: Nov 8, 2023 updated
+Version: July 8, 2024 added density option (-d)
 
 Usage:
     -m  branch name (default: aosp-master-throttled)
@@ -107,6 +108,7 @@ Usage:
     -h  host type
     -k  apks to install
     -s  skin
+    -d  display density (default: 120)
     -p  package only
     -I  install once
     -i  install
@@ -117,7 +119,7 @@ Usage:
     -c  clear workspace"
 
 ### Parse input parameters
-while getopts "b:t:m:e:a:w:h:k:s:v:g:l:cpIiq" opt; do
+while getopts "b:t:m:e:a:w:h:k:s:d:v:g:l:cpIiq" opt; do
   case $opt in
     m) BRANCH_AAE=$OPTARG;;
     t) TARGET=$OPTARG;;
@@ -127,6 +129,7 @@ while getopts "b:t:m:e:a:w:h:k:s:v:g:l:cpIiq" opt; do
     h) HOST_TYPE=$OPTARG;;
     k) APKS_TO_INSTALL=$OPTARG;;
     s) SKIN=$OPTARG;;
+    d) DISP_DENSITY=$OPTARG;;
     p) PACKAGE_ONLY="true";;
     I) INSTALL_ONCE="true" && INSTALL="true";;
     i) INSTALL="true";;
@@ -154,7 +157,7 @@ while getopts "b:t:m:e:a:w:h:k:s:v:g:l:cpIiq" opt; do
   esac
 done
 
-# If local zip exists, convert relative path to absolute one
+# If local zip is exist, convert relative path to absolute one
 if [[ ! -z "$LOCALZIP" ]]; then
   if [[ -f "$LOCALZIP" ]]; then
     LOCALZIP="$(cd "$(dirname "$LOCALZIP")"; pwd)/$(basename "$LOCALZIP")"
@@ -203,9 +206,9 @@ default_branch="aosp-master-throttled"
 default_target="sdk_car_x86_64-trunk_staging-userdebug"
 default_aae_bid="11049203"
 default_qemu_branch="aosp-emu-master-dev"
-default_qemu_bid="10558851"
+default_qemu_bid="12059904"  # 2024-07-09 build
 default_sdk_branch="aosp-sdk-release"
-default_sdk_bid="9570255"
+default_sdk_bid="9570255"   # this if for gMac/gLaptop (2023 Feb)
 
 # QEMU emulator target and host type
 case $HOST_TYPE in
@@ -265,8 +268,11 @@ fi
 if [[ -z "$SKIN" ]]; then
   DISP_WIDTH="1080"
   DISP_HEIGHT="600"
-  DISP_DENSITY="120"
   SKIN="${DISP_WIDTH}x${DISP_HEIGHT}"
+fi
+
+if [[ -z "$DISP_DENSITY" ]]; then
+  DISP_DENSITY="120"
 fi
 
 if [[ -z "$PACKAGE_AFTER" ]]; then
@@ -349,11 +355,13 @@ if [[ ( "$INSTALL" == "true" || "$PACKAGE_ONLY" == "true" ) ]]; then
   if [[ (! -z "$EMUBID") && (! -f ${EMUZIP}) ]]; then
     echo "===================="
     echo "Fetch emulator by using sdk-repo-${EMU_HOST_TYPE}-emulator-${EMUBID}.zip"
+    # https://android-build.googleplex.com/builds/branches/aosp-emu-master-dev/grid?
     # shellcheck disable=SC2086
     curl -L "$QEMU_URL" -H "Accept: application/json" -o "sdk-repo-${EMU_HOST_TYPE}-emulator-${EMUBID}.zip"
   fi
 
   if [[ (! -z "$AAEBID") && (! -z "$BRANCH_AAE") && (! -z "$TARGET") && (! -f "$AAEZIP") ]]; then
+    # https://android-build.googleplex.com/builds/branches/git_pi-car-release/grid?
     echo "Fetch system image by using --bid $AAEBID --target $TARGET"
     curl -L "$AAE_IMG_URL" -H "Accept: application/json" -o "sdk-repo-linux-system-images-$AAEBID.zip"
   fi
@@ -361,6 +369,7 @@ if [[ ( "$INSTALL" == "true" || "$PACKAGE_ONLY" == "true" ) ]]; then
   if [[ ! -f "$(ls ${BUILDZIP}-*.zip | head -1)" ]]; then
     echo "===================="
     echo "Fetch build tools by using $BUILDZIP-$PLATBID.zip"
+    # https://android-build.googleplex.com/builds/branches/aosp-sdk-release/grid?
     # shellcheck disable=SC2086
     curl -L "$BUILD_TOOL_URL" -H "Accept: application/json" -o "$BUILDZIP-$PLATBID.zip"
   fi
@@ -368,6 +377,7 @@ if [[ ( "$INSTALL" == "true" || "$PACKAGE_ONLY" == "true" ) ]]; then
   if [[ ! -f "$(ls ${PLATZIP}-*.zip | head -1)" ]]; then
     echo "===================="
     echo "Fetch platform tools by using $PLATZIP-$PLATBID.zip"
+    # https://android-build.googleplex.com/builds/branches/aosp-sdk-release/grid?
     # shellcheck disable=SC2086
     curl -L "$PLAT_TOOL_URL" -H "Accept: application/json" -o "$PLATZIP-$PLATBID.zip"
   fi
@@ -501,6 +511,42 @@ if [[ (-f "$ROOTDIR/config.ini") && (! -f "$CONFIG_INI") ]]; then
   sed -i --regexp-extended "s/image.sysdir.1\s?=.*/image.sysdir.1=system-images\/android-${API_LEVEL}\/${VARIANT}\/${ARCH_OPTIONS}\//g" "$CONFIG_INI"
 fi
 if [[ ! -f "$CONFIG_INI" ]]; then
+  ## Check dynamic multi-display support
+  BUILD_PROPS_FILE_IN_ZIP=$(unzip -q -l "${AAEZIP}" | grep build.prop | awk '{print $4}')
+  if [[ -n "$BUILD_PROPS_FILE_IN_ZIP" ]]; then
+    MUMD_TARGET_PROP=$(unzip -p "${AAEZIP}" "${BUILD_PROPS_FILE_IN_ZIP}" | grep -E "gcar_md_|sdk_car_md_")
+    MD_BUILD_PROP=$(unzip -p "${AAEZIP}" "${BUILD_PROPS_FILE_IN_ZIP}" | grep ro.emulator.car.multidisplay)
+    if [[ -z "$MUMD_TARGET_PROP" && "${MD_BUILD_PROP#*=}" == "true" ]]; then
+      echo "This system supports dynamic multi-display."
+      MD_CONFIG="hw.display1.width=400
+hw.display1.height=600
+hw.display1.density=120
+hw.display1.flag=1993
+"
+    else
+      MD_CONFIG=""
+      if [[ (! -z "$MUMD_TARGET_PROP") && ("$SKIN" == "1080x600") ]]; then
+        # MUMD emulator configuration
+        CORES="6"
+        DISP_WIDTH="1848"
+        DISP_HEIGHT="792"
+        DISP_DENSITY="160"
+        SKIN="${DISP_WIDTH}x${DISP_HEIGHT}"
+      fi
+    fi
+    # Check RickyBobby by using target name - gcar_ui_portrait
+    UI_PORTRAIT_PROP=$(unzip -p "${AAEZIP}" "${BUILD_PROPS_FILE_IN_ZIP}" | grep -E "gcar_ui_portrait|gcar_cw_")
+    if [[ (! -z "$UI_PORTRAIT_PROP") && ("$SKIN" == "1080x600") ]]; then
+      echo "This system is RickyBobby."
+      DISP_WIDTH="1224"
+      DISP_HEIGHT="2175"
+      DISP_DENSITY="160"
+      SKIN="${DISP_WIDTH}x${DISP_HEIGHT}"
+    fi
+  else
+    MD_CONFIG=""
+  fi
+
 cat <<EOT >> "$CONFIG_INI"
 abi.type=${ARCH_OPTIONS}
 avd.ini.encoding=UTF-8
@@ -521,7 +567,7 @@ hw.camera.front=none
 hw.cpu.arch=${ARCH_OPTIONS}
 hw.dPad=yes
 hw.device.hash2=MD5:2fa0e16c8cceb7d385c832a4107c0c88
-hw.device.manufacturer=AOSP
+hw.device.manufacturer=Google
 hw.device.name=${DESCRIPTION}
 hw.gps=yes
 hw.gsmModem=yes
@@ -547,6 +593,7 @@ skin.path=${SKIN}
 tag.display=${DESCRIPTION}
 tag.id=${VARIANT}
 vm.heapSize=64
+${MD_CONFIG}
 EOT
 fi
 
