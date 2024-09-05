@@ -81,6 +81,8 @@
 
     <string name="favorites_title" translatable="false">TMA Faves</string>
 
+    <string name="tma_trampoline_activity_label" translatable="false">TmaTrampolineActivity label</string>
+
     <!-- Analytics -->
     <string name="analytics_log_output" translatable="false">Analytics event: %1$s"</string>
     <string name="analytics_prefs_output_title" translatable="false">Analytic events:</string>
