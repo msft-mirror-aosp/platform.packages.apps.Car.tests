@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+    id 'buildSrc.jdk.jdk8'
+}
 
 android {
     compileSdkVersion gradle.ext.aaosLatestSDK
     defaultConfig {
         applicationId "com.android.car.rotaryime"
         minSdkVersion 30
-        targetSdkVersion gradle.ext.aaosTargetSDK
+        targetSdkVersion 33
         versionCode gradle.ext.getVersionCode()
         versionName gradle.ext.getVersionName()
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
+
     lintOptions {
         abortOnError false
     }
