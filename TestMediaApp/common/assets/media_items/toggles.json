@@ -10,6 +10,17 @@
     {
       "FLAGS": "playable",
       "METADATA": {
+        "MEDIA_ID": "Toggle Root",
+        "DISPLAY_TITLE": "Toggle Root on play",
+        "DURATION": 3000000
+      },
+      "EVENTS": [
+        { "STATE": "PLAYING", "TOGGLE_ITEM": "_ROOT_#" }
+      ]
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
         "MEDIA_ID": "Toggle Empty tab",
         "DISPLAY_TITLE": "Toggle Empty tab on play",
         "DURATION": 3000000

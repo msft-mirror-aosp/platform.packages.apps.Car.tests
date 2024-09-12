@@ -17,6 +17,7 @@
 package com.android.car.media.testmediaapp;
 
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID;
+
 import static com.android.car.media.testmediaapp.TmaMediaItem.TREE_PATH_SEPARATOR;
 
 import static java.util.Collections.emptyList;
@@ -86,6 +87,10 @@ class TmaLibrary {
     void setBrowseRoot(TmaBrowseNodeType rootType) {
         String filePath = mRootAssetPaths.get(rootType);
         mBrowseRoot = (filePath != null) ? newRootItem(filePath) : null;
+    }
+
+    TmaMediaItem getRoot() {
+        return mBrowseRoot;
     }
 
     public String getParentPath(String mediaId) {

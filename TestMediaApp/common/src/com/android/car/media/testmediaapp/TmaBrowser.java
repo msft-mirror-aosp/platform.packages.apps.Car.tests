@@ -16,6 +16,7 @@
 package com.android.car.media.testmediaapp;
 
 import static androidx.media.utils.MediaConstants.BROWSER_SERVICE_EXTRAS_KEY_SEARCH_SUPPORTED;
+
 import static com.android.car.media.testmediaapp.TmaLibrary.ROOT_PATH;
 import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.ADD_TO_QUEUE;
 import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.DOWNLOAD;
@@ -316,7 +317,7 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
             TmaMediaItem node = TmaAccountType.NONE.equals(mPrefs.mAccountType.getValue()) ? null :
                     mLibrary.getMediaItemById(parentId);
 
-            if (node == null) {
+            if (node == null || node.mIsHidden) {
                 result.sendResult(null);
             } else if (filter != null) {
                 List<MediaItem> hits = new ArrayList<>(50);
@@ -391,7 +392,8 @@ public class TmaBrowser extends MediaBrowserServiceCompat {
         }
         item.mIsHidden = !item.mIsHidden;
 
-        notifyChildrenChanged(mLibrary.getParentPath(mediaId));
+        String parentId = (item == mLibrary.getRoot()) ? mediaId : mLibrary.getParentPath(mediaId);
+        notifyChildrenChanged(parentId);
     }
 
     private MediaBrowser.MediaItem getFavoritesMediaItem() {
