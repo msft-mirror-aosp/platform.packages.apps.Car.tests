@@ -41,8 +41,13 @@ android_app {
         "androidx.preference_preference",
         "androidx.legacy_legacy-support-v4",
         "androidx.media3.media3-session",
-        "androidx.car.app_app-automotive",
+        // DO NOT MODIFY START
+        // NOTE: The following order is important.
+        // "androidx.car.app_app-automotive" prebuilt doesn't get updatated frequently. Hence there
+        // may be code in "car-media-extensions-prebuilt" that doesn't exist in the prebuilt.
         "car-media-extensions-prebuilt",
+        "androidx.car.app_app-automotive",
+        // DO NOT MODIFY END
     ],
 
     optimize: {
