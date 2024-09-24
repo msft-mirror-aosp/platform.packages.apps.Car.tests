@@ -16,6 +16,7 @@
 
 plugins {
     id("com.android.application")
+    id 'buildSrc.jdk.jdk8'
 }
 
 android {
@@ -24,15 +25,11 @@ android {
     defaultConfig {
         applicationId "com.android.car.media.testmediaapp"
         minSdkVersion 30
-        targetSdkVersion gradle.ext.aaosTargetSDK
+        targetSdkVersion 33
         versionCode gradle.ext.getVersionCode()
         versionName gradle.ext.getVersionName()
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
     lintOptions {
         abortOnError false
     }
