@@ -20,6 +20,7 @@ plugins {
 }
 
 android {
+    namespace "com.android.car.rotaryime"
     compileSdkVersion gradle.ext.aaosLatestSDK
     defaultConfig {
         applicationId "com.android.car.rotaryime"
