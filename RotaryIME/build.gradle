@@ -16,12 +16,12 @@
 
 plugins {
     id 'com.android.application'
+    id 'aaosApps.buildLogic'
     id 'buildSrc.jdk.jdk8'
 }
 
 android {
     namespace "com.android.car.rotaryime"
-    compileSdkVersion gradle.ext.aaosLatestSDK
     defaultConfig {
         applicationId "com.android.car.rotaryime"
         minSdkVersion 30

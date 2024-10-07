@@ -16,11 +16,12 @@
 
 plugins {
     id("com.android.library")
+    id("aaosApps.buildLogic")
+    id("buildSrc.jdk.jdk8")
 }
 
 android{
-    compileSdkVersion gradle.ext.aaosLatestSDK
-    defaultConfig{
+    defaultConfig {
         minSdkVersion 30
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments clearPackageData: 'true', coverage: 'true'
