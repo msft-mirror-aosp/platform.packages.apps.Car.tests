@@ -96,6 +96,7 @@
       "METADATA": {
         "MEDIA_ID": "location",
         "DISPLAY_TITLE": "Location",
+        "DISPLAY_SUBTITLE": "Grant permission from prefs first!",
         "DURATION": 10000,
         "ART_URI": "drawable/ic_location"
       },
