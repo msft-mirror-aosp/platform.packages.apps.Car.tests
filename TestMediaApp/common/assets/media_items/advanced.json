@@ -150,6 +150,15 @@
         "DURATION": 10000,
         "EXCLUDE_ITEM_IN_MIXED_LIST": 1
       }
+    },
+    {
+      "FLAGS": "browsable",
+      "METADATA": {
+        "MEDIA_ID": "useless list",
+        "DISPLAY_TITLE": "Useless List",
+        "DISPLAY_SUBTITLE": "Items not playable nor browsable!"
+      },
+      "INCLUDE": "media_items/useless_list.json"
     }
   ]
 }

@@ -1,0 +1,29 @@
+{
+  "FLAGS": "browsable",
+
+  "METADATA": {
+    "MEDIA_ID": "media_items/useless_list.json",
+    "DISPLAY_TITLE": "Useless List"
+  },
+
+  "CHILDREN": [
+    {
+      "METADATA": {
+        "MEDIA_ID": "useless item 1",
+        "DISPLAY_TITLE": "Useless item #1"
+      }
+    },
+    {
+      "METADATA": {
+        "MEDIA_ID": "useless item 2",
+        "DISPLAY_TITLE": "Useless item #2"
+      }
+    },
+    {
+      "METADATA": {
+        "MEDIA_ID": "useless item 3",
+        "DISPLAY_TITLE": "Useless item #3"
+      }
+    }
+  ]
+}
