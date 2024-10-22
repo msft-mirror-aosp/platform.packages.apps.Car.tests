@@ -79,7 +79,7 @@ public class TmaLibrary {
         metaMap.putString(MEDIA_ID, ROOT_MEDIA_ID);
         return new TmaMediaItem(true, false, TmaMediaItem.ContentStyle.NONE,
                 TmaMediaItem.ContentStyle.NONE, TmaMediaItem.ContentStyle.NONE, metaMap, 0,
-                emptyList(), emptyList(), emptyList(), emptyList(), include);
+                emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), include);
     }
 
     public String getPath(TmaBrowseNodeType rootType) {

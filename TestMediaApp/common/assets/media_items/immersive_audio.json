@@ -17,7 +17,8 @@
         "IMMERSIVE_AUDIO": 1,
         "FORMAT_TINTABLE_LARGE_ICON": "drawable/hda_logo",
         "FORMAT_TINTABLE_SMALL_ICON": "drawable/hda_logo_small"
-      }
+      },
+      "ICONS_URIS": ["drawable/hda_logo_small"]
     },
     {
       "FLAGS": "playable",
@@ -28,7 +29,8 @@
         "IMMERSIVE_AUDIO": 1,
         "FORMAT_TINTABLE_LARGE_ICON": "drawable/hda_logo",
         "FORMAT_TINTABLE_SMALL_ICON": "drawable/hda_logo_small"
-      }
+      },
+      "ICONS_URIS": ["drawable/hda_logo_small", "drawable/ic_paid"]
     },
     {
       "FLAGS": "playable",
@@ -40,7 +42,8 @@
         "IMMERSIVE_AUDIO": 1,
         "FORMAT_TINTABLE_LARGE_ICON": "drawable/hda_logo",
         "FORMAT_TINTABLE_SMALL_ICON": "drawable/hda_logo_small"
-      }
+      },
+      "ICONS_URIS": ["drawable/hda_logo_small", "drawable/ic_paid", "drawable/ic_encrypted"]
     },
     {
       "FLAGS": "playable",
@@ -52,7 +55,9 @@
         "IMMERSIVE_AUDIO": 1,
         "FORMAT_TINTABLE_LARGE_ICON": "drawable/hda_logo",
         "FORMAT_TINTABLE_SMALL_ICON": "drawable/hda_logo_small"
-      }
+      },
+      "ICONS_URIS": ["drawable/hda_logo_small", "drawable/ic_encrypted", "drawable/ic_explicit",
+        "drawable/ic_paid"]
     },
     {
       "FLAGS": "playable",
@@ -63,7 +68,9 @@
         "IMMERSIVE_AUDIO": 1,
         "FORMAT_TINTABLE_LARGE_ICON": "drawable/hda_logo",
         "FORMAT_TINTABLE_SMALL_ICON": "drawable/hda_logo_small"
-      }
+      },
+      "ICONS_URIS": ["drawable/hda_logo_small", "drawable/ic_encrypted", "drawable/ic_explicit",
+        "drawable/ic_paid"]
     },
     {
       "FLAGS": "playable",
@@ -71,7 +78,8 @@
         "MEDIA_ID": "noSubTitleNoLogo",
         "DISPLAY_TITLE": "No subtitle, no logo",
         "DURATION": 3600000
-      }
+      },
+      "ICONS_URIS": ["drawable/ic_lock", "drawable/ic_explicit", "drawable/ic_encrypted"]
     }
   ]
 }

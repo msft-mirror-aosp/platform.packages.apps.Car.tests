@@ -33,6 +33,7 @@ import com.android.car.media.testmediaapp.TmaMediaEvent;
 import com.android.car.media.testmediaapp.TmaMediaItem;
 import com.android.car.media.testmediaapp.TmaMediaItem.ContentStyle;
 import com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction;
+import com.android.car.media.testmediaapp.TmaPublicProvider;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,7 +61,8 @@ class TmaMediaItemReader {
         INCLUDE,
         CUSTOM_ACTIONS,
         EVENTS,
-        BROWSE_ACTIONS
+        BROWSE_ACTIONS,
+        ICONS_URIS,
     }
 
     private static TmaMediaItemReader sInstance;
@@ -109,6 +111,14 @@ class TmaMediaItemReader {
                 mediaItems.add(fromJson(children.getJSONObject(i)));
             }
 
+            JSONArray icons = getArray(json, Keys.ICONS_URIS);
+            int iconsCount = (icons != null) ? icons.length() : 0;
+            List<String> iconsUris = new ArrayList<>(iconsCount);
+            for (int i = 0; i < iconsCount; i++) {
+                String uri = TmaPublicProvider.buildUriString(icons.getString(i));
+                iconsUris.add(uri);
+            }
+
             // "Flags"
             String flags = getString(json, Keys.FLAGS);
             boolean isBrowsable = false;
@@ -132,7 +142,7 @@ class TmaMediaItemReader {
                             .stream()
                             .map(action -> action.mId)
                             .collect(Collectors.toList()),
-                    mediaEvents, mediaItems, getString(json, Keys.INCLUDE));
+                    iconsUris, mediaEvents, mediaItems, getString(json, Keys.INCLUDE));
         } catch (JSONException e) {
             Log.e(TAG, "Json failure: " + e);
             return null;

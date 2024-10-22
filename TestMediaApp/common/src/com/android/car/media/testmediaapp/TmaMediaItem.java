@@ -220,6 +220,8 @@ public class TmaMediaItem {
     final String mInclude;
     /** List of browse custom actions */
     public final List<String> mBrowseActions;
+    /** List of icon uris. */
+    public final List<String> mIconsUriList;
 
     private int mHearts;
     public int mSubscribeCount;
@@ -232,7 +234,8 @@ public class TmaMediaItem {
             ContentStyle browsableStyle, ContentStyle singleItemStyle,
             TmaMetadata metadata, int selfUpdateMs,
             List<TmaCustomAction> customActions, List<String> browseActions,
-            List<TmaMediaEvent> mediaEvents, List<TmaMediaItem> children, String include) {
+            List<String> iconsUriList, List<TmaMediaEvent> mediaEvents, List<TmaMediaItem> children,
+            String include) {
         mIsBrowsable = isBrowsable;
         mIsPlayable = isPlayable;
         mPlayableStyle = playableStyle;
@@ -242,6 +245,7 @@ public class TmaMediaItem {
         mSelfUpdateMs = selfUpdateMs;
         mCustomActions = Collections.unmodifiableList(customActions);
         mBrowseActions = browseActions;
+        mIconsUriList = iconsUriList;
         mMediaEvents = Collections.unmodifiableList(mediaEvents);
         mInclude = include;
         mChildren = Collections.unmodifiableList(children);
