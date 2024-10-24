@@ -18,7 +18,6 @@ plugins {
     id("com.android.library")
     id("aaosApps.buildLogic")
     id 'kotlin-android'
-    id("buildSrc.jdk.jdk8")
 }
 
 android{
@@ -76,6 +75,11 @@ android{
             includeAndroidResources = true
         }
         animationsDisabled = true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     useLibrary 'android.test.runner'
