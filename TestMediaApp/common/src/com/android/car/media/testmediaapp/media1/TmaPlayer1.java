@@ -346,9 +346,10 @@ public class TmaPlayer1 extends MediaSessionCompat.Callback implements TmaPlayer
     public void setQueue() {
         List<TmaBrowsedMediaItem> tmaQueue = mFakePlayer.getQueue();
         List<QueueItem> m1Queue = new ArrayList<>(tmaQueue.size());
-        for (TmaBrowsedMediaItem it : tmaQueue) {
+        for (int i = 0; i < tmaQueue.size(); i++) {
+            TmaBrowsedMediaItem it = tmaQueue.get(i);
             MediaDescriptionCompat desc = toDescription(it.mItem, it.mParentId);
-            m1Queue.add(new QueueItem(desc, tmaQueue.size()));
+            m1Queue.add(new QueueItem(desc, i));
         }
         mSession.setQueue(m1Queue);
     }

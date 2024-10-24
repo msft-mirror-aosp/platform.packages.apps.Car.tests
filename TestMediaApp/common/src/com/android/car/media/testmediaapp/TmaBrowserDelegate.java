@@ -202,7 +202,7 @@ public abstract class TmaBrowserDelegate {
         item.mIsHidden = !item.mIsHidden;
 
         String parentId = (item == mLibrary.getRoot()) ? mediaId : mLibrary.getParentPath(mediaId);
-        notifyChildrenChanged(mLibrary.getParentPath(mediaId));
+        notifyChildrenChanged(parentId);
     }
 
     protected @Nullable List<TmaMediaItem.TmaBrowsedMediaItem> getMediaItems(
