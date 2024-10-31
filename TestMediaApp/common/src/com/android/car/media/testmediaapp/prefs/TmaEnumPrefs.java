@@ -126,6 +126,27 @@ public class TmaEnumPrefs {
         }
     }
 
+    public enum TmaSearchMode implements EnumPrefValue {
+        ENABLED("Enabled", "on"),
+        DISABLED("Disabled", "off");
+
+        private final PrefValueImpl mPrefValue;
+
+        TmaSearchMode(String displayTitle, String id) {
+            mPrefValue = new PrefValueImpl(displayTitle, id);
+        }
+
+        @Override
+        public String getTitle() {
+            return mPrefValue.getTitle();
+        }
+
+        @Override
+        public String getId() {
+            return mPrefValue.getId();
+        }
+    }
+
     public enum AnalyticsState implements EnumPrefValue {
         ANALYTICS_ON("Turn feature on", "on"),
         LOG("Print events to Log", "log"),

@@ -24,7 +24,6 @@ import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_C
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 
 import androidx.annotation.StringRes;
 
@@ -45,7 +44,7 @@ public class ActionResultSender {
         mHandler = handler;
     }
 
-    ActionResultSender setRefreshMediaId(String mediaId) {
+    public ActionResultSender setRefreshMediaId(String mediaId) {
         mResultBundle.putString(BROWSE_CUSTOM_ACTIONS_EXTRA_RESULT_REFRESH_ITEM, mediaId);
         return this;
     }
@@ -64,36 +63,37 @@ public class ActionResultSender {
         return this;
     }
 
-    ActionResultSender setMessage(@StringRes int stringRes) {
+    public ActionResultSender setMessage(@StringRes int stringRes) {
         mResultBundle.putString(BROWSE_CUSTOM_ACTIONS_EXTRA_RESULT_MESSAGE,
                 mContext.getString(stringRes));
         return this;
     }
 
-    ActionResultSender sendTo(Consumer<Bundle> sendFunction) {
+    public ActionResultSender sendTo(Consumer<Bundle> sendFunction) {
         mSendFunction = sendFunction;
         return this;
     }
 
-    ActionResultSender sendTo(Object token, Consumer<Bundle> sendFunction) {
+    public ActionResultSender sendTo(Object token, Consumer<Bundle> sendFunction) {
         mToken = token;
         mSendFunction = sendFunction;
         return this;
     }
 
-    ActionResultSender sendToDelayed(Object token, long delay, Consumer<Bundle> sendFunction) {
+    public ActionResultSender sendToDelayed(Object token, long delay,
+                                            Consumer<Bundle> sendFunction) {
         mToken = token;
         mDelay = delay;
         mSendFunction = sendFunction;
         return this;
     }
 
-    ActionResultSender onComplete(Runnable runnable) {
+    public ActionResultSender onComplete(Runnable runnable) {
         mCompleteFunction = runnable;
         return this;
     }
 
-    void send() {
+    public void send() {
         mHandler.removeCallbacksAndMessages(mToken);
         mHandler.postDelayed(() -> mCompleteFunction.run(), mToken, mDelay);
         mHandler.postDelayed(() -> mSendFunction.accept(mResultBundle), mToken, mDelay);

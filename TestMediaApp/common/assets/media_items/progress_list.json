@@ -33,7 +33,7 @@
         "MEDIA_ID": "With Progress No New Indicator",
         "DISPLAY_TITLE": "Progress bar only",
         "DURATION": 1500000,
-        "PLAYBACK_PROGRESS": 33
+        "PLAYBACK_PROGRESS": 0.33
       }
     },
     {
@@ -42,7 +42,7 @@
         "MEDIA_ID": "With Progress With new Indicator",
         "DISPLAY_TITLE": "Progress bar and new indicator",
         "DURATION": 1500000,
-        "PLAYBACK_PROGRESS": 45,
+        "PLAYBACK_PROGRESS": 0.45,
         "PLAYBACK_STATUS": 0
       }
     },
@@ -54,7 +54,7 @@
         "DISPLAY_SUBTITLE": "Playlist with progress bar, dot and >",
         "DURATION": 1500000,
         "PLAYBACK_STATUS": 0,
-        "PLAYBACK_PROGRESS": 66
+        "PLAYBACK_PROGRESS": 0.66
       },
       "INCLUDE":"media_items/empty.json"
     }

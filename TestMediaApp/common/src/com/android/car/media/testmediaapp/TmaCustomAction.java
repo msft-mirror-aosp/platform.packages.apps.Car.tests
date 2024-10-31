@@ -19,25 +19,25 @@ package com.android.car.media.testmediaapp;
 import static androidx.media3.session.CommandButton.ICON_SKIP_BACK_15;
 import static androidx.media3.session.CommandButton.ICON_SKIP_FORWARD_30;
 
-import androidx.annotation.OptIn;
-import androidx.media3.common.util.UnstableApi;
+import android.annotation.SuppressLint;
 
-@UnstableApi
-@OptIn(markerClass = UnstableApi.class)
+
 public enum TmaCustomAction {
 
     HEART_PLUS_PLUS("heart_plus_plus", R.string.heart_plus_plus, R.drawable.ic_heart_plus_plus, 0),
     HEART_LESS_LESS("heart_less_less", R.string.heart_less_less, R.drawable.ic_heart_less_less, 0),
     REQUEST_LOCATION("location", R.string.location, R.drawable.ic_location, 0),
     // We use the close icon drawable to make sure the displayed icon comes from CarMediaApp.
+    @SuppressLint("UnsafeOptInUsageError")
     SKIP_FORWARD_30("skip_forward_30", R.string.skip_forward_30, R.drawable.ic_close,
             ICON_SKIP_FORWARD_30),
+    @SuppressLint("UnsafeOptInUsageError")
     SKIP_BACK_15("skip_back_15", R.string.skip_back_15, R.drawable.ic_close, ICON_SKIP_BACK_15);
 
-    final String mId;
-    final int mNameId;
-    final int mIcon;
-    final int mIconId;
+    public final String mId;
+    public final int mNameId;
+    public final int mIcon;
+    public final int mIconId;
 
     TmaCustomAction(String id, int name, int icon, int iconId) {
         mId = TmaMediaItem.CUSTOM_ACTION_PREFIX + id;

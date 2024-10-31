@@ -31,7 +31,7 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.car.media.testmediaapp.TmaBrowser;
+import com.android.car.media.testmediaapp.media1.TmaBrowser1;
 
 /**
  * An activity that handles the intents sent to open TestMediaApp and then generates a new intent to
@@ -46,6 +46,7 @@ import com.android.car.media.testmediaapp.TmaBrowser;
  * Examples for the Uri are
  * "app://com.android.car.media.testmediaapp?search=normal\&searchAction=1"
  * "app://com.android.car.media.testmediaapp?mediaId=_ROOT_%23advanced%23art%20nodes%23"
+ * TODO(media3) support links to the media3 browser.
  */
 public class TmaTrampolineActivity extends AppCompatActivity {
 
@@ -77,7 +78,7 @@ public class TmaTrampolineActivity extends AppCompatActivity {
         Intent mcIntent = new Intent();
         mcIntent.setAction(ACTION_MEDIA_TEMPLATE_V2);
         mcIntent.putExtra(EXTRA_KEY_MEDIA_COMPONENT,
-                new ComponentName(getApplicationContext(), TmaBrowser.class).flattenToString());
+                new ComponentName(getApplicationContext(), TmaBrowser1.class).flattenToString());
         String mediaId = uri.getQueryParameter(KEY_MEDIA_ID);
         String searchQuery = uri.getQueryParameter(KEY_SEARCH);
         if (!TextUtils.isEmpty(mediaId)) {

@@ -57,7 +57,7 @@
                 "MEDIA_ID": "1 custom action with progress",
                 "DISPLAY_TITLE": "1 custom action with progress",
                 "DURATION": 1500000,
-                "PLAYBACK_PROGRESS": 33
+                "PLAYBACK_PROGRESS": 0.33
             },
             "BROWSE_ACTIONS": [
                 "DOWNLOAD"
@@ -70,7 +70,7 @@
                 "DISPLAY_TITLE": "1 custom action with dot,progress",
                 "DURATION": 1500000,
                 "PLAYBACK_STATUS": 0,
-                "PLAYBACK_PROGRESS": 33
+                "PLAYBACK_PROGRESS": 0.33
             },
             "BROWSE_ACTIONS": [
                 "DOWNLOAD"
@@ -83,7 +83,7 @@
                 "DISPLAY_TITLE": "1 custom action with dot,progress,>",
                 "DURATION": 1500000,
                 "PLAYBACK_STATUS": 0,
-                "PLAYBACK_PROGRESS": 33
+                "PLAYBACK_PROGRESS": 0.33
             },
             "BROWSE_ACTIONS": [
                 "DOWNLOAD"
@@ -144,7 +144,7 @@
                 "MEDIA_ID": "2 custom actions with progress",
                 "DISPLAY_TITLE": "2 custom actions with progress",
                 "DURATION": 1500000,
-                "PLAYBACK_PROGRESS": 33
+                "PLAYBACK_PROGRESS": 0.33
             },
             "BROWSE_ACTIONS": [
                 "DOWNLOAD", "FAVORITE"
@@ -157,7 +157,7 @@
                 "DISPLAY_TITLE": "2 custom actions with dot,progress",
                 "DURATION": 1500000,
                 "PLAYBACK_STATUS": 0,
-                "PLAYBACK_PROGRESS": 33
+                "PLAYBACK_PROGRESS": 0.33
             },
             "BROWSE_ACTIONS": [
                 "DOWNLOAD", "FAVORITE"
@@ -170,7 +170,7 @@
                 "DISPLAY_TITLE": "2 custom actions with dot,progress,>",
                 "DURATION": 1500000,
                 "PLAYBACK_STATUS": 0,
-                "PLAYBACK_PROGRESS": 33
+                "PLAYBACK_PROGRESS": 0.33
             },
             "BROWSE_ACTIONS": [
                 "DOWNLOAD", "FAVORITE"
@@ -231,7 +231,7 @@
                 "MEDIA_ID": "6 custom actions with progress",
                 "DISPLAY_TITLE": "6 custom actions with progress",
                 "DURATION": 1500000,
-                "PLAYBACK_PROGRESS": 33
+                "PLAYBACK_PROGRESS": 0.33
             },
             "BROWSE_ACTIONS": [
                 "DOWNLOAD", "FAVORITE", "ADD_TO_QUEUE", "ERROR_ACTION", "BROWSE_ACTION", "PBV_ACTION"
@@ -244,7 +244,7 @@
                 "DISPLAY_TITLE": "6 custom actions with dot,progress",
                 "DURATION": 1500000,
                 "PLAYBACK_STATUS": 0,
-                "PLAYBACK_PROGRESS": 33
+                "PLAYBACK_PROGRESS": 0.33
             },
             "BROWSE_ACTIONS": [
                 "DOWNLOAD", "FAVORITE", "ADD_TO_QUEUE", "ERROR_ACTION", "BROWSE_ACTION", "PBV_ACTION"
@@ -270,7 +270,7 @@
                 "DISPLAY_TITLE": "6 custom actions with dot,progress,>",
                 "DURATION": 1500000,
                 "PLAYBACK_STATUS": 0,
-                "PLAYBACK_PROGRESS": 33
+                "PLAYBACK_PROGRESS": 0.33
             },
             "BROWSE_ACTIONS": [
                 "DOWNLOAD", "FAVORITE", "ADD_TO_QUEUE", "ERROR_ACTION", "BROWSE_ACTION", "PBV_ACTION"
