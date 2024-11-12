@@ -24,6 +24,8 @@ import static com.android.car.media.testmediaapp.loader.TmaLoaderUtils.getEnumAr
 import static com.android.car.media.testmediaapp.loader.TmaLoaderUtils.getInt;
 import static com.android.car.media.testmediaapp.loader.TmaLoaderUtils.getString;
 
+import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -113,10 +115,14 @@ class TmaMediaItemReader {
 
             JSONArray icons = getArray(json, Keys.ICONS_URIS);
             int iconsCount = (icons != null) ? icons.length() : 0;
-            List<String> iconsUris = new ArrayList<>(iconsCount);
+            ArrayList<Uri> iconsUris = new ArrayList<>(iconsCount);
             for (int i = 0; i < iconsCount; i++) {
-                String uri = TmaPublicProvider.buildUriString(icons.getString(i));
-                iconsUris.add(uri);
+                String asset = icons.getString(i);
+                if (!TextUtils.isEmpty(asset)) {
+                    iconsUris.add(Uri.parse(TmaPublicProvider.buildUriString(asset)));
+                } else {
+                    Log.e(TAG, "Empty icon uri!");
+                }
             }
 
             // "Flags"
