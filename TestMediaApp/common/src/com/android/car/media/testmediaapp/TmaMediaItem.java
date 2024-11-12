@@ -16,11 +16,13 @@
 
 package com.android.car.media.testmediaapp;
 
+import android.net.Uri;
 import android.support.v4.media.MediaMetadataCompat;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -221,7 +223,7 @@ public class TmaMediaItem {
     /** List of browse custom actions */
     public final List<String> mBrowseActions;
     /** List of icon uris. */
-    public final List<String> mIconsUriList;
+    public final ArrayList<Uri> mIndicatorIcons;
 
     private int mHearts;
     public int mSubscribeCount;
@@ -234,7 +236,7 @@ public class TmaMediaItem {
             ContentStyle browsableStyle, ContentStyle singleItemStyle,
             TmaMetadata metadata, int selfUpdateMs,
             List<TmaCustomAction> customActions, List<String> browseActions,
-            List<String> iconsUriList, List<TmaMediaEvent> mediaEvents, List<TmaMediaItem> children,
+            ArrayList<Uri> iconsUris, List<TmaMediaEvent> mediaEvents, List<TmaMediaItem> children,
             String include) {
         mIsBrowsable = isBrowsable;
         mIsPlayable = isPlayable;
@@ -245,7 +247,7 @@ public class TmaMediaItem {
         mSelfUpdateMs = selfUpdateMs;
         mCustomActions = Collections.unmodifiableList(customActions);
         mBrowseActions = browseActions;
-        mIconsUriList = iconsUriList;
+        mIndicatorIcons = iconsUris;
         mMediaEvents = Collections.unmodifiableList(mediaEvents);
         mInclude = include;
         mChildren = Collections.unmodifiableList(children);
