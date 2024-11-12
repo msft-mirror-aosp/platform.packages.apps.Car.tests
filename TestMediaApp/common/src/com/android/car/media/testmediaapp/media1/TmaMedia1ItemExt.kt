@@ -205,9 +205,9 @@ fun TmaMediaItem.toDescription(parentPath : String) : MediaDescriptionCompat {
                 ArrayList(mBrowseActions))
     }
 
-    if (mIconsUriList != null && mIconsUriList.isNotEmpty()) {
-        extras.putStringArrayList(MetadataExtras.KEY_TINTABLE_INDICATOR_ICON_URI_LIST,
-            ArrayList(mIconsUriList))
+    if (mIndicatorIcons != null && mIndicatorIcons.isNotEmpty()) {
+        extras.putParcelableArrayList(MetadataExtras.KEY_TINTABLE_INDICATOR_ICON_URI_LIST,
+            mIndicatorIcons)
     }
 
     bob.setExtras(extras)
