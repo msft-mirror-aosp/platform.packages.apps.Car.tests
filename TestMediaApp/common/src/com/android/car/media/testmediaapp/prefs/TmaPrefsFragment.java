@@ -37,6 +37,7 @@ import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaAccountType;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaBrowseNodeType;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaLoginEventOrder;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaReplyDelay;
+import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaSearchMode;
 import com.android.car.media.testmediaapp.prefs.TmaPrefs.PrefEntry;
 
 import java.util.function.Consumer;
@@ -59,6 +60,8 @@ public class TmaPrefsFragment extends PreferenceFragmentCompat {
                 TmaReplyDelay.values()));
         screen.addPreference(createEnumPref(context, "Asset delay: random value in [v, 2v]",
                 prefs.mAssetReplyDelay, TmaReplyDelay.values()));
+        screen.addPreference(createEnumPref(context, "Search mode", prefs.mSearchMode,
+                TmaSearchMode.values()));
         screen.addPreference(createEnumPref(context, "Login event order", prefs.mLoginEventOrder,
                 TmaLoginEventOrder.values()));
         screen.addPreference(createClickPref(context, "Request location perm",

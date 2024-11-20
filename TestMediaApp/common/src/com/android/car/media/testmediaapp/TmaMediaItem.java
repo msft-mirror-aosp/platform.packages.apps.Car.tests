@@ -16,29 +16,18 @@
 
 package com.android.car.media.testmediaapp;
 
-import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION;
-import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID;
-import static androidx.media.utils.MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE;
-import static com.android.car.media.testmediaapp.MediaConstants.KEY_DESCRIPTION_LINK_MEDIA_ID;
-import static com.android.car.media.testmediaapp.MediaConstants.KEY_SUBTITLE_LINK_MEDIA_ID;
-import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ITEM_LIST;
-import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.METADATA_KEY_PLAYBACK_PROGRESS;
-import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.METADATA_KEY_PLAYBACK_STATUS;
-
-import android.annotation.SuppressLint;
-import android.os.Bundle;
-import android.support.v4.media.MediaBrowserCompat;
-import android.support.v4.media.MediaDescriptionCompat;
+import android.net.Uri;
 import android.support.v4.media.MediaMetadataCompat;
-import android.support.v4.media.session.MediaSessionCompat;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
-import androidx.media.utils.MediaConstants;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /** Our internal representation of media items. */
 public class TmaMediaItem {
@@ -54,17 +43,24 @@ public class TmaMediaItem {
     /** Separates multiple media ids (eg: in links). See {@link #selectLink} */
     public static final char MULTI_ID_SEPARATOR = '|';
 
+    /** Regroups a TmaMediaItem and the id (ie full path) of its parent in the browse tree. */
+    public static class TmaBrowsedMediaItem {
+        public final @NonNull TmaMediaItem mItem;
+        public final @NonNull String mParentId;
+
+        protected TmaBrowsedMediaItem(@NonNull TmaMediaItem item, @NonNull String parentId) {
+            mItem = item;
+            mParentId = parentId;
+        }
+    }
+
     /** The name of each entry is the value used in the json file. */
     public enum ContentStyle {
-        NONE (0),
-        LIST (MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_LIST_ITEM),
-        GRID (MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_GRID_ITEM),
-        LIST_CATEGORY(MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_CATEGORY_LIST_ITEM),
-        GRID_CATEGORY(MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_CATEGORY_GRID_ITEM);
-        final int mBundleValue;
-        ContentStyle(int value) {
-            mBundleValue = value;
-        }
+        NONE,
+        LIST,
+        GRID,
+        LIST_CATEGORY,
+        GRID_CATEGORY,
     }
 
     public enum TmaBrowseAction {
@@ -119,35 +115,131 @@ public class TmaMediaItem {
         }
     }
 
-    private final int mFlags;
-    private final MediaMetadataCompat mMediaMetadata;
-    private final ContentStyle mPlayableStyle;
-    private final ContentStyle mBrowsableStyle;
-    private final ContentStyle mSingleItemStyle;
+    public enum ValueType {
+        INT,
+        LONG,
+        TEXT,
+        URI,
+        DOUBLE,
+    }
+
+    /** The name of each entry is the key used in the json file. */
+    public enum MetadataKey {
+        TITLE(ValueType.TEXT),
+        ARTIST(ValueType.TEXT),
+        DURATION(ValueType.LONG),
+        ALBUM(ValueType.TEXT),
+        AUTHOR(ValueType.TEXT),
+        WRITER(ValueType.TEXT),
+        COMPOSER(ValueType.TEXT),
+        COMPILATION(ValueType.TEXT),
+        DATE(ValueType.TEXT),
+        YEAR(ValueType.LONG),
+        GENRE(ValueType.TEXT),
+        TRACK_NUMBER(ValueType.LONG),
+        NUM_TRACKS(ValueType.LONG),
+        DISC_NUMBER(ValueType.LONG),
+        ALBUM_ARTIST(ValueType.TEXT),
+        ART_URI(ValueType.URI),
+        ALBUM_ART_URI(ValueType.URI),
+        DISPLAY_TITLE(ValueType.TEXT),
+        DISPLAY_SUBTITLE(ValueType.TEXT),
+        DISPLAY_DESCRIPTION(ValueType.TEXT),
+        DISPLAY_ICON_URI(ValueType.URI),
+        GROUP_TITLE(ValueType.TEXT),
+        MEDIA_ID(ValueType.TEXT),
+        BT_FOLDER_TYPE(ValueType.LONG),
+        MEDIA_URI(ValueType.URI),
+        ADVERTISEMENT(ValueType.LONG),
+        DOWNLOAD_STATUS(ValueType.LONG),
+        PLAYBACK_PROGRESS(ValueType.DOUBLE),
+        PLAYBACK_STATUS(ValueType.INT),
+        EXPLICIT(ValueType.LONG),
+        SUBTITLE_LINK_MEDIA_ID(ValueType.TEXT),
+        DESCRIPTION_LINK_MEDIA_ID(ValueType.TEXT),
+        IMMERSIVE_AUDIO(ValueType.LONG),
+        FORMAT_TINTABLE_LARGE_ICON(ValueType.URI),
+        FORMAT_TINTABLE_SMALL_ICON(ValueType.URI),
+        EXCLUDE_ITEM_IN_MIXED_LIST(ValueType.LONG),
+        ;
+
+        /** The type of the key's value in {@link MediaMetadataCompat}. */
+        public final @NonNull ValueType mKeyType;
+
+        MetadataKey(@NonNull ValueType valueType) {
+            mKeyType = valueType;
+        }
+    }
+
+    public static class TmaMetadata {
+        private final Map<MetadataKey, Object> mMap = new HashMap<>();
+
+        public Set<MetadataKey> getKeys() {
+            return mMap.keySet();
+        }
+
+        public String getString(MetadataKey key) {
+            return (String) mMap.get(key);
+        }
+
+        public Long getLong(MetadataKey key) {
+            return (Long) mMap.get(key);
+        }
+
+        public Double getDouble(MetadataKey key) {
+            return (Double) mMap.get(key);
+        }
+
+        public void putString(MetadataKey key, String value) {
+            mMap.put(key, value);
+        }
+
+        public void putLong(MetadataKey key, Long value) {
+            mMap.put(key, value);
+        }
+
+        public void putDouble(MetadataKey key, Double value) {
+            mMap.put(key, value);
+        }
+    }
+
+    public final boolean mIsBrowsable;
+    public final boolean mIsPlayable;
+    public final TmaMetadata mMediaMetadata;
+    public final ContentStyle mPlayableStyle;
+    public final ContentStyle mBrowsableStyle;
+    public final ContentStyle mSingleItemStyle;
     private final int mSelfUpdateMs;
 
     /** Read only list, doesn't contain the children from {@link #mInclude}. */
     private final List<TmaMediaItem> mChildren;
 
     /** Read only list. */
-    final List<TmaCustomAction> mCustomActions;
+    public final List<TmaCustomAction> mCustomActions;
     /** Read only list. Events triggered when starting the playback. */
-    final List<TmaMediaEvent> mMediaEvents;
+    public final List<TmaMediaEvent> mMediaEvents;
     /** References another json file where to get extra children from. */
     final String mInclude;
     /** List of browse custom actions */
-    final List<String> mBrowseActions;
+    public final List<String> mBrowseActions;
+    /** List of icon uris. */
+    public final ArrayList<Uri> mIndicatorIcons;
 
-    int mHearts;
-    int mRevealCounter;
-    boolean mIsHidden = false;
+    private int mHearts;
+    public int mSubscribeCount;
+    public int mRevealCounter;
+    public TmaBrowserDelegate.UpdateNodeTask mUpdateNodeTask;
+    public boolean mIsHidden = false;
 
 
-    public TmaMediaItem(int flags, ContentStyle playableStyle, ContentStyle browsableStyle,
-            ContentStyle singleItemStyle, MediaMetadataCompat metadata, int selfUpdateMs,
+    public TmaMediaItem(boolean isBrowsable, boolean isPlayable, ContentStyle playableStyle,
+            ContentStyle browsableStyle, ContentStyle singleItemStyle,
+            TmaMetadata metadata, int selfUpdateMs,
             List<TmaCustomAction> customActions, List<String> browseActions,
-            List<TmaMediaEvent> mediaEvents, List<TmaMediaItem> children, String include) {
-        mFlags = flags;
+            ArrayList<Uri> iconsUris, List<TmaMediaEvent> mediaEvents, List<TmaMediaItem> children,
+            String include) {
+        mIsBrowsable = isBrowsable;
+        mIsPlayable = isPlayable;
         mPlayableStyle = playableStyle;
         mBrowsableStyle = browsableStyle;
         mSingleItemStyle = singleItemStyle;
@@ -155,52 +247,48 @@ public class TmaMediaItem {
         mSelfUpdateMs = selfUpdateMs;
         mCustomActions = Collections.unmodifiableList(customActions);
         mBrowseActions = browseActions;
+        mIndicatorIcons = iconsUris;
         mMediaEvents = Collections.unmodifiableList(mediaEvents);
         mInclude = include;
         mChildren = Collections.unmodifiableList(children);
     }
 
-    int getSelfUpdateDelay() {
+    public int getSelfUpdateDelay() {
         return mSelfUpdateMs;
-    }
-
-    boolean testFlag(int flag) {
-        return (mFlags & flag) != 0;
-    }
-
-    int getFlags() {
-        return mFlags;
     }
 
     List<TmaMediaItem> getChildren() {
         return mChildren;
     }
 
-    String getMediaId() {
-        return mMediaMetadata.getString(METADATA_KEY_MEDIA_ID);
+    public String getMediaId() {
+        return mMediaMetadata.getString(MetadataKey.MEDIA_ID);
     }
 
-    String getPath(String parentPath) {
+    public String getTitle() {
+        MetadataKey[] keys = {MetadataKey.DISPLAY_TITLE, MetadataKey.TITLE};
+        for (MetadataKey key : keys) {
+            String value = mMediaMetadata.getString(key);
+            if (!TextUtils.isEmpty(value)) return value;
+        }
+        return null;
+    }
+
+    public String getPath(String parentPath) {
         return parentPath + getMediaId() + TREE_PATH_SEPARATOR;
     }
 
     /** Returns -1 if the duration key is unspecified or <= 0. */
-    long getDuration() {
-        long result = mMediaMetadata.getLong(METADATA_KEY_DURATION);
-        if (result <= 0) return -1;
+    public long getDuration() {
+        Long result = mMediaMetadata.getLong(MetadataKey.DURATION);
+        if ((result == null) || (result <= 0)) return -1;
         return result;
     }
 
-    void updateSessionMetadata(TmaLibrary lib, MediaSessionCompat session) {
-        MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder(mMediaMetadata);
-        selectLink(lib, builder, KEY_SUBTITLE_LINK_MEDIA_ID);
-        selectLink(lib, builder, KEY_DESCRIPTION_LINK_MEDIA_ID);
-        session.setMetadata(builder.build());
-    }
-
-    @SuppressLint("WrongConstant")
-    MediaBrowserCompat.MediaItem toSessionItem(@NonNull String mediaPath) {
-        return new MediaBrowserCompat.MediaItem(buildDescription(mediaPath), getFlags());
+    public void offsetHearts(int offset) {
+        mHearts += offset;
+        mMediaMetadata.putString(MetadataKey.DISPLAY_DESCRIPTION,
+                (mHearts != 0) ? " " + mHearts + " ❤ " : "");
     }
 
     /**
@@ -215,58 +303,6 @@ public class TmaMediaItem {
         } else {
             mBrowseActions.add(newAction.mId);
         }
-    }
-
-    MediaDescriptionCompat buildDescription(@NonNull String parentPath) {
-
-        // Use the default media description but add our extras.
-        MediaDescriptionCompat metadataDescription = mMediaMetadata.getDescription();
-
-        MediaDescriptionCompat.Builder bob = new MediaDescriptionCompat.Builder();
-        bob.setMediaId(getPath(parentPath));
-        bob.setTitle(metadataDescription.getTitle());
-        bob.setSubtitle(metadataDescription.getSubtitle());
-        bob.setDescription(metadataDescription.getDescription());
-        bob.setIconBitmap(metadataDescription.getIconBitmap());
-        bob.setIconUri(metadataDescription.getIconUri());
-        bob.setMediaUri(metadataDescription.getMediaUri());
-
-        Bundle extras = new Bundle();
-        if (metadataDescription.getExtras() != null) {
-            extras.putAll(metadataDescription.getExtras());
-        }
-
-        extras.putInt(MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_PLAYABLE,
-                mPlayableStyle.mBundleValue);
-        extras.putInt(MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_BROWSABLE,
-                mBrowsableStyle.mBundleValue);
-        extras.putInt(MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_SINGLE_ITEM,
-                mSingleItemStyle.mBundleValue);
-
-        int playbackStatus = (int) mMediaMetadata.getBundle().getLong(METADATA_KEY_PLAYBACK_STATUS,
-                2);
-        double playbackProgress = mMediaMetadata.getBundle().getLong(METADATA_KEY_PLAYBACK_PROGRESS,
-                -1) / 100.0;
-
-        extras.putInt(MediaConstants.DESCRIPTION_EXTRAS_KEY_COMPLETION_STATUS, playbackStatus);
-        extras.putDouble(MediaConstants.DESCRIPTION_EXTRAS_KEY_COMPLETION_PERCENTAGE,
-                playbackProgress);
-        if (mMediaMetadata.containsKey(MediaConstants.METADATA_KEY_IS_EXPLICIT)) {
-            extras.putLong(MediaConstants.METADATA_KEY_IS_EXPLICIT,
-                    mMediaMetadata.getLong(MediaConstants.METADATA_KEY_IS_EXPLICIT));
-        }
-        if (mMediaMetadata.containsKey(DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE)) {
-            extras.putString(DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE,
-                    mMediaMetadata.getString(DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE));
-        }
-
-        if(mBrowseActions != null && !mBrowseActions.isEmpty()){
-            extras.putStringArrayList(BROWSE_CUSTOM_ACTIONS_ITEM_LIST,
-                    new ArrayList<>(mBrowseActions));
-        }
-
-        bob.setExtras(extras);
-        return bob.build();
     }
 
     /**
@@ -285,16 +321,20 @@ public class TmaMediaItem {
      * Soo.. the json files usually include both link forms separated by {@link #MULTI_ID_SEPARATOR}
      * and this method selects the fist form that works.
      */
-    private void selectLink(@NonNull TmaLibrary lib, MediaMetadataCompat.Builder bob, String key) {
-        String value = mMediaMetadata.getString(key);
+    public static String selectLink(@NonNull TmaLibrary lib, String value) {
         if (!TextUtils.isEmpty(value)) {
             String[] idsList = value.split("\\" + MULTI_ID_SEPARATOR);
             for (String mediaId : idsList) {
                 if (lib.getMediaItemById(mediaId) != null) {
-                    bob.putString(key, mediaId);
-                    return;
+                    return mediaId;
                 }
             }
         }
+        return null;
     }
+
+    public String selectLink(@NonNull TmaLibrary lib, MetadataKey key) {
+        return selectLink(lib, mMediaMetadata.getString(key));
+    }
+
 }

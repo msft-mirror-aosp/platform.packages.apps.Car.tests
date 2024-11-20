@@ -16,11 +16,12 @@
 
 plugins {
     id 'com.android.application'
+    id 'aaosApps.buildLogic'
     id 'buildSrc.jdk.jdk8'
 }
 
 android {
-    compileSdkVersion gradle.ext.aaosLatestSDK
+    namespace "com.android.car.rotaryplayground"
     defaultConfig {
         applicationId "com.android.car.rotaryplayground"
         minSdkVersion 30
@@ -34,32 +35,19 @@ android {
     }
 
     signingConfigs {
-        aaos {
-            storeFile file(gradle.ext.aaosCertPath)
+        unbundled {
+            storeFile file(gradle.ext.unbundledCertPath)
             storePassword 'carapps'
             keyAlias 'carapps'
             keyPassword 'carapps'
-        }
-
-        platform {
-            storeFile file(gradle.ext.platformCertPath)
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
         }
     }
 
     flavorDimensions "signingkey"
     productFlavors {
-        aaos {
+        unbundled {
             dimension "signingkey"
-            signingConfig signingConfigs.aaos
-        }
-        platform {
-            dimension "signingkey"
-            if (file(gradle.ext.platformCertPath).exists()) {
-                signingConfig signingConfigs.platform
-            }
+            signingConfig signingConfigs.unbundled
         }
     }
 

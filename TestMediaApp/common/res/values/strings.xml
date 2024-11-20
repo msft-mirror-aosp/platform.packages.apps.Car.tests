@@ -16,7 +16,11 @@
 <resources>
     <string name="app_name" translatable="false">Test Media App</string>
 
+    <string name="app_name_media3" translatable="false">Test Media3 App</string>
+
     <string name="empty_browse" translatable="false">Test Empty Media</string>
+
+    <string name="authentication_required" translatable="false">Auth required resource string</string>
 
     <string name="select_account" translatable="false">Please select an account type</string>
 

@@ -16,14 +16,25 @@
 
 package com.android.car.media.testmediaapp.prefs;
 
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.car.media.testmediaapp.R;
 
 
 public class TmaPrefsActivity extends AppCompatActivity {
+
+    public static @NonNull PendingIntent getPendingIntent(Context context) {
+        Intent prefsIntent = new Intent();
+        prefsIntent.setClass(context, TmaPrefsActivity.class);
+        prefsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        return PendingIntent.getActivity(context, 0, prefsIntent, PendingIntent.FLAG_IMMUTABLE);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

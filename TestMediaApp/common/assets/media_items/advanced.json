@@ -66,10 +66,19 @@
     },
     {
       "FLAGS": "browsable",
-      "BROWSABLE_HINT": "LIST",
+      "PLAYABLE_HINT": "LIST",
       "METADATA": {
-        "MEDIA_ID": "immersive audio",
-        "DISPLAY_TITLE": "Immersive Audio"
+        "MEDIA_ID": "immersive audio list",
+        "DISPLAY_TITLE": "Immersive Audio list"
+      },
+      "INCLUDE":"media_items/immersive_audio.json"
+    },
+    {
+      "FLAGS": "browsable",
+      "PLAYABLE_HINT": "GRID",
+      "METADATA": {
+        "MEDIA_ID": "immersive audio grid",
+        "DISPLAY_TITLE": "Immersive Audio grid"
       },
       "INCLUDE":"media_items/immersive_audio.json"
     },
@@ -96,6 +105,7 @@
       "METADATA": {
         "MEDIA_ID": "location",
         "DISPLAY_TITLE": "Location",
+        "DISPLAY_SUBTITLE": "Grant permission from prefs first!",
         "DURATION": 10000,
         "ART_URI": "drawable/ic_location"
       },
@@ -140,6 +150,24 @@
         "DISPLAY_TITLE": "Single Items styling"
       },
       "INCLUDE": "media_items/single_item_styling.json"
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "Exclude in mixed app list",
+        "DISPLAY_TITLE": "No metadata in mixed app list",
+        "DURATION": 10000,
+        "EXCLUDE_ITEM_IN_MIXED_LIST": 1
+      }
+    },
+    {
+      "FLAGS": "browsable",
+      "METADATA": {
+        "MEDIA_ID": "useless list",
+        "DISPLAY_TITLE": "Useless List",
+        "DISPLAY_SUBTITLE": "Items not playable nor browsable!"
+      },
+      "INCLUDE": "media_items/useless_list.json"
     }
   ]
 }
