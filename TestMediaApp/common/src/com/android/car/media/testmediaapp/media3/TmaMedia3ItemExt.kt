@@ -188,9 +188,9 @@ fun TmaMediaItem.toMediaItem(lib: TmaLibrary, parentPath : String) : MediaItem {
 //                ArrayList(mBrowseActions))
 //    }
 
-    if (mIndicatorIcons != null && mIndicatorIcons.isNotEmpty()) {
-        metaExtras.putParcelableArrayList(MetadataExtras.KEY_TINTABLE_INDICATOR_ICON_URI_LIST,
-            ArrayList(mIndicatorIcons))
+    if (mIconsUriList != null && mIconsUriList.isNotEmpty()) {
+        metaExtras.putStringArrayList(MetadataExtras.KEY_TINTABLE_INDICATOR_ICON_URI_LIST,
+            ArrayList(mIconsUriList))
     }
 
     metaBuilder.setExtras(metaExtras)
