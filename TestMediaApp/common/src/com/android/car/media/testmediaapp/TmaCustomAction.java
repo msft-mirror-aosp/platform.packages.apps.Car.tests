@@ -19,11 +19,12 @@ package com.android.car.media.testmediaapp;
 import static androidx.media3.session.CommandButton.ICON_SKIP_BACK_15;
 import static androidx.media3.session.CommandButton.ICON_SKIP_FORWARD_30;
 
+import static com.android.car.media.testmediaapp.TmaMediaItem.CUSTOM_PLAYBACK_ACTION_PREFIX;
+
 import android.annotation.SuppressLint;
 
-
+/** Custom playback actions. */
 public enum TmaCustomAction {
-
     HEART_PLUS_PLUS("heart_plus_plus", R.string.heart_plus_plus, R.drawable.ic_heart_plus_plus, 0),
     HEART_LESS_LESS("heart_less_less", R.string.heart_less_less, R.drawable.ic_heart_less_less, 0),
     REQUEST_LOCATION("location", R.string.location, R.drawable.ic_location, 0),
@@ -40,7 +41,7 @@ public enum TmaCustomAction {
     public final int mIconId;
 
     TmaCustomAction(String id, int name, int icon, int iconId) {
-        mId = TmaMediaItem.CUSTOM_ACTION_PREFIX + id;
+        mId = CUSTOM_PLAYBACK_ACTION_PREFIX + id;
         mNameId = name;
         mIcon = icon;
         mIconId = iconId;

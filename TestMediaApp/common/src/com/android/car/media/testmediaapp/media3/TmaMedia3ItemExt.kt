@@ -28,10 +28,10 @@ import androidx.media3.session.MediaConstants
 import androidx.media3.session.MediaConstants.EXTRAS_KEY_CONTENT_STYLE_BROWSABLE
 import androidx.media3.session.MediaConstants.EXTRAS_KEY_CONTENT_STYLE_PLAYABLE
 import androidx.media3.session.MediaConstants.EXTRAS_KEY_CONTENT_STYLE_SINGLE_ITEM
+import com.android.car.media.testmediaapp.MediaConstants as TmaMediaConstants
 import com.android.car.media.testmediaapp.TmaLibrary
 import com.android.car.media.testmediaapp.TmaMediaItem
 import com.android.car.media.testmediaapp.TmaMediaItem.ContentStyle
-import com.android.car.media.testmediaapp.TmaMediaItem.TmaMetadata
 import com.android.car.media.testmediaapp.TmaMediaItem.MetadataKey
 import com.android.car.media.testmediaapp.TmaMediaItem.MetadataKey.ADVERTISEMENT
 import com.android.car.media.testmediaapp.TmaMediaItem.MetadataKey.ALBUM
@@ -69,15 +69,15 @@ import com.android.car.media.testmediaapp.TmaMediaItem.MetadataKey.TITLE
 import com.android.car.media.testmediaapp.TmaMediaItem.MetadataKey.TRACK_NUMBER
 import com.android.car.media.testmediaapp.TmaMediaItem.MetadataKey.WRITER
 import com.android.car.media.testmediaapp.TmaMediaItem.MetadataKey.YEAR
+import com.android.car.media.testmediaapp.TmaMediaItem.TmaMetadata
 import com.android.car.media.testmediaapp.TmaMediaItem.ValueType
-import com.android.car.media.testmediaapp.MediaConstants as TmaMediaConstants
-
 
 @OptIn(UnstableApi::class)
 private object Statics {
     const val TAG = "TmaMedia3ItemExt"
 
-    val extrasMap : HashMap<MetadataKey, String> = HashMap(MetadataKey.values().size)
+    val extrasMap: HashMap<MetadataKey, String> = HashMap(MetadataKey.values().size)
+
     init {
         extrasMap[EXPLICIT] = MediaConstants.EXTRAS_KEY_IS_EXPLICIT
         extrasMap[GROUP_TITLE] = MediaConstants.EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE
@@ -85,59 +85,54 @@ private object Statics {
         extrasMap[DESCRIPTION_LINK_MEDIA_ID] = TmaMediaConstants.KEY_DESCRIPTION_LINK_MEDIA_ID
         extrasMap[IMMERSIVE_AUDIO] = TmaMediaConstants.KEY_IMMERSIVE_AUDIO
         extrasMap[FORMAT_TINTABLE_LARGE_ICON] =
-                TmaMediaConstants.KEY_CONTENT_FORMAT_TINTABLE_LARGE_ICON_URI
+            TmaMediaConstants.KEY_CONTENT_FORMAT_TINTABLE_LARGE_ICON_URI
         extrasMap[FORMAT_TINTABLE_SMALL_ICON] =
-                TmaMediaConstants.KEY_CONTENT_FORMAT_TINTABLE_SMALL_ICON_URI
+            TmaMediaConstants.KEY_CONTENT_FORMAT_TINTABLE_SMALL_ICON_URI
         extrasMap[EXCLUDE_ITEM_IN_MIXED_LIST] =
             MetadataExtras.KEY_EXCLUDE_MEDIA_ITEM_FROM_MIXED_APP_LIST
         extrasMap[PLAYBACK_PROGRESS] = MediaConstants.EXTRAS_KEY_COMPLETION_PERCENTAGE
         extrasMap[PLAYBACK_STATUS] = MediaConstants.EXTRAS_KEY_COMPLETION_STATUS
     }
 
-    fun mapStyle(style : ContentStyle) : Int {
+    fun mapStyle(style: ContentStyle): Int {
         return when (style) {
             ContentStyle.NONE -> 0
             ContentStyle.LIST -> MediaConstants.EXTRAS_VALUE_CONTENT_STYLE_LIST_ITEM
             ContentStyle.GRID -> MediaConstants.EXTRAS_VALUE_CONTENT_STYLE_GRID_ITEM
-            ContentStyle.LIST_CATEGORY
-            -> MediaConstants.EXTRAS_VALUE_CONTENT_STYLE_CATEGORY_LIST_ITEM
-            ContentStyle.GRID_CATEGORY
-            -> MediaConstants.EXTRAS_VALUE_CONTENT_STYLE_CATEGORY_GRID_ITEM
+            ContentStyle.LIST_CATEGORY ->
+                MediaConstants.EXTRAS_VALUE_CONTENT_STYLE_CATEGORY_LIST_ITEM
+            ContentStyle.GRID_CATEGORY ->
+                MediaConstants.EXTRAS_VALUE_CONTENT_STYLE_CATEGORY_GRID_ITEM
         }
     }
 
-    fun mapExtra(lib: TmaLibrary, key : MetadataKey, metaExtras : Bundle, metadata: TmaMetadata) {
+    fun mapExtra(lib: TmaLibrary, key: MetadataKey, metaExtras: Bundle, metadata: TmaMetadata) {
         val extraKey = extrasMap[key]
         if (extraKey == null) {
             Log.e(TAG, "Unsupported extra key")
             return
         }
         when (key.mKeyType) {
-            ValueType.INT
-            -> metaExtras.putInt(extraKey, metadata.getLong(key).toInt())
-            ValueType.LONG,
-            -> metaExtras.putLong(extraKey, metadata.getLong(key))
+            ValueType.INT -> metaExtras.putInt(extraKey, metadata.getLong(key).toInt())
+            ValueType.LONG -> metaExtras.putLong(extraKey, metadata.getLong(key))
             ValueType.TEXT,
-            ValueType.URI,
-            -> {
+            ValueType.URI -> {
                 var value = metadata.getString(key)
                 if (key == SUBTITLE_LINK_MEDIA_ID || key == DESCRIPTION_LINK_MEDIA_ID) {
                     value = TmaMediaItem.selectLink(lib, value)
                 }
                 metaExtras.putString(extraKey, value)
             }
-            ValueType.DOUBLE,
-            -> metaExtras.putDouble(extraKey, metadata.getDouble(key))
+            ValueType.DOUBLE -> metaExtras.putDouble(extraKey, metadata.getDouble(key))
         }
     }
 }
 
 @OptIn(UnstableApi::class)
-fun TmaMediaItem.toMediaItem(lib: TmaLibrary, parentPath : String) : MediaItem {
+fun TmaMediaItem.toMediaItem(lib: TmaLibrary, parentPath: String): MediaItem {
     val metaExtras = Bundle()
-    val metaBuilder = MediaMetadata.Builder()
-    metaBuilder.setIsBrowsable(mIsBrowsable)
-    metaBuilder.setIsPlayable(mIsPlayable)
+    val metaBuilder =
+        MediaMetadata.Builder().setIsBrowsable(mIsBrowsable).setIsPlayable(mIsPlayable)
 
     // Process mMediaMetadata
     for (key in mMediaMetadata.keys) {
@@ -148,10 +143,10 @@ fun TmaMediaItem.toMediaItem(lib: TmaLibrary, parentPath : String) : MediaItem {
             ALBUM -> metaBuilder.setAlbumTitle(mMediaMetadata.getString(key))
             DISPLAY_TITLE -> metaBuilder.setDisplayTitle(mMediaMetadata.getString(key))
             DISPLAY_SUBTITLE -> metaBuilder.setSubtitle(mMediaMetadata.getString(key))
-            DISPLAY_DESCRIPTION -> metaBuilder.setDescription(
-                    mMediaMetadata.getString(DISPLAY_DESCRIPTION))
+            DISPLAY_DESCRIPTION ->
+                metaBuilder.setDescription(mMediaMetadata.getString(DISPLAY_DESCRIPTION))
             // TODO(media3) uncomment once the prebuilt has been updated
-            // DURATION -> metaBuilder.setDurationMs(mMediaMetadata.getLong(key))
+            DURATION -> metaBuilder.setDurationMs(mMediaMetadata.getLong(key))
             ART_URI -> metaBuilder.setArtworkUri(Uri.parse(mMediaMetadata.getString(key)))
 
             AUTHOR,
@@ -170,34 +165,32 @@ fun TmaMediaItem.toMediaItem(lib: TmaLibrary, parentPath : String) : MediaItem {
             BT_FOLDER_TYPE,
             MEDIA_URI,
             ADVERTISEMENT,
-            DOWNLOAD_STATUS,
-            -> {
+            DOWNLOAD_STATUS -> {
                 TODO() // Not needed yet (not used in the json files).
             }
             else -> Statics.mapExtra(lib, key, metaExtras, mMediaMetadata)
         }
     }
 
+    if (mBrowseActions != null && mBrowseActions.isNotEmpty()) {
+        metaBuilder.setSupportedCommands(mBrowseActions)
+    }
+
     metaExtras.putInt(EXTRAS_KEY_CONTENT_STYLE_PLAYABLE, Statics.mapStyle(mPlayableStyle))
     metaExtras.putInt(EXTRAS_KEY_CONTENT_STYLE_BROWSABLE, Statics.mapStyle(mBrowsableStyle))
     metaExtras.putInt(EXTRAS_KEY_CONTENT_STYLE_SINGLE_ITEM, Statics.mapStyle(mSingleItemStyle))
 
-//    TODO(media3) custom browse actions
-//    if (mBrowseActions != null && mBrowseActions.isNotEmpty()) {
-//        extras.putStringArrayList(TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ITEM_LIST,
-//                ArrayList(mBrowseActions))
-//    }
-
     if (mIndicatorIcons != null && mIndicatorIcons.isNotEmpty()) {
-        metaExtras.putParcelableArrayList(MetadataExtras.KEY_TINTABLE_INDICATOR_ICON_URI_LIST,
-            ArrayList(mIndicatorIcons))
+        metaExtras.putParcelableArrayList(
+            MetadataExtras.KEY_TINTABLE_INDICATOR_ICON_URI_LIST,
+            ArrayList(mIndicatorIcons),
+        )
     }
 
     metaBuilder.setExtras(metaExtras)
 
     return MediaItem.Builder()
-            .setMediaId(getPath(parentPath))
-            .setMediaMetadata(metaBuilder.build())
-            .build()
+        .setMediaId(getPath(parentPath))
+        .setMediaMetadata(metaBuilder.build())
+        .build()
 }
-

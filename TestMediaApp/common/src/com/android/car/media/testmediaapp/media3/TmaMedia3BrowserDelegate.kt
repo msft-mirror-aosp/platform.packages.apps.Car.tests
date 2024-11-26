@@ -16,8 +16,6 @@
 
 package com.android.car.media.testmediaapp.media3
 
-// TODO(media3) uncomment once the prebuilt has been updated
-// import androidx.media3.session.SessionError
 import android.content.Context
 import android.media.AudioManager
 import android.os.Bundle
@@ -25,11 +23,13 @@ import android.os.Looper
 import android.util.Log
 import androidx.annotation.OptIn
 import androidx.car.app.annotations.ExperimentalCarApi
+import androidx.car.app.mediaextensions.analytics.Constants
 import androidx.car.app.mediaextensions.analytics.client.RootHintsPopulator
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.LibraryResult
+import androidx.media3.session.LibraryResult.RESULT_ERROR_SESSION_AUTHENTICATION_EXPIRED
 import androidx.media3.session.LibraryResult.ofError
 import androidx.media3.session.LibraryResult.ofItem
 import androidx.media3.session.MediaConstants.EXTRAS_KEY_ERROR_RESOLUTION_ACTION_INTENT_COMPAT
@@ -42,7 +42,9 @@ import androidx.media3.session.MediaSession.ConnectionResult.DEFAULT_PLAYER_COMM
 import androidx.media3.session.MediaSession.ConnectionResult.DEFAULT_SESSION_AND_LIBRARY_COMMANDS
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionCommands
+import androidx.media3.session.SessionError
 import androidx.media3.session.SessionResult
+import androidx.media3.session.SessionResult.RESULT_ERROR_UNKNOWN
 import androidx.media3.session.SessionResult.RESULT_SUCCESS
 import com.android.car.media.testmediaapp.R
 import com.android.car.media.testmediaapp.TmaBrowserDelegate
@@ -50,8 +52,11 @@ import com.android.car.media.testmediaapp.TmaCustomAction
 import com.android.car.media.testmediaapp.TmaLibrary
 import com.android.car.media.testmediaapp.TmaLibrary.ROOT_MEDIA_ID
 import com.android.car.media.testmediaapp.TmaMediaItem
+import com.android.car.media.testmediaapp.TmaMediaItem.CUSTOM_PLAYBACK_ACTION_PREFIX
+import com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.AnalyticsState
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaAccountType
+import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaAnalyticsState
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaReplyDelay
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaSearchMode
 import com.android.car.media.testmediaapp.prefs.TmaPrefsActivity
@@ -68,19 +73,23 @@ class TmaMedia3BrowserDelegate(context: Context) :
 
     companion object {
         private const val TAG = "TMA3-BrowserDelegate"
+
+        /** Extras key to allow AAOS to identify the browse service from the media session. */
+        private const val BROWSE_SERVICE_FOR_SESSION_KEY = "android.media.session.BROWSE_SERVICE"
     }
 
     private val audioManager = context.getSystemService<AudioManager>(AudioManager::class.java)
     private lateinit var session: MediaLibraryService.MediaLibrarySession
     private val player: TmaPlayer3 =
         TmaPlayer3(Looper.getMainLooper(), this, mLibrary, audioManager, mHandler)
-    private val browserRootExtras = Bundle()
+    private val sessionsExtras = Bundle()
     private val controllers = HashSet<MediaSession.ControllerInfo>()
 
     fun initialize(session: MediaLibraryService.MediaLibrarySession) {
         this.session = session
         addPrefsListeners()
-        updateRootExtras()
+        setAccountType(mPrefs.mAccountType.value)
+        updateSessionExtras()
     }
 
     fun getPlayer(): Player {
@@ -91,22 +100,17 @@ class TmaMedia3BrowserDelegate(context: Context) :
         return session
     }
 
-    override fun updateRootExtras() {
-        browserRootExtras.clear()
-
-        // TODO(media3) custom browse actions
-        // browserRootExtras.putParcelableArrayList(
-        // TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ROOT_LIST, ArrayList(createCustomActionsList()))
-        // browserRootExtras.putParcelable(TmaMedia1BrowserDelegate.FAVORITES_MEDIA_ITEM,
-        // getFavoritesMediaItem())
+    private fun updateSessionExtras() {
+        sessionsExtras.clear()
+        sessionsExtras.putString(BROWSE_SERVICE_FOR_SESSION_KEY, TmaBrowser3::class.qualifiedName)
 
         val flags = mPrefs.mAnalyticsState.value.flags
-        RootHintsPopulator(browserRootExtras)
+        RootHintsPopulator(sessionsExtras)
             .setAnalyticsOptIn(flags.contains(AnalyticsState.ANALYTICS_ON.id))
             .setSharePlatform(flags.contains(AnalyticsState.SHARE_GOOGLE.id))
             .setShareOem(flags.contains(AnalyticsState.SHARE_OEM.id))
 
-        setAccountType(mPrefs.mAccountType.value)
+        session.sessionExtras = sessionsExtras
     }
 
     override fun setAccountType(accountType: TmaAccountType) {
@@ -114,14 +118,15 @@ class TmaMedia3BrowserDelegate(context: Context) :
     }
 
     override fun invalidateRoot() {
-        // TODO(media3) how can we update the root extras now ??
         notifyChildrenChanged(TmaLibrary.ROOT_PATH)
     }
 
-    override fun addItemToQueue(mediaId: String?) { // TODO(media3) custom browse actions
+    override fun addItemToQueue(mediaId: String?) {
+        player.impl.addItemToQueue(mediaId)
     }
 
-    override fun removeItemFromQueue(mediaId: String?) { // TODO(media3) custom browse actions
+    override fun removeItemFromQueue(mediaId: String?) {
+        player.impl.removeItemFromQueue(mediaId)
     }
 
     override fun onConnect(
@@ -162,8 +167,30 @@ class TmaMedia3BrowserDelegate(context: Context) :
         customCommand: SessionCommand,
         args: Bundle,
     ): ListenableFuture<SessionResult> {
-        player.onCustomAction(customCommand.customAction, args)
-        return Futures.immediateFuture(SessionResult(RESULT_SUCCESS))
+        if (customCommand.customAction.startsWith(CUSTOM_PLAYBACK_ACTION_PREFIX)) {
+            player.onCustomAction(customCommand.customAction, args)
+            return Futures.immediateFuture(SessionResult(RESULT_SUCCESS))
+        } else {
+            val result: SettableFuture<SessionResult> = SettableFuture.create()
+            handleCustomAction(
+                customCommand.customAction,
+                args,
+                object : CustomActionResultHelper {
+                    override fun sendResult(extras: Bundle) {
+                        result.set(SessionResult(RESULT_SUCCESS, extras))
+                    }
+
+                    override fun sendProgressUpdate(extras: Bundle) {
+                        // TODO(media3) not supported sendProgressUpdate
+                    }
+
+                    override fun sendError(extras: Bundle) {
+                        result.set(SessionResult(RESULT_ERROR_UNKNOWN, extras))
+                    }
+                },
+            )
+            return result
+        }
     }
 
     override fun notifyChildrenChanged(parentId: String) {
@@ -172,6 +199,16 @@ class TmaMedia3BrowserDelegate(context: Context) :
     }
 
     override fun onSearchModeChanged(oldValue: TmaSearchMode, newValue: TmaSearchMode) {
+        updateAvailableCommands()
+    }
+
+    override fun onAnalyticsChanged(oldValue: TmaAnalyticsState, newValue: TmaAnalyticsState) {
+        Log.v(TAG, "AnalyticsMode: $newValue")
+        updateAvailableCommands()
+        updateSessionExtras()
+    }
+
+    private fun updateAvailableCommands() {
         for (controller in controllers) {
             session.setAvailableCommands(controller, getSessionCommands(), getPlayerCommands())
         }
@@ -186,6 +223,15 @@ class TmaMedia3BrowserDelegate(context: Context) :
         for (action in TmaCustomAction.values()) {
             commands.add(SessionCommand(action.mId, Bundle.EMPTY))
         }
+        for (browseAction in TmaBrowseAction.entries) {
+            commands.add(SessionCommand(browseAction.mId, Bundle.EMPTY))
+        }
+
+        val flags = mPrefs.mAnalyticsState.value.flags
+        if (flags.contains(AnalyticsState.ANALYTICS_ON.id)) {
+            commands.add(SessionCommand(Constants.ACTION_ANALYTICS, Bundle.EMPTY))
+        }
+
         builder.addSessionCommands(commands)
         return builder.build()
     }
@@ -203,7 +249,7 @@ class TmaMedia3BrowserDelegate(context: Context) :
         // No delay here as getRoot is required to be quick.
         Log.i(TAG, "onGetLibraryRoot ${browser.packageName} Hints: ${stringify(params?.extras)}")
 
-        val rootParams = LibraryParams.Builder().setExtras(browserRootExtras).build()
+        val rootParams = LibraryParams.Builder().setExtras(sessionsExtras).build()
         return Futures.immediateFuture(getMedia3ItemById(ROOT_MEDIA_ID, rootParams))
     }
 
@@ -242,13 +288,12 @@ class TmaMedia3BrowserDelegate(context: Context) :
                     TmaPrefsActivity.getPendingIntent(context),
                 )
 
-                // TODO(media3) uncomment once the prebuilt has been updated
-                // return ofError(SessionError(RESULT_ERROR_SESSION_AUTHENTICATION_EXPIRED,
-                //     message, errorExtras))
+                return ofError(
+                    SessionError(RESULT_ERROR_SESSION_AUTHENTICATION_EXPIRED, message, errorExtras)
+                )
             } else {
                 Log.i(TAG, "onLoadChildren has null result for: $parentId")
-                // TODO(media3) uncomment once the prebuilt has been updated
-                // return ofError(LibraryResult.RESULT_ERROR_BAD_VALUE, params)
+                return ofError(LibraryResult.RESULT_ERROR_BAD_VALUE, params)
             }
         } else {
             val converter: (TmaMediaItem.TmaBrowsedMediaItem) -> MediaItem = { it ->
@@ -258,7 +303,6 @@ class TmaMedia3BrowserDelegate(context: Context) :
             Log.i(TAG, "onLoadChildren has ${m3Items.size} children for: $parentId")
             return LibraryResult.ofItemList(m3Items, params)
         }
-        return LibraryResult.ofItemList(ImmutableList.of(), params) // TODO(media3) remove
     }
 
     override fun onGetChildren(

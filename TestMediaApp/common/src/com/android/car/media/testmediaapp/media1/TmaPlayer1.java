@@ -279,7 +279,9 @@ public class TmaPlayer1 extends MediaSessionCompat.Callback implements TmaPlayer
     @Override
     public void onPrepareFromMediaId(String mediaId, Bundle extras) {
         super.onPrepareFromMediaId(mediaId, extras);
-        mFakePlayer.prepareMediaItem(mediaId);
+        mFakePlayer.buildQueue(mFakePlayer.getLibrary().getParentPath(mediaId));
+        mFakePlayer.setActiveQueueItem(mFakePlayer.getLibrary().getMediaItemById(mediaId));
+        prepareActiveItem();
     }
 
     @Override
@@ -383,7 +385,6 @@ public class TmaPlayer1 extends MediaSessionCompat.Callback implements TmaPlayer
         mSession.setQueue(m1Queue);
     }
 
-    @Override
     public void prepareActiveItem() {
         TmaBrowsedMediaItem activeItem = mFakePlayer.getActiveItem();
         if (activeItem != null) {

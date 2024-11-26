@@ -43,7 +43,6 @@ android_app {
         "androidx.appcompat_appcompat",
         "androidx-constraintlayout_constraintlayout",
         "androidx.preference_preference",
-        "androidx.legacy_legacy-support-v4",
         "androidx.media3.media3-session",
         // DO NOT MODIFY START
         // NOTE: The following order is important.

@@ -16,18 +16,20 @@
 
 package com.android.car.media.testmediaapp.media3
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.car.app.annotations.ExperimentalCarApi
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.session.CommandButton
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
+import androidx.media3.session.SessionCommand
+import com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction
 
 @UnstableApi
 @ExperimentalCarApi
 class TmaBrowser3 : MediaLibraryService() {
 
-    /** Extras key to allow Android Auto to identify the browse service from the media session. */
-    private val BROWSE_SERVICE_FOR_SESSION_KEY = "android.media.session.BROWSE_SERVICE"
     private lateinit var mediaLibrarySession: MediaLibrarySession
 
     override fun onCreate() {
@@ -35,16 +37,12 @@ class TmaBrowser3 : MediaLibraryService() {
 
         val delegate = TmaMedia3BrowserDelegate(this)
         val player = delegate.getPlayer()
-        val extras = Bundle()
-        extras.putString(BROWSE_SERVICE_FOR_SESSION_KEY, TmaBrowser3::class.qualifiedName)
         mediaLibrarySession =
             MediaLibrarySession.Builder(this, player, delegate)
                 .setId("TEST_MEDIA3_SESSION")
-                .setExtras(extras)
+                .setCommandButtonsForMediaItems(createCustomActionsList())
                 .build()
         delegate.initialize(mediaLibrarySession)
-
-        mediaLibrarySession.sessionExtras = extras // TODO(media3) remove once setExtras works
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaLibrarySession {
@@ -54,5 +52,18 @@ class TmaBrowser3 : MediaLibraryService() {
     override fun onDestroy() {
         mediaLibrarySession.release()
         super.onDestroy()
+    }
+
+    private fun createCustomActionsList(): List<CommandButton> {
+        val result = ArrayList<CommandButton>()
+        for (browseAction in TmaBrowseAction.entries) {
+            val builder =
+                CommandButton.Builder(CommandButton.ICON_UNDEFINED)
+                    .setDisplayName(getString(browseAction.mLabelResId))
+                    .setIconUri(Uri.parse(browseAction.mIcon))
+                    .setSessionCommand(SessionCommand(browseAction.mId, Bundle.EMPTY))
+            result.add(builder.build())
+        }
+        return result
     }
 }

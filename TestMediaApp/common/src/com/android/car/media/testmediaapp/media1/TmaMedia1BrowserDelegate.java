@@ -20,19 +20,11 @@ import static androidx.media.utils.MediaConstants.BROWSER_SERVICE_EXTRAS_KEY_FAV
 import static androidx.media.utils.MediaConstants.BROWSER_SERVICE_EXTRAS_KEY_SEARCH_SUPPORTED;
 
 import static com.android.car.media.testmediaapp.TmaLibrary.ROOT_PATH;
-import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.ADD_TO_QUEUE;
-import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.DOWNLOAD;
-import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.DOWNLOADED;
-import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.DOWNLOADING;
-import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.FAVORITE;
-import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.FAVORITED;
-import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.REMOVE_FROM_QUEUE;
 import static com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction.values;
 import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ACTION_EXTRAS;
 import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ACTION_ICON;
 import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ACTION_ID;
 import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ACTION_LABEL;
-import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_MEDIA_ITEM_ID;
 import static com.android.car.media.testmediaapp.loader.TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ROOT_LIST;
 import static com.android.car.media.testmediaapp.media1.TmaMedia1ItemExtKt.toMediaItem;
 import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.AnalyticsState.ANALYTICS_ON;
@@ -42,7 +34,6 @@ import static com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaBrowseNod
 
 import android.app.PendingIntent;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaDescription;
@@ -56,18 +47,17 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.OptIn;
-import androidx.car.app.mediaextensions.analytics.client.AnalyticsParser;
 import androidx.car.app.mediaextensions.analytics.client.RootHintsPopulator;
 import androidx.media.MediaBrowserServiceCompat;
 import androidx.media.MediaBrowserServiceCompat.BrowserRoot;
 import androidx.media.MediaBrowserServiceCompat.Result;
 import androidx.media.session.MediaButtonReceiver;
 
-import com.android.car.media.testmediaapp.ActionResultSender;
 import com.android.car.media.testmediaapp.R;
 import com.android.car.media.testmediaapp.TmaBrowserDelegate;
 import com.android.car.media.testmediaapp.TmaMediaItem;
 import com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction;
+import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaAccountType;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaBrowseNodeType;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaReplyDelay;
@@ -127,8 +117,7 @@ public class TmaMedia1BrowserDelegate extends TmaBrowserDelegate {
         updateRootExtras();
     }
 
-    @Override
-    protected void updateRootExtras() {
+    private void updateRootExtras() {
         Bundle browserRootExtras = new Bundle();
         browserRootExtras.putParcelableArrayList(
                 BROWSE_CUSTOM_ACTIONS_ROOT_LIST, new ArrayList<>(createCustomActionsList()));
@@ -191,6 +180,15 @@ public class TmaMedia1BrowserDelegate extends TmaBrowserDelegate {
     @Override
     protected void onSearchModeChanged(@NonNull TmaSearchMode oldValue,
             @NonNull TmaSearchMode newValue) {
+    }
+
+    @Override
+    protected void onAnalyticsChanged(
+            @NonNull TmaEnumPrefs.TmaAnalyticsState oldValue,
+            @NonNull TmaEnumPrefs.TmaAnalyticsState newValue) {
+        updateRootExtras();
+        invalidateRoot();
+        Log.v(TAG, "AnalyticsMode: " + newValue.toString());
     }
 
     public BrowserRoot onGetRoot(
@@ -274,114 +272,29 @@ public class TmaMedia1BrowserDelegate extends TmaBrowserDelegate {
         mPlayer.getImpl().removeItemFromQueue(mediaId);
     }
 
-    // TODO(media3) share custom actions code.
-    public void handleCustomAction(String action, Bundle extras, Result<Bundle> result) {
-        // Handle analytics.
-        if (AnalyticsParser.isAnalyticsAction(action)) {
-            AnalyticsParser.parseAnalyticsAction(action, extras, mAnalyticsHandler);
-            result.sendResult(null);
-            return;
-        }
+    /** Handles a media1 custom action. */
+    public void handleCustomAction(String action, Bundle extras, @NonNull Result<Bundle> result) {
+        handleCustomAction(action, extras, new CustomActionResultHelper() {
 
-        // Handle non-analytics actions.
-        String mediaId = extras.getString(BROWSE_CUSTOM_ACTIONS_MEDIA_ITEM_ID);
-        TmaBrowseAction browseAction = TmaBrowseAction.getActionById(action);
-        TmaMediaItem node = mLibrary.getMediaItemById(mediaId);
-        if (browseAction == null || node == null) {
-            Bundle resultBundle = new Bundle();
-            Log.e(TAG, "onCustomAction invalid action or node");
-            result.sendError(resultBundle);
-            return;
-        }
-        result.detach();
-        Context context = getContext();
-        switch (browseAction) {
-            case DOWNLOAD:
-                new ActionResultSender(context, mHandler)
-                        .setRefreshMediaId(mediaId)
-                        .sendTo(DOWNLOAD, result::sendProgressUpdate)
-                        .onComplete(() -> node.replaceAction(DOWNLOAD, DOWNLOADING))
-                        .send();
-                new ActionResultSender(context, mHandler).setRefreshMediaId(mediaId)
-                        .setMessage(R.string.action_result_string_download_complete)
-                        .sendToDelayed(DOWNLOADING, 5_000, result::sendResult)
-                        .onComplete(() -> node.replaceAction(DOWNLOADING, DOWNLOADED))
-                        .send();
-                break;
-            case DOWNLOADING:
-            case DOWNLOADED:
-                new ActionResultSender(context, mHandler)
-                        .setRefreshMediaId(mediaId)
-                        .setMessage(R.string.action_result_string_download_removed)
-                        .sendTo(DOWNLOADING, result::sendResult)
-                        .onComplete(() -> node.replaceAction(browseAction, DOWNLOAD))
-                        .send();
-                break;
-            case FAVORITE:
-                new ActionResultSender(context, mHandler)
-                        .setRefreshMediaId(mediaId)
-                        .setMessage(R.string.action_result_string_added_favorite)
-                        .sendTo(result::sendResult)
-                        .onComplete(() -> node.replaceAction(browseAction, FAVORITED))
-                        .send();
-                break;
-            case FAVORITED:
-                new ActionResultSender(context, mHandler)
-                        .setRefreshMediaId(mediaId)
-                        .setMessage(R.string.action_result_string_removed_favorite)
-                        .sendTo(result::sendResult)
-                        .onComplete(() -> node.replaceAction(browseAction, FAVORITE))
-                        .send();
-                break;
-            case ADD_TO_QUEUE:
-                // show PBV with mediaItem
-                addItemToQueue(mediaId);
+            @Override
+            public void sendResult(@NonNull Bundle extras) {
+                result.sendResult(extras);
+            }
 
-                new ActionResultSender(context, mHandler)
-                        .setRefreshMediaId(mediaId)
-                        .setShowPlaybackView(true)
-                        .sendTo(result::sendResult)
-                        .onComplete(() -> node.replaceAction(ADD_TO_QUEUE, REMOVE_FROM_QUEUE))
-                        .send();
-                break;
-            case REMOVE_FROM_QUEUE:
-                // Show PBV without Media Item
-                removeItemFromQueue(mediaId);
+            @Override
+            public void sendProgressUpdate(@NonNull Bundle extras) {
+                result.sendProgressUpdate(extras);
+            }
 
-                new ActionResultSender(context, mHandler)
-                        .setRefreshMediaId(mediaId)
-                        .setShowPlaybackView(true)
-                        .sendTo(result::sendResult)
-                        .onComplete(() -> node.replaceAction(REMOVE_FROM_QUEUE, ADD_TO_QUEUE))
-                        .send();
-                break;
-            case ERROR_ACTION:
-                new ActionResultSender(context, mHandler)
-                        .setRefreshMediaId(mediaId)
-                        .setMessage(R.string.action_result_string_error)
-                        .sendTo(result::sendError)
-                        .send();
-                break;
-            case BROWSE_ACTION:
-                new ActionResultSender(context, mHandler)
-                        .setRefreshMediaId(mediaId)
-                        .setBrowseNode(mediaId)
-                        .sendTo(result::sendResult)
-                        .send();
-                break;
-            case PBV_ACTION:
-                new ActionResultSender(context, mHandler)
-                        .setRefreshMediaId(mediaId)
-                        .setShowPlaybackView(true)
-                        .sendTo(result::sendResult)
-                        .send();
-                break;
-            default:
-                new ActionResultSender(context, mHandler)
-                        .setRefreshMediaId(mediaId)
-                        .setMessage(R.string.action_result_string_invalid)
-                        .sendTo(result::sendError)
-                        .send();
-        }
+            @Override
+            public void sendError(@NonNull Bundle extras) {
+                result.sendError(extras);
+            }
+
+            @Override
+            public void detach() {
+                result.detach();
+            }
+        });
     }
 }

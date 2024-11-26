@@ -13,7 +13,6 @@ import androidx.annotation.Nullable;
 import androidx.car.app.notification.CarPendingIntent;
 import androidx.media.MediaBrowserServiceCompat;
 import androidx.media.session.MediaButtonReceiver;
-import androidx.media.utils.MediaConstants;
 
 import com.android.car.media.testmediaapp.carapp.TmaCarAppService;
 import com.android.car.media.testmediaapp.carapp.TmaSession;
@@ -53,6 +52,7 @@ public class TmaBrowser2 extends MediaBrowserServiceCompat {
                         mSession.setPlaybackState(makeTemplatedErrorHandlingPlaybackState());
                     }
                 }
+                notifyChildrenChanged(ROOT_ID);
             };
 
     @Override
@@ -96,7 +96,11 @@ public class TmaBrowser2 extends MediaBrowserServiceCompat {
     @Override
     public void onLoadChildren(@NonNull String parentId,
             @NonNull Result<List<MediaBrowserCompat.MediaItem>> result) {
-        result.sendResult(Collections.emptyList());
+        if (mPrefs.mAccountType.getValue() == TmaEnumPrefs.TmaAccountType.NONE) {
+            result.sendResult(null);
+        } else {
+            result.sendResult(Collections.emptyList());
+        }
     }
 
     private PendingIntent getCarSettingsIntent() {

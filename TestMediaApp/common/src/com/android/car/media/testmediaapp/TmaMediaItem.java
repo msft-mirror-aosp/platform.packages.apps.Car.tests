@@ -32,7 +32,10 @@ import java.util.Set;
 /** Our internal representation of media items. */
 public class TmaMediaItem {
 
-    public static final String CUSTOM_ACTION_PREFIX = "com.android.car.media.testmediaapp.";
+    public static final String CUSTOM_BROWSE_ACTION_PREFIX =
+            TmaMediaItem.class.getName() + "_Action";
+
+    public static final String CUSTOM_PLAYBACK_ACTION_PREFIX = TmaCustomAction.class.getName();
 
     /**
      * The character used to separate short media ids (returned by {@link #getMediaId} from
@@ -91,7 +94,7 @@ public class TmaMediaItem {
         public final String mIcon;
 
         TmaBrowseAction(String id, int labelResId, String icon) {
-            mId = CUSTOM_ACTION_PREFIX + id;
+            mId = CUSTOM_BROWSE_ACTION_PREFIX + id;
             mLabelResId = labelResId;
             mIcon = TmaPublicProvider.buildUriString(icon);
         }
