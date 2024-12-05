@@ -8,18 +8,21 @@
 
   "CHILDREN": [
     {
+      "FLAGS": "",
       "METADATA": {
         "MEDIA_ID": "useless item 1",
         "DISPLAY_TITLE": "Useless item #1"
       }
     },
     {
+      "FLAGS": "",
       "METADATA": {
         "MEDIA_ID": "useless item 2",
         "DISPLAY_TITLE": "Useless item #2"
       }
     },
     {
+      "FLAGS": "",
       "METADATA": {
         "MEDIA_ID": "useless item 3",
         "DISPLAY_TITLE": "Useless item #3"
