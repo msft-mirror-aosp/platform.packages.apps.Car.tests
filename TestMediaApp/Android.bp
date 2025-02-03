@@ -33,6 +33,8 @@ android_app {
     min_sdk_version: "30",
     target_sdk_version: "34",
     sdk_version: "system_current",
+    // b/355695111: Remove this once we drop support for sc-car
+    java_version: "1.8", // sc-car only supports up to java 8.
     manifest: "automotive/src/main/AndroidManifest.xml",
 
     certificate: ":com-android-car-apps-test",
