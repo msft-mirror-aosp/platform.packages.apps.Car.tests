@@ -1,6 +1,9 @@
 # People who can approve changes for submission.
 arnaudberry@google.com
 
+# For Gradle-related and upload config changes
+per-file *.gradle, *.gradle.kts, PREUPLOAD.cfg = froeht@google.com
+
 # For urgent reviews only
 dnek@google.com
 stenning@google.com
