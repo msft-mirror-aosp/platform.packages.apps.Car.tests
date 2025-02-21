@@ -73,6 +73,7 @@ import android.support.v4.media.session.PlaybackStateCompat.CustomAction;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.media.utils.MediaConstants;
 
 import com.android.car.media.testmediaapp.R;
@@ -87,6 +88,7 @@ import com.android.car.media.testmediaapp.TmaMediaItem.MetadataKey;
 import com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowsedMediaItem;
 import com.android.car.media.testmediaapp.TmaPlayer;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs;
+import com.android.car.media.testmediaapp.prefs.TmaPrefs;
 import com.android.car.media.testmediaapp.prefs.TmaPrefsActivity;
 
 import java.util.ArrayList;
@@ -101,13 +103,20 @@ public class TmaPlayer1 extends MediaSessionCompat.Callback implements TmaPlayer
     private static final String TAG = "TmaPlayer1";
 
     private final MediaSessionCompat mSession;
+    private final TmaPrefs mPrefs;
     private final TmaPlayer mFakePlayer;
+    private final Handler mHandler;
+
+    private TmaMediaItem mDelayedMetaData;
+    private final Runnable mDelayedMetaDataRunnable = this::updateSessionMetadataDelayed;
 
     TmaPlayer1(TmaBrowserDelegate browser, TmaLibrary library, AudioManager audioManager,
             Handler handler, MediaSessionCompat session) {
         mSession = session;
         mSession.setCallback(this);
+        mPrefs = TmaPrefs.getInstance(browser.getContext());
         mFakePlayer = new TmaPlayer(this, browser, library, audioManager, handler);
+        mHandler = handler;
     }
 
     private int toM1State(EventState tmaState) {
@@ -196,6 +205,22 @@ public class TmaPlayer1 extends MediaSessionCompat.Callback implements TmaPlayer
     }
 
     private void updateSessionMetadata(@NonNull TmaMediaItem item) {
+        mHandler.removeCallbacks(mDelayedMetaDataRunnable);
+        TmaEnumPrefs.TmaReplyDelay delay = mPrefs.mRootReplyDelay.getValue();
+        if (delay == TmaEnumPrefs.TmaReplyDelay.NONE) {
+            updateSessionMetadataImpl(item);
+        } else {
+            updateSessionMetadataImpl(null);
+            mDelayedMetaData = item;
+            mHandler.postDelayed(mDelayedMetaDataRunnable, delay.mReplyDelayMs);
+        }
+    }
+
+    private void updateSessionMetadataImpl(@Nullable TmaMediaItem item) {
+        if (item == null) {
+            mSession.setMetadata(null);
+            return;
+        }
         MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder(buildMetadata(item));
 
         TmaLibrary library = mFakePlayer.getLibrary();
@@ -210,6 +235,10 @@ public class TmaPlayer1 extends MediaSessionCompat.Callback implements TmaPlayer
         }
 
         mSession.setMetadata(builder.build());
+    }
+
+    private void updateSessionMetadataDelayed() {
+        updateSessionMetadataImpl(mDelayedMetaData);
     }
 
     private void sendStopPlaybackState() {
