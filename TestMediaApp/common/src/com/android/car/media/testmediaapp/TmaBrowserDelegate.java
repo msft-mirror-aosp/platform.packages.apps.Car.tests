@@ -50,7 +50,7 @@ import java.util.regex.Pattern;
 /**
  * Base class that shares code to browse TMA data independently of the api media api (v1 / v3) used.
  */
-@OptIn(markerClass = androidx.car.app.annotations2.ExperimentalCarApi.class)
+@OptIn(markerClass = androidx.car.app.annotations.ExperimentalCarApi.class)
 public abstract class TmaBrowserDelegate {
     private static final String TAG = "TmaBrowserDelegate";
 

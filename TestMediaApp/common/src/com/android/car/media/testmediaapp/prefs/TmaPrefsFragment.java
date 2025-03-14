@@ -42,7 +42,7 @@ import com.android.car.media.testmediaapp.prefs.TmaPrefs.PrefEntry;
 
 import java.util.function.Consumer;
 
-@OptIn(markerClass = androidx.car.app.annotations2.ExperimentalCarApi.class)
+@OptIn(markerClass = androidx.car.app.annotations.ExperimentalCarApi.class)
 public class TmaPrefsFragment extends PreferenceFragmentCompat {
 
     @Override

@@ -17,17 +17,16 @@
 package com.android.car.media.testmediaapp.media3
 
 import android.os.Bundle
-import androidx.car.app.annotations2.ExperimentalCarApi
+import androidx.car.app.annotations.ExperimentalCarApi
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
-
 
 @UnstableApi
 @ExperimentalCarApi
 class TmaBrowser3 : MediaLibraryService() {
 
-    /** Extras key to allow Android Auto to identify the browse service from the media session.  */
+    /** Extras key to allow Android Auto to identify the browse service from the media session. */
     private val BROWSE_SERVICE_FOR_SESSION_KEY = "android.media.session.BROWSE_SERVICE"
     private lateinit var mediaLibrarySession: MediaLibrarySession
 
@@ -38,7 +37,8 @@ class TmaBrowser3 : MediaLibraryService() {
         val player = delegate.getPlayer()
         val extras = Bundle()
         extras.putString(BROWSE_SERVICE_FOR_SESSION_KEY, TmaBrowser3::class.qualifiedName)
-        mediaLibrarySession = MediaLibrarySession.Builder(this, player, delegate)
+        mediaLibrarySession =
+            MediaLibrarySession.Builder(this, player, delegate)
                 .setId("TEST_MEDIA3_SESSION")
                 .setExtras(extras)
                 .build()
@@ -55,6 +55,4 @@ class TmaBrowser3 : MediaLibraryService() {
         mediaLibrarySession.release()
         super.onDestroy()
     }
-
-
 }

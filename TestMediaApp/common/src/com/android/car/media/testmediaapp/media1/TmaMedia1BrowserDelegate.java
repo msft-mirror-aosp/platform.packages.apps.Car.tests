@@ -82,7 +82,7 @@ import java.util.stream.Collectors;
 /**
  * Handles browsing TMA data from a media1 browser.
  */
-@OptIn(markerClass = androidx.car.app.annotations2.ExperimentalCarApi.class)
+@OptIn(markerClass = androidx.car.app.annotations.ExperimentalCarApi.class)
 public class TmaMedia1BrowserDelegate extends TmaBrowserDelegate {
     private static final String TAG = "TMA1-BrowserDelegate";
 

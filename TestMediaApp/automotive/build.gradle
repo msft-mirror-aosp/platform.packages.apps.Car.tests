@@ -62,5 +62,5 @@ android {
 
 dependencies {
     implementation(project(":test-media-app:common"))
-    implementation 'androidx.car.app:app-automotive:1.1.0'
+    implementation libs.androidx.car.app.automotive
 }
