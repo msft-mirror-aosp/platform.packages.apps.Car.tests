@@ -76,7 +76,7 @@ android {
 }
 
 dependencies {
-    implementation "androidx.preference:preference:1.1.1"
-    implementation "androidx.constraintlayout:constraintlayout:2.0.0-beta8"
+    implementation libs.androidx.preference
+    implementation libs.androidx.constraintlayout
     implementation project(":car-ui-lib")
 }
