@@ -18,6 +18,10 @@
 
     <string name="app_name_media3" translatable="false">Test Media3 App</string>
 
+    <string name="app_name_cal" translatable="false">Test Media CAL App</string>
+
+    <string name="app_name_cal_media3" translatable="false">Test Media3 CAL App</string>
+
     <string name="empty_browse" translatable="false">Test Empty Media</string>
 
     <string name="authentication_required" translatable="false">Auth required resource string</string>
