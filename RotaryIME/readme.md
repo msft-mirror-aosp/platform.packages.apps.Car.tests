@@ -16,10 +16,5 @@ adb install out/target/product/[hardware]/system/app/RotaryIME/RotaryIME.apk
 
 ## Using
 
-Once installed, configure the `rotary_input_method` string resource in the
-`CarRotaryController` package to refer to this IME:
-```
-    <string name="rotary_input_method" translatable="false">com.android.car.rotaryime/.RotaryIme</string>
-```
 Then build and install `CarRotaryController`. There is no need to enable this
 IME or select it; the `RotaryService` will select it automatically in rotary mode.

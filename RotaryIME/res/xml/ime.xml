@@ -14,8 +14,10 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<!-- imeSubtypeMode can be any value except "keyboard", otherwise IMMS may
-     choose this IME as the default IME when the system is booted. -->
+<!-- The imeSubtypeMode must be set to "rotary" so that RotaryService can
+     recognize this as the correct rotary input method. It cannot be set to
+    "keyboard", because that might cause the Input Method Manager Service (IMMS)
+    to incorrectly select this IME as the default when the system boots. -->
 <input-method xmlns:android="http://schemas.android.com/apk/res/android">
   <subtype
       android:label="@string/label_subtype_generic"
