@@ -195,7 +195,9 @@ class TmaMedia3BrowserDelegate(context: Context) :
 
     override fun notifyChildrenChanged(parentId: String) {
         Log.i(TAG, "notifyChildrenChanged for $parentId")
-        session.notifyChildrenChanged(parentId, Integer.MAX_VALUE, null)
+        val res = getMedia3Items(parentId, 0, Integer.MAX_VALUE, null, null)
+        val count = res.value?.size ?: Int.MAX_VALUE
+        session.notifyChildrenChanged(parentId, count, null)
     }
 
     override fun onSearchModeChanged(oldValue: TmaSearchMode, newValue: TmaSearchMode) {
@@ -270,9 +272,12 @@ class TmaMedia3BrowserDelegate(context: Context) :
 
     private fun getMedia3Items(
         parentId: String,
+        page: Int,
+        pageSize: Int,
         filter: String?,
         params: LibraryParams?,
     ): LibraryResult<ImmutableList<MediaItem>> {
+        // TODO: don't process the whole list for every page!!!
         val items = getMediaItems(parentId, filter)
         if (items == null) {
             if (TmaAccountType.NONE == mPrefs.mAccountType.value) {
@@ -299,7 +304,19 @@ class TmaMedia3BrowserDelegate(context: Context) :
             val converter: (TmaMediaItem.TmaBrowsedMediaItem) -> MediaItem = { it ->
                 it.mItem.toMediaItem(mLibrary, it.mParentId)
             }
-            val m3Items = items.stream().map(converter).collect(Collectors.toList())
+            var pSize = pageSize
+            var pIndex = page
+            if (pSize == Int.MAX_VALUE) {
+                pSize = items.size
+                pIndex = 0
+            }
+            val m3Items =
+                items
+                    .stream()
+                    .skip((pIndex * pSize).toLong())
+                    .limit(pSize.toLong())
+                    .map(converter)
+                    .collect(Collectors.toList())
             Log.i(TAG, "onLoadChildren has ${m3Items.size} children for: $parentId")
             return LibraryResult.ofItemList(m3Items, params)
         }
@@ -313,7 +330,7 @@ class TmaMedia3BrowserDelegate(context: Context) :
         pageSize: Int,
         params: LibraryParams?,
     ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
-        return doLater { getMedia3Items(parentId, null, params) }
+        return doLater { getMedia3Items(parentId, page, pageSize, null, params) }
     }
 
     override fun onSearch(
@@ -322,7 +339,9 @@ class TmaMedia3BrowserDelegate(context: Context) :
         query: String,
         params: LibraryParams?,
     ): ListenableFuture<LibraryResult<Void>> {
-        session.notifySearchResultChanged(browser, query, Integer.MAX_VALUE, params)
+        val res = getMedia3Items(TmaLibrary.ROOT_PATH, 0, Integer.MAX_VALUE, query, null)
+        val count = res.value?.size ?: Int.MAX_VALUE
+        session.notifySearchResultChanged(browser, query, count, params)
         return Futures.immediateFuture(LibraryResult.ofVoid())
     }
 
@@ -353,7 +372,7 @@ class TmaMedia3BrowserDelegate(context: Context) :
         pageSize: Int,
         params: LibraryParams?,
     ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
-        return doLater { getMedia3Items(TmaLibrary.ROOT_PATH, query, params) }
+        return doLater { getMedia3Items(TmaLibrary.ROOT_PATH, page, pageSize, query, params) }
     }
 
     private fun <T> doLater(expr: () -> LibraryResult<T>): ListenableFuture<LibraryResult<T>> {
