@@ -128,6 +128,22 @@ private object Statics {
     }
 }
 
+private fun TmaMediaItem.convertProperty(
+    mainKey: MetadataKey,
+    defaultKey: MetadataKey,
+    setter: (CharSequence?) -> MediaMetadata.Builder,
+) {
+    val value: String?
+    if (mMediaMetadata.keys.contains(mainKey)) {
+        value = mMediaMetadata.getString(mainKey)
+    } else if (mMediaMetadata.keys.contains(defaultKey)) {
+        value = mMediaMetadata.getString(defaultKey)
+    } else {
+        value = null
+    }
+    setter(value)
+}
+
 @OptIn(UnstableApi::class)
 fun TmaMediaItem.toMediaItem(lib: TmaLibrary, parentPath: String): MediaItem {
     val metaExtras = Bundle()
@@ -141,11 +157,11 @@ fun TmaMediaItem.toMediaItem(lib: TmaLibrary, parentPath: String): MediaItem {
             TITLE -> metaBuilder.setTitle(mMediaMetadata.getString(key))
             ARTIST -> metaBuilder.setArtist(mMediaMetadata.getString(key))
             ALBUM -> metaBuilder.setAlbumTitle(mMediaMetadata.getString(key))
-            DISPLAY_TITLE -> metaBuilder.setDisplayTitle(mMediaMetadata.getString(key))
-            DISPLAY_SUBTITLE -> metaBuilder.setSubtitle(mMediaMetadata.getString(key))
-            DISPLAY_DESCRIPTION ->
-                metaBuilder.setDescription(mMediaMetadata.getString(DISPLAY_DESCRIPTION))
-            // TODO(media3) uncomment once the prebuilt has been updated
+            DISPLAY_TITLE,
+            DISPLAY_SUBTITLE,
+            DISPLAY_DESCRIPTION -> {
+                // Converted below.
+            }
             DURATION -> metaBuilder.setDurationMs(mMediaMetadata.getLong(key))
             ART_URI -> metaBuilder.setArtworkUri(Uri.parse(mMediaMetadata.getString(key)))
 
@@ -171,6 +187,11 @@ fun TmaMediaItem.toMediaItem(lib: TmaLibrary, parentPath: String): MediaItem {
             else -> Statics.mapExtra(lib, key, metaExtras, mMediaMetadata)
         }
     }
+
+    // Make sure the display_* properties are converted using a fallback
+    convertProperty(DISPLAY_TITLE, TITLE, metaBuilder::setDisplayTitle)
+    convertProperty(DISPLAY_SUBTITLE, ARTIST, metaBuilder::setSubtitle)
+    convertProperty(DISPLAY_DESCRIPTION, ALBUM, metaBuilder::setDescription)
 
     if (mBrowseActions != null && mBrowseActions.isNotEmpty()) {
         metaBuilder.setSupportedCommands(mBrowseActions)
