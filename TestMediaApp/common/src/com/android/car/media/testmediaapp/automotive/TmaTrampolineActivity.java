@@ -27,7 +27,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -70,17 +69,12 @@ public class TmaTrampolineActivity extends AppCompatActivity {
 
     private void handleIntent(Intent intent) {
         Uri uri = intent.getData();
-        if (uri == null) {
-            Log.e(TAG, "Null uri!");
-            return;
-        }
-
         Intent mcIntent = new Intent();
         mcIntent.setAction(ACTION_MEDIA_TEMPLATE_V2);
         mcIntent.putExtra(EXTRA_KEY_MEDIA_COMPONENT,
                 new ComponentName(getApplicationContext(), TmaBrowser1.class).flattenToString());
-        String mediaId = uri.getQueryParameter(KEY_MEDIA_ID);
-        String searchQuery = uri.getQueryParameter(KEY_SEARCH);
+        String mediaId = (uri != null) ? uri.getQueryParameter(KEY_MEDIA_ID) : null;
+        String searchQuery = (uri != null) ? uri.getQueryParameter(KEY_SEARCH) : null;
         if (!TextUtils.isEmpty(mediaId)) {
             mcIntent.putExtra(EXTRA_KEY_MEDIA_ID, mediaId);
         } else if (!TextUtils.isEmpty(searchQuery)) {
