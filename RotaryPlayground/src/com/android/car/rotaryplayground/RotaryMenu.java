@@ -15,6 +15,7 @@
  */
 package com.android.car.rotaryplayground;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -112,6 +113,13 @@ public class RotaryMenu extends Fragment {
         nestedContainersButton.setOnClickListener(v -> {
             selectTab(v);
             showNestedContainersFragment();
+        });
+
+        Button composeActivityButton = view.findViewById(R.id.view_compose_activity);
+        composeActivityButton.setOnClickListener(v -> {
+            selectTab(v);
+            Intent intent = new Intent(getActivity(), ViewComposeActivity.class);
+            startActivity(intent);
         });
 
         return view;

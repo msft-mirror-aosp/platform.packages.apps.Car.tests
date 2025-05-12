@@ -16,9 +16,11 @@
   -->
 
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="100dp"
+        android:paddingBottom="100dp">
 
     <!-- When not in touch mode, if we clear focus in current window, Android will re-focus the
          first focusable view in the window automatically. Adding a FocusParkingView to the window
