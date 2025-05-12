@@ -20,9 +20,11 @@ import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
+import android.util.Log
 import androidx.car.app.mediaextensions.MetadataExtras
 import androidx.media.utils.MediaConstants
 import androidx.media.utils.MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE
+import com.android.car.media.testmediaapp.MediaConstants as TmaMediaConstants
 import com.android.car.media.testmediaapp.TmaMediaItem
 import com.android.car.media.testmediaapp.TmaMediaItem.ContentStyle
 import com.android.car.media.testmediaapp.TmaMediaItem.MetadataKey
@@ -64,14 +66,13 @@ import com.android.car.media.testmediaapp.TmaMediaItem.MetadataKey.WRITER
 import com.android.car.media.testmediaapp.TmaMediaItem.MetadataKey.YEAR
 import com.android.car.media.testmediaapp.TmaMediaItem.ValueType
 import com.android.car.media.testmediaapp.loader.TmaMetaDataKeys
-import com.android.car.media.testmediaapp.MediaConstants as TmaMediaConstants
-
 
 private object Statics {
 
-    // const val TAG = "TmaMediaItemExt"
+    const val TAG = "TmaMediaItemExt"
 
-    val keyMap : HashMap<MetadataKey, String> = HashMap(MetadataKey.values().size)
+    val keyMap: HashMap<MetadataKey, String> = HashMap(MetadataKey.values().size)
+
     init {
         keyMap[TITLE] = MediaMetadataCompat.METADATA_KEY_TITLE
         keyMap[ARTIST] = MediaMetadataCompat.METADATA_KEY_ARTIST
@@ -95,7 +96,6 @@ private object Statics {
         keyMap[DISPLAY_DESCRIPTION] = MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION
         keyMap[DISPLAY_ICON_URI] = MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON_URI
         keyMap[GROUP_TITLE] = DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE
-        keyMap[MEDIA_ID] = MediaMetadataCompat.METADATA_KEY_MEDIA_ID
         keyMap[BT_FOLDER_TYPE] = MediaMetadataCompat.METADATA_KEY_BT_FOLDER_TYPE
         keyMap[MEDIA_URI] = MediaMetadataCompat.METADATA_KEY_MEDIA_URI
         keyMap[ADVERTISEMENT] = MediaMetadataCompat.METADATA_KEY_ADVERTISEMENT
@@ -114,46 +114,50 @@ private object Statics {
             MetadataExtras.KEY_EXCLUDE_MEDIA_ITEM_FROM_MIXED_APP_LIST
     }
 
-    fun mapStyle(style : ContentStyle) : Int {
+    fun mapStyle(style: ContentStyle): Int {
         return when (style) {
             ContentStyle.NONE -> 0
             ContentStyle.LIST -> MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_LIST_ITEM
             ContentStyle.GRID -> MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_GRID_ITEM
-            ContentStyle.LIST_CATEGORY
-            -> MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_CATEGORY_LIST_ITEM
-            ContentStyle.GRID_CATEGORY
-            -> MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_CATEGORY_GRID_ITEM
+            ContentStyle.LIST_CATEGORY ->
+                MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_CATEGORY_LIST_ITEM
+            ContentStyle.GRID_CATEGORY ->
+                MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_CATEGORY_GRID_ITEM
         }
     }
 }
 
-fun TmaMediaItem.toMediaItem(mediaPath : String) : MediaItem {
+fun TmaMediaItem.toMediaItem(mediaPath: String): MediaItem {
     var flags = 0
     if (mIsBrowsable) flags = flags or MediaItem.FLAG_BROWSABLE
     if (mIsPlayable) flags = flags or MediaItem.FLAG_PLAYABLE
     return MediaItem(toDescription(mediaPath), flags)
 }
 
-fun TmaMediaItem.buildMetadata() : MediaMetadataCompat {
+fun TmaMediaItem.buildMetadata(parentPath: String): MediaMetadataCompat {
     val builder = MediaMetadataCompat.Builder()
     for (key in mMediaMetadata.keys) {
         val key2 = Statics.keyMap[key]
         when (key.mKeyType) {
             ValueType.INT,
-            ValueType.LONG,
-            -> builder.putLong(key2, mMediaMetadata.getLong(key))
+            ValueType.LONG -> builder.putLong(key2, mMediaMetadata.getLong(key))
             ValueType.TEXT,
-            ValueType.URI,
-            -> builder.putString(key2, mMediaMetadata.getString(key))
-            ValueType.DOUBLE,
-            -> builder.putString(key2, mMediaMetadata.getDouble(key).toString())
+            ValueType.URI -> builder.putString(key2, mMediaMetadata.getString(key))
+            ValueType.DOUBLE -> builder.putString(key2, mMediaMetadata.getDouble(key).toString())
         }
     }
+
+    if (MEDIA_ID in mMediaMetadata.keys) {
+        builder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, getPath(parentPath))
+    } else {
+        Log.e(Statics.TAG, "No media id for " + mMediaMetadata.getString(TITLE))
+    }
+
     return builder.build()
 }
 
-fun TmaMediaItem.toDescription(parentPath : String) : MediaDescriptionCompat {
-    val metadataCompat = buildMetadata();
+fun TmaMediaItem.toDescription(parentPath: String): MediaDescriptionCompat {
+    val metadataCompat = buildMetadata(parentPath)
 
     // Use the default media description but add our extras.
     val metadataDescription: MediaDescriptionCompat = metadataCompat.description
@@ -173,17 +177,27 @@ fun TmaMediaItem.toDescription(parentPath : String) : MediaDescriptionCompat {
         extras.putAll(metadataDescription.extras)
     }
 
-    extras.putInt(MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_PLAYABLE,
-            Statics.mapStyle(mPlayableStyle))
-    extras.putInt(MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_BROWSABLE,
-            Statics.mapStyle(mBrowsableStyle))
-    extras.putInt(MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_SINGLE_ITEM,
-            Statics.mapStyle(mSingleItemStyle))
+    extras.putInt(
+        MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_PLAYABLE,
+        Statics.mapStyle(mPlayableStyle),
+    )
+    extras.putInt(
+        MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_BROWSABLE,
+        Statics.mapStyle(mBrowsableStyle),
+    )
+    extras.putInt(
+        MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_SINGLE_ITEM,
+        Statics.mapStyle(mSingleItemStyle),
+    )
 
-    val playbackStatus : Int = metadataCompat.bundle.getLong(
-            MediaConstants.DESCRIPTION_EXTRAS_KEY_COMPLETION_STATUS, 2).toInt()
-    val progress: Double? = metadataCompat.bundle.getString(
-            MediaConstants.DESCRIPTION_EXTRAS_KEY_COMPLETION_PERCENTAGE)?.toDoubleOrNull()
+    val playbackStatus: Int =
+        metadataCompat.bundle
+            .getLong(MediaConstants.DESCRIPTION_EXTRAS_KEY_COMPLETION_STATUS, 2)
+            .toInt()
+    val progress: Double? =
+        metadataCompat.bundle
+            .getString(MediaConstants.DESCRIPTION_EXTRAS_KEY_COMPLETION_PERCENTAGE)
+            ?.toDoubleOrNull()
 
     extras.putInt(MediaConstants.DESCRIPTION_EXTRAS_KEY_COMPLETION_STATUS, playbackStatus)
     if (progress != null) {
@@ -191,23 +205,31 @@ fun TmaMediaItem.toDescription(parentPath : String) : MediaDescriptionCompat {
     }
 
     if (metadataCompat.containsKey(MediaConstants.METADATA_KEY_IS_EXPLICIT)) {
-        extras.putLong(MediaConstants.METADATA_KEY_IS_EXPLICIT,
-                metadataCompat.getLong(MediaConstants.METADATA_KEY_IS_EXPLICIT))
+        extras.putLong(
+            MediaConstants.METADATA_KEY_IS_EXPLICIT,
+            metadataCompat.getLong(MediaConstants.METADATA_KEY_IS_EXPLICIT),
+        )
     }
 
     if (metadataCompat.containsKey(DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE)) {
-        extras.putString(DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE,
-                metadataCompat.getString(DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE));
+        extras.putString(
+            DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE,
+            metadataCompat.getString(DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE),
+        )
     }
 
     if (mBrowseActions != null && mBrowseActions.isNotEmpty()) {
-        extras.putStringArrayList(TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ITEM_LIST,
-                ArrayList(mBrowseActions))
+        extras.putStringArrayList(
+            TmaMetaDataKeys.BROWSE_CUSTOM_ACTIONS_ITEM_LIST,
+            ArrayList(mBrowseActions),
+        )
     }
 
     if (mIndicatorIcons != null && mIndicatorIcons.isNotEmpty()) {
-        extras.putParcelableArrayList(MetadataExtras.KEY_TINTABLE_INDICATOR_ICON_URI_LIST,
-            mIndicatorIcons)
+        extras.putParcelableArrayList(
+            MetadataExtras.KEY_TINTABLE_INDICATOR_ICON_URI_LIST,
+            mIndicatorIcons,
+        )
     }
 
     bob.setExtras(extras)
