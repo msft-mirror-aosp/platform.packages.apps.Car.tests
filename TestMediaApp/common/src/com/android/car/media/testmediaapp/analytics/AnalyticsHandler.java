@@ -33,11 +33,10 @@ import androidx.car.app.mediaextensions.analytics.event.MediaClickedEvent;
 import androidx.car.app.mediaextensions.analytics.event.ViewChangeEvent;
 import androidx.car.app.mediaextensions.analytics.event.VisibleItemsEvent;
 
+import com.android.car.media.testmediaapp.R;
 import com.android.car.media.testmediaapp.prefs.TmaPrefs;
 
-import com.android.car.media.testmediaapp.R;
-
-@OptIn(markerClass = androidx.car.app.annotations2.ExperimentalCarApi.class)
+@OptIn(markerClass = androidx.car.app.annotations.ExperimentalCarApi.class)
 public class AnalyticsHandler implements AnalyticsCallback {
 
     private static final String TAG = AnalyticsHandler.class.getSimpleName();

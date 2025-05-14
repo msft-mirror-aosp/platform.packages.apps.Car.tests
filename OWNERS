@@ -1,6 +1,9 @@
 # People who can approve changes for submission.
 arnaudberry@google.com
 
+# For rotary related changes
+yabinh@google.com
+
 # For Gradle-related and upload config changes
 per-file *.gradle, *.gradle.kts, PREUPLOAD.cfg = froeht@google.com
 
