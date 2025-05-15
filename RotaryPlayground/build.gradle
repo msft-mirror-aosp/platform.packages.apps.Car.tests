@@ -82,7 +82,10 @@ dependencies {
     implementation project(":car-ui-lib")
 
     implementation libs.androidx.activity.compose
-    implementation libs.compose.ui
+    // implementation libs.compose.ui
+    // TODO(b/388594639): revert back to libs.compose.ui once the compose-ui version in composeBom
+    //  is 1.9.0 or newer
+    implementation libs.compose.ui.specific
     implementation libs.compose.material
     implementation libs.compose.material3
     implementation platform(libs.compose.bom)
