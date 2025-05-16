@@ -83,7 +83,6 @@ import com.android.car.media.testmediaapp.TmaLibrary;
 import com.android.car.media.testmediaapp.TmaMediaEvent;
 import com.android.car.media.testmediaapp.TmaMediaEvent.EventState;
 import com.android.car.media.testmediaapp.TmaMediaEvent.ResolutionIntent;
-import com.android.car.media.testmediaapp.TmaMediaItem;
 import com.android.car.media.testmediaapp.TmaMediaItem.MetadataKey;
 import com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowsedMediaItem;
 import com.android.car.media.testmediaapp.TmaPlayer;
@@ -107,7 +106,7 @@ public class TmaPlayer1 extends MediaSessionCompat.Callback implements TmaPlayer
     private final TmaPlayer mFakePlayer;
     private final Handler mHandler;
 
-    private TmaMediaItem mDelayedMetaData;
+    private TmaBrowsedMediaItem mDelayedMetaData;
     private final Runnable mDelayedMetaDataRunnable = this::updateSessionMetadataDelayed;
 
     TmaPlayer1(TmaBrowserDelegate browser, TmaLibrary library, AudioManager audioManager,
@@ -204,7 +203,7 @@ public class TmaPlayer1 extends MediaSessionCompat.Callback implements TmaPlayer
         }
     }
 
-    private void updateSessionMetadata(@NonNull TmaMediaItem item) {
+    private void updateSessionMetadata(@NonNull TmaBrowsedMediaItem item) {
         mHandler.removeCallbacks(mDelayedMetaDataRunnable);
         TmaEnumPrefs.TmaReplyDelay delay = mPrefs.mRootReplyDelay.getValue();
         if (delay == TmaEnumPrefs.TmaReplyDelay.NONE) {
@@ -216,20 +215,21 @@ public class TmaPlayer1 extends MediaSessionCompat.Callback implements TmaPlayer
         }
     }
 
-    private void updateSessionMetadataImpl(@Nullable TmaMediaItem item) {
-        if (item == null) {
+    private void updateSessionMetadataImpl(@Nullable TmaBrowsedMediaItem bmi) {
+        if (bmi == null) {
             mSession.setMetadata(null);
             return;
         }
-        MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder(buildMetadata(item));
+        MediaMetadataCompat.Builder builder =
+                new MediaMetadataCompat.Builder(buildMetadata(bmi.mItem, bmi.mParentId));
 
         TmaLibrary library = mFakePlayer.getLibrary();
-        String subtitleLink = item.selectLink(library, MetadataKey.SUBTITLE_LINK_MEDIA_ID);
+        String subtitleLink = bmi.mItem.selectLink(library, MetadataKey.SUBTITLE_LINK_MEDIA_ID);
         if (subtitleLink != null) {
             builder.putString(KEY_SUBTITLE_LINK_MEDIA_ID, subtitleLink);
         }
 
-        String descLink = item.selectLink(library, MetadataKey.DESCRIPTION_LINK_MEDIA_ID);
+        String descLink = bmi.mItem.selectLink(library, MetadataKey.DESCRIPTION_LINK_MEDIA_ID);
         if (descLink != null) {
             builder.putString(KEY_DESCRIPTION_LINK_MEDIA_ID, descLink);
         }
@@ -389,7 +389,7 @@ public class TmaPlayer1 extends MediaSessionCompat.Callback implements TmaPlayer
         TmaBrowsedMediaItem activeItem = mFakePlayer.getActiveItem();
         if (activeItem != null) {
             mFakePlayer.stopPlayback();
-            updateSessionMetadata(activeItem.mItem);
+            updateSessionMetadata(activeItem);
 
             float speed = mFakePlayer.getPlaybackSpeed();
             PlaybackStateCompat.Builder state = new PlaybackStateCompat.Builder()
@@ -405,7 +405,7 @@ public class TmaPlayer1 extends MediaSessionCompat.Callback implements TmaPlayer
     public void updateActiveItemMetadata() {
         TmaBrowsedMediaItem activeItem = mFakePlayer.getActiveItem();
         if (activeItem != null) {
-            updateSessionMetadata(activeItem.mItem);
+            updateSessionMetadata(activeItem);
         }
     }
 
@@ -432,7 +432,7 @@ public class TmaPlayer1 extends MediaSessionCompat.Callback implements TmaPlayer
 
     @Override
     public void setCurrentPlayingItem(@NonNull TmaBrowsedMediaItem activeItem) {
-        updateSessionMetadata(activeItem.mItem);
+        updateSessionMetadata(activeItem);
     }
 
     @Override
