@@ -122,6 +122,13 @@ public class RotaryMenu extends Fragment {
             startActivity(intent);
         });
 
+        Button pureActivityButton = view.findViewById(R.id.pure_compose_activity);
+        pureActivityButton.setOnClickListener(v -> {
+            selectTab(v);
+            Intent intent = new Intent(getActivity(), PureComposeActivity.class);
+            startActivity(intent);
+        });
+
         return view;
     }
 
