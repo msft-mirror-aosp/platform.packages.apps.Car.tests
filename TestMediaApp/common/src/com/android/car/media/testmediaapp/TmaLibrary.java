@@ -60,7 +60,7 @@ public class TmaLibrary {
 
     private TmaMediaItem mBrowseRoot;
 
-    TmaLibrary(TmaLoader loader) {
+    public TmaLibrary(TmaLoader loader) {
         mLoader = loader;
         mRootAssetPaths.put(TmaBrowseNodeType.NULL, null);
         mRootAssetPaths.put(TmaBrowseNodeType.EMPTY, "media_items/empty.json");
@@ -86,7 +86,8 @@ public class TmaLibrary {
         return mRootAssetPaths.get(rootType);
     }
 
-    void setBrowseRoot(TmaBrowseNodeType rootType) {
+    /** Set the root browse nodes that should be loaded */
+    public void setBrowseRoot(TmaBrowseNodeType rootType) {
         String filePath = mRootAssetPaths.get(rootType);
         mBrowseRoot = (filePath != null) ? newRootItem(filePath) : null;
     }

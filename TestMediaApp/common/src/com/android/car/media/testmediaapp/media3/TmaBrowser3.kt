@@ -25,6 +25,7 @@ import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionCommand
 import com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction
+import com.android.car.media.testmediaapp.TmaPublicProvider
 
 @UnstableApi
 @ExperimentalCarApi
@@ -34,6 +35,9 @@ class TmaBrowser3 : MediaLibraryService() {
 
     override fun onCreate() {
         super.onCreate()
+
+        // Ensure the authority String for the PublicProvider matches the package using this Browser
+        TmaPublicProvider.setAuthority("$packageName.public")
 
         val delegate = TmaMedia3BrowserDelegate(this)
         val player = delegate.getPlayer()

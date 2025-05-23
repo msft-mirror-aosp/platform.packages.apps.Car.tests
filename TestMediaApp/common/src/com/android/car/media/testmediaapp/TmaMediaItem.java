@@ -51,7 +51,7 @@ public class TmaMediaItem {
         public final @NonNull TmaMediaItem mItem;
         public final @NonNull String mParentId;
 
-        protected TmaBrowsedMediaItem(@NonNull TmaMediaItem item, @NonNull String parentId) {
+        public TmaBrowsedMediaItem(@NonNull TmaMediaItem item, @NonNull String parentId) {
             mItem = item;
             mParentId = parentId;
         }

@@ -8,7 +8,6 @@ import androidx.car.app.model.Action;
 import androidx.car.app.model.InputCallback;
 import androidx.car.app.model.ItemList;
 import androidx.car.app.model.ListTemplate;
-import androidx.car.app.model.OnClickListener;
 import androidx.car.app.model.Row;
 import androidx.car.app.model.Template;
 import androidx.car.app.model.signin.InputSignInMethod;
@@ -30,7 +29,7 @@ public class TmaSignInScreen extends Screen {
     private State mState = State.CHOOSING;
     private String mUsername = "";
 
-    protected TmaSignInScreen(@NonNull CarContext carContext) {
+    public TmaSignInScreen(@NonNull CarContext carContext) {
         super(carContext);
 
         OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {

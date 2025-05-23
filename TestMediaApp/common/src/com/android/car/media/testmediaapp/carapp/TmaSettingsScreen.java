@@ -22,7 +22,7 @@ public class TmaSettingsScreen extends Screen {
     /* Static allows this to persist across multiple screen opens during a session. */
     private static boolean toggleSettingValue = false;
 
-    protected TmaSettingsScreen(@NonNull CarContext carContext) {
+    public TmaSettingsScreen(@NonNull CarContext carContext) {
         super(carContext);
 
         OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
