@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ * Copyright (c) 2019, The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.android.car.media.testmediacalapp">
+
+    <uses-feature android:name="android.hardware.type.automotive"
+         android:required="true"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION"/>
+
+    <uses-feature
+        android:name="android.software.car.templates_host"
+        android:required="true" />
+
+    <uses-feature
+        android:name="android.hardware.wifi"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.screen.portrait"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.screen.landscape"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <application android:allowBackup="true"
+         android:label="@string/app_name_cal"
+         android:icon="@drawable/ic_cal_browser_icon"
+         android:supportsRtl="true"
+         android:theme="@style/TestMediaAppTheme">
+
+        <!-- This provider is read-only, only returns album art, and is not a security risk -->
+        <provider android:name="com.android.car.media.testmediaapp.TmaPublicProvider"
+             android:exported="true"
+             android:authorities="com.android.car.media.testmediacalapp.public"/>
+
+        <service android:name="com.android.car.media.testmediaapp.media3.TmaBrowser3"
+            android:icon="@drawable/ic_cal_browser_icon"
+            android:foregroundServiceType="mediaPlayback"
+            android:exported="true"
+            android:label="@string/app_name_cal_media3">
+            <!-- Support both services for backwards compatibility with media1 hosts. -->
+            <intent-filter>
+                <action android:name="androidx.media3.session.MediaLibraryService"/>
+                <action android:name="android.media.browse.MediaBrowserService"/>
+                <action android:name="android.intent.action.MEDIA_BUTTON"/>
+            </intent-filter>
+            <meta-data android:name="androidx.car.app.media.CalMediaActivityComponent"
+                    android:value="com.android.car.media.testmediacalapp/.TmaLaunchableTrampoline"/>
+        </service>
+
+        <service android:name="com.android.car.media.testmediaapp.TmaForegroundService"
+             android:icon="@drawable/ic_app_icon"
+             android:exported="false"
+             android:foregroundServiceType="location"
+             android:label="@string/app_name">
+        </service>
+
+        <activity android:name="com.android.car.media.testmediaapp.prefs.TmaPrefsActivity"
+             android:label="@string/app_name"
+             android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.APPLICATION_PREFERENCES"/>
+            </intent-filter>
+        </activity>
+
+        <!--    Car App Library integration -->
+        <meta-data
+            android:name="androidx.car.app.minCarApiLevel"
+            android:value="3"/>
+
+        <service
+            android:name=".TmaCalCarAppService"
+            android:exported="true"
+            android:label="@string/car_service_name"
+            android:icon="@drawable/ic_app_icon">
+            <intent-filter>
+                <action android:name="androidx.car.app.CarAppService" />
+                <category android:name="androidx.car.app.category.SETTINGS"/>
+                <category android:name="androidx.car.app.category.MEDIA"/>
+            </intent-filter>
+        </service>
+
+        <activity
+            android:exported="true"
+            android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
+            android:name="androidx.car.app.activity.CarAppActivity"
+            android:launchMode="singleTask"
+            android:label="@string/app_name_cal">
+
+            <meta-data android:name="distractionOptimized" android:value="true" />
+
+        </activity>
+
+        <activity
+                android:name=".TmaLaunchableTrampoline"
+                android:exported="true"
+                android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
+                android:launchMode="singleTask"
+                android:label="@string/app_name_cal"
+                android:enabled="false">
+
+            <meta-data android:name="distractionOptimized" android:value="true" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <activity android:name="com.android.car.media.testmediaapp.automotive.TmaTrampolineActivity"
+                  android:exported="true">
+            <intent-filter android:label="@string/tma_trampoline_activity_label">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="app"
+                      android:host="com.android.car.media.testmediaapp"/>
+            </intent-filter>
+        </activity>
+
+        <receiver android:name="androidx.media.session.MediaButtonReceiver"
+             android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON"/>
+            </intent-filter>
+        </receiver>
+
+    </application>
+
+</manifest>

@@ -61,3 +61,60 @@ android_app {
         enabled: false,
     },
 }
+
+android_app {
+    name: "TestMediaCalApp",
+
+    srcs: [
+        "common/src/**/*.java",
+        "common/src/**/*.kt",
+        "automotive-cal/src/**/*.java",
+        "automotive-cal/src/**/*.kt",
+    ],
+
+    //resource_dirs: ["common/res"],
+    //asset_dirs: ["common/assets"],
+
+    min_sdk_version: "30",
+    target_sdk_version: "34",
+    sdk_version: "system_current",
+    java_version: "11", // tm-car only supports up to java 11.
+    manifest: "automotive-cal/src/main/AndroidManifest.xml",
+
+    certificate: ":com-android-car-apps-test",
+
+    // Do NOT add dependencies preventing the app from being unbundled (compiled with gradle in Studio).
+    static_libs: [
+        "androidx.appcompat_appcompat",
+        "androidx-constraintlayout_constraintlayout",
+        "androidx.preference_preference",
+        "androidx.media3.media3-session",
+        // DO NOT MODIFY START
+        // NOTE: The following order is important.
+        // "androidx.car.app_app-automotive" prebuilt doesn't get updatated frequently. Hence there
+        // may be code in "car-media-extensions-prebuilt" that doesn't exist in the prebuilt.
+        "car-media-extensions-prebuilt",
+        "androidx.car.app_app-automotive",
+        // DO NOT MODIFY END
+        "test-media-app-common-res-lib"
+    ],
+
+    optimize: {
+        enabled: false,
+    },
+
+    dex_preopt: {
+        enabled: false,
+    },
+}
+
+android_library {
+    name: "test-media-app-common-res-lib",
+    sdk_version: "system_current",
+    min_sdk_version: "30",
+
+    resource_dirs: ["common/res"],
+    asset_dirs: ["common/assets"],
+
+    manifest: "common/src/main/AndroidManifest.xml",
+}

@@ -40,21 +40,31 @@ public class TmaPublicProvider extends ContentProvider {
 
     private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
-    private static final String AUTHORITY = "com.android.car.media.testmediaapp.public";
-
     private static final String FILES = "/files/";
     private static final String ASSETS = "/assets/";
 
-    private static final String CONTENT_URI_PREFIX =
-            ContentResolver.SCHEME_CONTENT + "://" + AUTHORITY + "/";
-
-    private static final String RESOURCE_URI_PREFIX =
-            ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + AUTHORITY + "/";
-
+    private static String sAuthority = "com.android.car.media.testmediaapp.public";
 
     public static String buildUriString(String localArt) {
-        String prefix = localArt.startsWith("drawable") ? RESOURCE_URI_PREFIX : CONTENT_URI_PREFIX;
+        String prefix = localArt.startsWith("drawable") ? getResourceUriPrefix() :
+                getContentUriPrefix();
         return prefix + localArt;
+    }
+
+    public static void setAuthority(String newAuthority) {
+        sAuthority = newAuthority;
+    }
+
+    private static String getAuthority() {
+        return sAuthority;
+    }
+
+    private static String getResourceUriPrefix() {
+        return ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getAuthority() + "/";
+    }
+
+    private static String getContentUriPrefix() {
+        return ContentResolver.SCHEME_CONTENT + "://" + getAuthority() + "/";
     }
 
     private int mAssetDelay = 0;
