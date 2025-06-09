@@ -17,11 +17,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.car.rotaryime">
 
+  <!-- RotaryIME needs to be directBootAware so that RotaryService can initialize
+      mRotaryInputMethod based on installed IMEs. -->
   <application android:label="@string/ime_name">
     <service
         android:name=".RotaryIme"
         android:label="@string/ime_name"
         android:exported="true"
+        android:directBootAware="true"
         android:permission="android.permission.BIND_INPUT_METHOD">
       <intent-filter>
         <action android:name="android.view.InputMethod" />

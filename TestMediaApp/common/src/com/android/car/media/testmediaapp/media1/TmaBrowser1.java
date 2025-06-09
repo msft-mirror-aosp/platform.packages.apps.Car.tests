@@ -38,7 +38,7 @@ import java.util.List;
  * The media items are cached in the {@link TmaLibrary}, and can be virtually played with
  * {@link TmaPlayer}.
  */
-@OptIn(markerClass = androidx.car.app.annotations2.ExperimentalCarApi.class)
+@OptIn(markerClass = androidx.car.app.annotations.ExperimentalCarApi.class)
 public class TmaBrowser1 extends MediaBrowserServiceCompat {
     private static final String TAG = "TmaBrowser1";
 

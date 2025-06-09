@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 The Android Open Source Project
+ * Copyright (C) 2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,24 @@
  */
 
 plugins {
-    id 'com.android.application'
+    id("com.android.application")
     id 'aaosApps.buildLogic'
+    id 'kotlin-android'
 }
 
 android {
-    namespace "com.android.car.rotaryime"
+    namespace "com.android.car.media.testmediacalapp"
     defaultConfig {
-        applicationId "com.android.car.rotaryime"
+        applicationId "com.android.car.media.testmediacalapp"
         minSdkVersion 30
-        targetSdkVersion 33
+        targetSdkVersion 34
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'src/main/AndroidManifest.xml'
+            java.srcDirs = ['src']
+        }
     }
 
     lintOptions {
@@ -56,25 +64,14 @@ android {
             minifyEnabled false
         }
     }
-
-    sourceSets {
-        main {
-            manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src']
-            aidl.srcDirs = ['src']
-            renderscript.srcDirs = ['src']
-            res.srcDirs = ['res']
-            assets.srcDirs = ['assets']
-        }
-    }
-    buildFeatures {
-        renderScript true
-        aidl true
-    }
 }
 
 dependencies {
-    implementation libs.androidx.preference
-    implementation libs.androidx.constraintlayout
-    implementation project(":car-ui-lib")
+    implementation(project(":test-media-app:common"))
+    implementation libs.androidx.car.app.automotive
+    // Keep commented out except for experimenting locally with the latest media3 source
+    // See github.com/androidx/media?tab=readme-ov-file#locally
+    // implementation project(':media3-lib-session')
+    implementation libs.androidx.media3.session
+    implementation libs.androidx.appcompat
 }

@@ -79,7 +79,6 @@ public final class TmaPlayer {
         @NonNull TmaPlayer getImpl();
         void setPlaybackState(TmaMediaEvent event);
         void setQueue();
-        void prepareActiveItem();
         void updateActiveItemMetadata();
         void maybeActivateSession();
         void resetMetadata();
@@ -209,12 +208,6 @@ public final class TmaPlayer {
         }
     }
 
-    public void prepareMediaItem(String mediaId) {
-        buildQueue(mLibrary.getParentPath(mediaId));
-        setActiveQueueItem(mLibrary.getMediaItemById(mediaId));
-        mPlayerDelegate.prepareActiveItem();
-    }
-
     public void seekTo(long pos) {
         boolean wasPlaying = mIsPlaying;
         if (wasPlaying) {
@@ -262,7 +255,7 @@ public final class TmaPlayer {
 
         if (event.premiumAccountRequired() &&
                 TmaAccountType.PAID.equals(mPrefs.mAccountType.getValue())) {
-            Log.i(TAG, "Ignoring even for paid account");
+            Log.i(TAG, "Ignoring event for paid account");
             return;
         } else if (Action.RESET_METADATA.equals(event.mAction)) {
             mPlayerDelegate.resetMetadata();
@@ -282,7 +275,8 @@ public final class TmaPlayer {
             mIsPlaying = true;
         } else {
             stopPlayback();
-            mPlayerDelegate.stopAndUpdateState();
+            // Don't call mPlayerDelegate.stopAndUpdateState() here as it breaks error handling by
+            // resetting the state right after sending an error (incorrectly added in ag/29780977).
         }
 
         mNextEventIndex++;
