@@ -204,12 +204,12 @@
         {
             "FLAGS": "browsable",
             "METADATA": {
-                "MEDIA_ID": "6 custom actions with >",
-                "DISPLAY_TITLE": "6 custom actions with >",
+                "MEDIA_ID": "4 custom actions with >",
+                "DISPLAY_TITLE": "4 custom actions with >",
                 "DURATION": 1500000
             },
             "BROWSE_ACTIONS": [
-                "DOWNLOAD", "FAVORITE", "ADD_TO_QUEUE", "ERROR_ACTION", "BROWSE_ACTION", "PBV_ACTION"
+                "DOWNLOAD", "FAVORITE", "ERROR_ACTION", "BROWSE_ACTION"
             ],
             "INCLUDE": "media_items/actions_list.json"
         },
@@ -253,27 +253,27 @@
         {
             "FLAGS": "browsable",
             "METADATA": {
-                "MEDIA_ID": "6 custom actions with dot,>",
-                "DISPLAY_TITLE": "6 custom actions with dot,>",
+                "MEDIA_ID": "4 custom actions with dot,>",
+                "DISPLAY_TITLE": "4 custom actions with dot,>",
                 "DURATION": 1500000,
                 "PLAYBACK_STATUS": 0
             },
             "BROWSE_ACTIONS": [
-                "DOWNLOAD", "FAVORITE", "ADD_TO_QUEUE", "ERROR_ACTION", "BROWSE_ACTION", "PBV_ACTION"
+                "DOWNLOAD", "FAVORITE", "ERROR_ACTION", "BROWSE_ACTION"
             ],
             "INCLUDE": "media_items/actions_list.json"
         },
         {
             "FLAGS": "browsable",
             "METADATA": {
-                "MEDIA_ID": "6 custom actions with dot,progress,>",
-                "DISPLAY_TITLE": "6 custom actions with dot,progress,>",
+                "MEDIA_ID": "4 custom actions with dot,progress,>",
+                "DISPLAY_TITLE": "4 custom actions with dot,progress,>",
                 "DURATION": 1500000,
                 "PLAYBACK_STATUS": 0,
                 "PLAYBACK_PROGRESS": 0.33
             },
             "BROWSE_ACTIONS": [
-                "DOWNLOAD", "FAVORITE", "ADD_TO_QUEUE", "ERROR_ACTION", "BROWSE_ACTION", "PBV_ACTION"
+                "DOWNLOAD", "FAVORITE", "ERROR_ACTION", "BROWSE_ACTION"
             ],
             "INCLUDE": "media_items/actions_list.json"
         }

@@ -257,7 +257,7 @@ public class TmaPlayer1 extends MediaSessionCompat.Callback implements TmaPlayer
 
         if (!mFakePlayer.getQueue().isEmpty()) {
             actions |= ACTION_SKIP_TO_QUEUE_ITEM;
-            if (mFakePlayer.getActiveItemIndex() < mFakePlayer.getQueue().size() - 2) {
+            if (mFakePlayer.getActiveItemIndex() < mFakePlayer.getQueue().size() - 1) {
                 actions |= ACTION_SKIP_TO_NEXT;
             }
             if (0 < mFakePlayer.getActiveItemIndex()) {

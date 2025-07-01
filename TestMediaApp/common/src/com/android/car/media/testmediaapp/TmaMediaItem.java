@@ -21,6 +21,7 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+import androidx.core.util.Preconditions;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -241,6 +242,7 @@ public class TmaMediaItem {
             List<TmaCustomAction> customActions, List<String> browseActions,
             ArrayList<Uri> iconsUris, List<TmaMediaEvent> mediaEvents, List<TmaMediaItem> children,
             String include) {
+        Preconditions.checkArgument(!isPlayable || !mediaEvents.isEmpty());
         mIsBrowsable = isBrowsable;
         mIsPlayable = isPlayable;
         mPlayableStyle = playableStyle;

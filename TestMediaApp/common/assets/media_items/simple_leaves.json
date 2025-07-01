@@ -123,7 +123,7 @@
       "FLAGS": "playable",
       "METADATA": {
         "MEDIA_ID": "delayed error",
-        "TITLE": "Delayed Error after 30 seconds",
+        "TITLE": "Delayed Error after 10 seconds",
         "ARTIST": "DJ Error",
         "ALBUM": "Error at the disco",
         "DURATION": 60000
@@ -131,10 +131,10 @@
       "EVENTS": [
         { "STATE": "PLAYING", "POST_DELAY_MS": 0 },
         {
-          "STATE": "PAUSED",
+          "STATE": "ERROR",
           "ERROR_CODE": "APP_ERROR",
           "ERROR_MESSAGE": "Fatal Playback Source Error",
-          "POST_DELAY_MS": 30000
+          "POST_DELAY_MS": 10000
         }
       ]
     },
