@@ -46,6 +46,7 @@ import androidx.media3.session.SessionError.INFO_CANCELLED
 import com.android.car.media.testmediaapp.R
 import com.android.car.media.testmediaapp.TmaLibrary
 import com.android.car.media.testmediaapp.TmaMediaEvent
+import com.android.car.media.testmediaapp.TmaMediaEvent.EventState.PLAYING
 import com.android.car.media.testmediaapp.TmaMediaEvent.ResolutionIntent
 import com.android.car.media.testmediaapp.TmaMediaEvent.StateErrorCode
 import com.android.car.media.testmediaapp.TmaMediaEvent.StateErrorCode.ACTION_ABORTED
@@ -172,6 +173,7 @@ class TmaPlayer3(
                 .buildUpon()
                 .add(COMMAND_SET_MEDIA_ITEM)
                 .add(COMMAND_PLAY_PAUSE)
+                .removeIf(COMMAND_PLAY_PAUSE, (event.mState == TmaMediaEvent.EventState.ERROR))
                 .add(COMMAND_SEEK_IN_CURRENT_MEDIA_ITEM)
 
         var playbackState: @Player.State Int = STATE_READY
@@ -203,11 +205,13 @@ class TmaPlayer3(
             }
         }
 
+        val playWhenReady = (event.mState == PLAYING)
         state =
             state
                 .buildUpon()
                 .setAvailableCommands(commands.build())
                 .setPlaybackState(playbackState)
+                .setPlayWhenReady(playWhenReady, PLAY_WHEN_READY_CHANGE_REASON_USER_REQUEST)
                 .setPlayerError(playerError)
                 .setContentPositionMs(fakePlayer.positionMs)
                 .build()
@@ -266,6 +270,8 @@ class TmaPlayer3(
             if (index == 0) commands.remove(COMMAND_SEEK_TO_PREVIOUS)
             if (index == state.playlist.lastIndex) commands.remove(COMMAND_SEEK_TO_NEXT)
 
+            val playWhenReady = (activeItem.mItem.mMediaEvents.get(0).mState == PLAYING)
+
             state =
                 state
                     .buildUpon()
@@ -273,7 +279,7 @@ class TmaPlayer3(
                     .setCurrentMediaItemIndex(index)
                     .setPlaybackState(STATE_READY)
                     .setPlayerError(null)
-                    .setPlayWhenReady(true, PLAY_WHEN_READY_CHANGE_REASON_USER_REQUEST)
+                    .setPlayWhenReady(playWhenReady, PLAY_WHEN_READY_CHANGE_REASON_USER_REQUEST)
                     .setContentPositionMs(fakePlayer.positionMs)
                     .build()
 

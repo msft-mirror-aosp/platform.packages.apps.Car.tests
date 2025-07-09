@@ -14,87 +14,108 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<com.android.car.ui.FocusArea
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
 
-    <Button
-        android:id="@+id/cards"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="Cards"
-        style="@style/tab" />
-    <Button
-        android:id="@+id/direct_manipulation"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="Direct Manipulation"
-        style="@style/tab" />
-    <Button
-        android:id="@+id/sys_ui_direct_manipulation"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="Sys UI Manipulation"
-        style="@style/tab" />
-    <Button
-        android:id="@+id/grid"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="Grid"
-        style="@style/tab" />
-    <Button
-        android:id="@+id/notification"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="Notification"
-        style="@style/tab" />
-    <Button
-        android:id="@+id/scroll"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="Scroll"
-        style="@style/tab" />
-    <Button
-        android:id="@+id/web_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="WebView"
-        style="@style/tab" />
-    <Button
-        android:id="@+id/custom_focus_areas"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="Custom FocusAreas"
-        style="@style/tab" />
-    <Button
-        android:id="@+id/popup_window"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="Popup window"
-        style="@style/tab" />
-    <Button
-        android:id="@+id/surface_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="SurfaceView"
-        style="@style/tab" />
-    <Button
-        android:id="@+id/nested_containers"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="Nested Containers"
-        style="@style/tab" />
-</com.android.car.ui.FocusArea>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+    <com.android.car.ui.FocusArea
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+        <Button
+                android:id="@+id/cards"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="Cards"
+                style="@style/tab" />
+        <Button
+                android:id="@+id/direct_manipulation"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="Direct Manipulation"
+                style="@style/tab" />
+        <Button
+                android:id="@+id/sys_ui_direct_manipulation"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="Sys UI Manipulation"
+                style="@style/tab" />
+        <Button
+                android:id="@+id/grid"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="Grid"
+                style="@style/tab" />
+        <Button
+                android:id="@+id/notification"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="Notification"
+                style="@style/tab" />
+        <Button
+                android:id="@+id/scroll"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="Scroll"
+                style="@style/tab" />
+        <Button
+                android:id="@+id/web_view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="WebView"
+                style="@style/tab" />
+        <Button
+                android:id="@+id/custom_focus_areas"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="Custom FocusAreas"
+                style="@style/tab" />
+        <Button
+                android:id="@+id/popup_window"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="Popup window"
+                style="@style/tab" />
+        <Button
+                android:id="@+id/surface_view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="SurfaceView"
+                style="@style/tab" />
+        <Button
+                android:id="@+id/nested_containers"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="Nested Containers"
+                style="@style/tab" />
+        <Button
+                android:id="@+id/view_compose_activity"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="View Compose Activity"
+                style="@style/tab" />
+        <Button
+                android:id="@+id/pure_compose_activity"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="Pure Compose Activity"
+                style="@style/tab" />
+
+    </com.android.car.ui.FocusArea>
+
+</ScrollView>
