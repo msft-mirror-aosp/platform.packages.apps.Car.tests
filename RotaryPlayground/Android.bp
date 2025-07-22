@@ -24,7 +24,10 @@ CERTIFICATE = ":com-android-car-apps-test"
 android_app {
     name: "RotaryPlayground",
 
-    srcs: ["src/**/*.java"],
+    srcs: [
+        "src/**/*.kt",
+        "src/**/*.java"
+    ],
     resource_dirs: ["res"],
 
     sdk_version: "system_current",
@@ -32,6 +35,10 @@ android_app {
 
     static_libs: [
         "car-ui-lib",
+        "androidx.activity_activity-compose",
+        "androidx.compose.foundation_foundation",
+        "androidx.compose.material3_material3",
+        "androidx.compose.runtime_runtime",
     ],
 
     owner: "google",

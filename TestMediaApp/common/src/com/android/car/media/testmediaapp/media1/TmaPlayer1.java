@@ -257,7 +257,7 @@ public class TmaPlayer1 extends MediaSessionCompat.Callback implements TmaPlayer
 
         if (!mFakePlayer.getQueue().isEmpty()) {
             actions |= ACTION_SKIP_TO_QUEUE_ITEM;
-            if (mFakePlayer.getActiveItemIndex() < mFakePlayer.getQueue().size() - 2) {
+            if (mFakePlayer.getActiveItemIndex() < mFakePlayer.getQueue().size() - 1) {
                 actions |= ACTION_SKIP_TO_NEXT;
             }
             if (0 < mFakePlayer.getActiveItemIndex()) {
@@ -353,9 +353,7 @@ public class TmaPlayer1 extends MediaSessionCompat.Callback implements TmaPlayer
         float speed = mFakePlayer.getPlaybackSpeed();
         PlaybackStateCompat.Builder state = new PlaybackStateCompat.Builder()
                 .setState(toM1State(event.mState), mFakePlayer.getPositionMs(), speed)
-                .setErrorMessage(toM1ErrorCode(event.mErrorCode), event.mErrorMessage)
-                // TODO(media3) revert the use of ACTION_PLAY_PAUSE required b/369442714.
-                .setActions(addActions(ACTION_PAUSE | ACTION_PLAY_PAUSE));
+                .setErrorMessage(toM1ErrorCode(event.mErrorCode), event.mErrorMessage);
         if (ResolutionIntent.PREFS.equals(event.mResolutionIntent)) {
             Context  context = mFakePlayer.getBrowser().getContext();
             PendingIntent pendingIntent = TmaPrefsActivity.getPendingIntent(context);
@@ -367,6 +365,9 @@ public class TmaPlayer1 extends MediaSessionCompat.Callback implements TmaPlayer
                     MediaConstants.PLAYBACK_STATE_EXTRAS_KEY_ERROR_RESOLUTION_ACTION_INTENT,
                     pendingIntent);
             state.setExtras(extras);
+        } else {
+            // TODO(media3) revert the use of ACTION_PLAY_PAUSE required b/369442714.
+            state.setActions(addActions(ACTION_PAUSE | ACTION_PLAY_PAUSE));
         }
 
         setActiveItemState(state);

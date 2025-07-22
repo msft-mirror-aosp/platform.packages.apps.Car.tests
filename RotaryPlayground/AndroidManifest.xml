@@ -44,5 +44,7 @@
                 android:name="nudge.down.intent"
                 android:value="intent:#Intent;action=android.settings.SETTINGS;category=android.intent.category.DEFAULT;end"/>
         </activity>
+        <activity android:name=".ViewComposeActivity" />
+        <activity android:name=".PureComposeActivity" />
     </application>
 </manifest>
