@@ -1,0 +1,81 @@
+{
+  "FLAGS": "browsable",
+  "METADATA": {
+    "MEDIA_ID": "media_items/repeats.json",
+    "DISPLAY_TITLE": "⚠ Repeats - apps shouldn't do that!! ⚠"
+  },
+  "CHILDREN": [
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "track A",
+        "DISPLAY_TITLE": "Track A",
+        "DURATION": 25000
+      }
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "track B",
+        "DISPLAY_TITLE": "Track B",
+        "DURATION": 25000
+      }
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "track C",
+        "DISPLAY_TITLE": "Track C",
+        "DURATION": 25000
+      }
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "track A",
+        "DISPLAY_TITLE": "Track A",
+        "DURATION": 25000
+      }
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "track B",
+        "DISPLAY_TITLE": "Track B",
+        "DURATION": 25000
+      }
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "track C",
+        "DISPLAY_TITLE": "Track C",
+        "DURATION": 25000
+      }
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "track A",
+        "DISPLAY_TITLE": "Track A",
+        "DURATION": 25000
+      }
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "track B",
+        "DISPLAY_TITLE": "Track B",
+        "DURATION": 25000
+      }
+    },
+    {
+      "FLAGS": "playable",
+      "METADATA": {
+        "MEDIA_ID": "track C",
+        "DISPLAY_TITLE": "Track C",
+        "DURATION": 25000
+      }
+    }
+  ]
+}
