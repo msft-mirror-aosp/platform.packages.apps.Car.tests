@@ -161,6 +161,7 @@ class TmaMedia3BrowserDelegate(context: Context) :
         return Futures.immediateFuture(updatedMediaItems)
     }
 
+    // TODO(media3) add progressReporter: MediaSession.ProgressReporter?
     override fun onCustomCommand(
         session: MediaSession,
         controller: MediaSession.ControllerInfo,
@@ -181,7 +182,8 @@ class TmaMedia3BrowserDelegate(context: Context) :
                     }
 
                     override fun sendProgressUpdate(extras: Bundle) {
-                        // TODO(media3) not supported sendProgressUpdate
+                        // TODO(media3) uncomment once the prebuilt library has been updated
+                        // progressReporter?.sendProgressUpdate(extras)
                     }
 
                     override fun sendError(extras: Bundle) {
