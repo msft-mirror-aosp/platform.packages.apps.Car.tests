@@ -218,7 +218,8 @@ class TmaPlayer3(
         invalidateState()
     }
 
-    private fun uidOf(it: TmaBrowsedMediaItem) = Pair(it.mParentId, it.mItem.mediaId)
+    private fun uidOf(it: TmaBrowsedMediaItem) =
+        Triple(it.mItemIndex, it.mItem.mediaId, it.mParentId)
 
     override fun setQueue() {
         setQueue(0)

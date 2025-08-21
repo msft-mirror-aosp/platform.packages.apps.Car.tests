@@ -22,6 +22,8 @@ import static android.media.AudioManager.AUDIOFOCUS_LOSS_TRANSIENT;
 import static android.media.AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK;
 import static android.media.AudioManager.AUDIOFOCUS_REQUEST_GRANTED;
 
+import static androidx.media3.common.C.TIME_UNSET;
+
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioFocusRequest;
@@ -150,8 +152,9 @@ public final class TmaPlayer {
         List<TmaMediaItem> playables = mLibrary.getAllChildren(parentItem, it -> it.mIsPlayable);
         mQueue.clear();
 
+        int index = 0;
         for (TmaMediaItem child : playables) {
-            mQueue.add(new TmaBrowsedMediaItem(child, parentPath));
+            mQueue.add(new TmaBrowsedMediaItem(index++, child, parentPath));
         }
         mPlayerDelegate.setQueue();
     }
@@ -160,7 +163,7 @@ public final class TmaPlayer {
         TmaMediaItem node = mLibrary.getMediaItemById(mediaId);
         if (node != null && node.mIsPlayable) {
             String parentPath = mLibrary.getParentPath(mediaId);
-            mQueue.add(new TmaBrowsedMediaItem(node, parentPath));
+            mQueue.add(new TmaBrowsedMediaItem(mQueue.size(), node, parentPath));
             mPlayerDelegate.setQueue();
         }
     }
@@ -213,7 +216,7 @@ public final class TmaPlayer {
         if (wasPlaying) {
             mHandler.removeCallbacks(mTrackTimer);
         }
-        mCurrentPositionMs = pos;
+        mCurrentPositionMs = (pos == TIME_UNSET) ? 0 : pos;
         boolean requestAudioFocus = !wasPlaying;
         startPlayBack(requestAudioFocus);
     }

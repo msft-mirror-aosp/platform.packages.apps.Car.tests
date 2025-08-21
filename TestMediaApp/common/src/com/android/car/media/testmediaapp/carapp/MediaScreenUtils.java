@@ -24,8 +24,8 @@ import com.android.car.media.testmediaapp.TmaLibrary;
 import com.android.car.media.testmediaapp.TmaMediaItem;
 import com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowsedMediaItem;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MediaScreenUtils {
 
@@ -60,8 +60,12 @@ public class MediaScreenUtils {
     private static List<TmaBrowsedMediaItem> getBrowsedTmaItems(TmaLibrary library,
                                                         TmaBrowsedMediaItem parent) {
         List<TmaMediaItem> items = library.getAllChildren(parent.mItem);
-        return items.stream().map(it -> new TmaMediaItem.TmaBrowsedMediaItem(
-                it, parent.mItem.getPath(parent.mParentId)))
-                .collect(Collectors.toList());
+        List<TmaBrowsedMediaItem> result = new ArrayList<>(items.size());
+        int index = 0;
+        for (TmaMediaItem child : items) {
+            String parentPath = parent.mItem.getPath(parent.mParentId);
+            result.add(new TmaBrowsedMediaItem(index++, child, parentPath));
+        }
+        return result;
     }
 }
