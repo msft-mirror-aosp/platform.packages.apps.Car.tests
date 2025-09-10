@@ -36,6 +36,7 @@ import androidx.annotation.OptIn;
 import androidx.car.app.mediaextensions.analytics.client.AnalyticsParser;
 
 import com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowseAction;
+import com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowsedMediaItem;
 import com.android.car.media.testmediaapp.analytics.AnalyticsHandler;
 import com.android.car.media.testmediaapp.loader.TmaLoader;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs.TmaAccountType;
@@ -155,8 +156,9 @@ public abstract class TmaBrowserDelegate {
         return builder.toString();
     }
 
-    private void addSearchResults(@NonNull String mediaPath, @Nullable TmaMediaItem node,
-            Matcher matcher,  List<TmaMediaItem.TmaBrowsedMediaItem> results, int currentDepth) {
+    private void addSearchResults(
+            @NonNull String mediaPath, @Nullable TmaMediaItem node, Matcher matcher,
+            List<TmaBrowsedMediaItem> results, int currentDepth) {
         if (node == null || currentDepth <= 0) {
             return;
         }
@@ -169,7 +171,7 @@ public abstract class TmaBrowserDelegate {
             if (title != null) {
                 matcher.reset(title);
                 if (matcher.find()) {
-                    results.add(new TmaMediaItem.TmaBrowsedMediaItem(child, mediaPath));
+                    results.add(new TmaBrowsedMediaItem(results.size(), child, mediaPath));
                 }
             }
             addSearchResults(child.getPath(mediaPath), child, matcher, results, currentDepth - 1);
@@ -188,14 +190,14 @@ public abstract class TmaBrowserDelegate {
         notifyChildrenChanged(parentId);
     }
 
-    protected @Nullable List<TmaMediaItem.TmaBrowsedMediaItem> getMediaItems(
+    protected @Nullable List<TmaBrowsedMediaItem> getMediaItems(
             @NonNull String parentId, @Nullable String filter) {
         if (TmaAccountType.NONE.equals(mPrefs.mAccountType.getValue())) {
             Log.w(TAG, "getMediaItems: no account selected. " + parentId);
             return null;
         }
 
-        List<TmaMediaItem.TmaBrowsedMediaItem> result = null;
+        List<TmaBrowsedMediaItem> result = null;
         TmaMediaItem node = mLibrary.getMediaItemById(parentId);
         if (node == null) {
             Log.e(TAG, "Node not found: " + parentId);
@@ -217,7 +219,7 @@ public abstract class TmaBrowserDelegate {
                     if (child.mIsHidden) {
                         continue;
                     }
-                    result.add(new TmaMediaItem.TmaBrowsedMediaItem(child, parentId));
+                    result.add(new TmaBrowsedMediaItem(result.size(), child, parentId));
                 }
             }
         }

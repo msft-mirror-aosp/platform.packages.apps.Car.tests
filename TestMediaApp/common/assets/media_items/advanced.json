@@ -146,6 +146,16 @@
       "PLAYABLE_HINT": "LIST",
       "BROWSABLE_HINT": "LIST",
       "METADATA": {
+        "MEDIA_ID": "Repeats",
+        "DISPLAY_TITLE": "⚠ Repeats - apps shouldn't do that!! ⚠"
+      },
+      "INCLUDE": "media_items/repeats.json"
+    },
+    {
+      "FLAGS": "browsable",
+      "PLAYABLE_HINT": "LIST",
+      "BROWSABLE_HINT": "LIST",
+      "METADATA": {
         "MEDIA_ID": "single style node",
         "DISPLAY_TITLE": "Single Items styling"
       },

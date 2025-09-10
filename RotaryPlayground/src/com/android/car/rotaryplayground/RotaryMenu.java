@@ -48,6 +48,9 @@ public class RotaryMenu extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.rotary_menu, container, false);
+        // The ScrollView is outside the FocusArea, so it shouldn't be focusable.
+        // Note: this won't affect its scrollability.
+        view.setFocusable(false);
 
         Button cardButton = view.findViewById(R.id.cards);
         cardButton.setOnClickListener(v -> {

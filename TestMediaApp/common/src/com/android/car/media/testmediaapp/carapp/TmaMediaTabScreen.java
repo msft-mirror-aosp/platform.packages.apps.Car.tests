@@ -29,13 +29,15 @@ import androidx.car.app.model.Template;
 import androidx.media3.common.MediaItem;
 
 import com.android.car.media.testmediaapp.TmaLibrary;
+import com.android.car.media.testmediaapp.TmaMediaItem;
 import com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowsedMediaItem;
 import com.android.car.media.testmediaapp.loader.TmaLoader;
 import com.android.car.media.testmediaapp.prefs.TmaEnumPrefs;
 
 import com.google.common.collect.ImmutableList;
 
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 
 /** Hosts the top level {@link MediaItem}s from the {@link MediaSessionController} */
 public class TmaMediaTabScreen extends Screen {
@@ -52,9 +54,13 @@ public class TmaMediaTabScreen extends Screen {
         mLibrary = new TmaLibrary(new TmaLoader(carContext));
         mLibrary.setBrowseRoot(TmaEnumPrefs.TmaBrowseNodeType.NODE_CHILDREN);
         String rootpath = TmaLibrary.ROOT_PATH;
-        mTopItems = ImmutableList.copyOf(mLibrary.getAllChildren(mLibrary.getBrowseRoot())
-                .stream().map(it -> new TmaBrowsedMediaItem(it, rootpath))
-                .collect(Collectors.toList()));
+        List<TmaMediaItem> items = mLibrary.getAllChildren(mLibrary.getBrowseRoot());
+        List<TmaBrowsedMediaItem> topItems = new ArrayList<>(items.size());
+        int index = 0;
+        for (TmaMediaItem child : items) {
+            topItems.add(new TmaBrowsedMediaItem(index++, child, rootpath));
+        }
+        mTopItems = ImmutableList.copyOf(topItems);
         mMediaSessionController = mediaSessionController;
     }
 

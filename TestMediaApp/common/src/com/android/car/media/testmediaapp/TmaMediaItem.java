@@ -47,12 +47,19 @@ public class TmaMediaItem {
     /** Separates multiple media ids (eg: in links). See {@link #selectLink} */
     public static final char MULTI_ID_SEPARATOR = '|';
 
-    /** Regroups a TmaMediaItem and the id (ie full path) of its parent in the browse tree. */
+    /**
+     * Regroups a TmaMediaItem and the id (ie full path) of its parent in the browse tree.
+     * Also contains the index of the item in the list to create unique UIDs in case the item's id
+     * is not unique... Note that this is just for testing and 3p apps should create unique media
+     * ids to avoid ambiguities in several apis (play item by id, analytics etc).
+     */
     public static class TmaBrowsedMediaItem {
+        public final int mItemIndex;
         public final @NonNull TmaMediaItem mItem;
         public final @NonNull String mParentId;
 
-        public TmaBrowsedMediaItem(@NonNull TmaMediaItem item, @NonNull String parentId) {
+        public TmaBrowsedMediaItem(int ndx, @NonNull TmaMediaItem item, @NonNull String parentId) {
+            mItemIndex = ndx;
             mItem = item;
             mParentId = parentId;
         }
