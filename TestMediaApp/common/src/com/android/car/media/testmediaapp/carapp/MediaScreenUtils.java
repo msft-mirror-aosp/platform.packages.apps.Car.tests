@@ -19,10 +19,12 @@ import androidx.car.app.CarContext;
 import androidx.car.app.ScreenManager;
 import androidx.car.app.model.ItemList;
 import androidx.car.app.model.Row;
+import androidx.media3.common.MediaItem;
 
 import com.android.car.media.testmediaapp.TmaLibrary;
 import com.android.car.media.testmediaapp.TmaMediaItem;
 import com.android.car.media.testmediaapp.TmaMediaItem.TmaBrowsedMediaItem;
+import com.android.car.media.testmediaapp.media3.TmaMedia3ItemExtKt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +44,13 @@ public class MediaScreenUtils {
                                 context, library, item, mediaSessionController)));
             } else if (Boolean.TRUE.equals(item.mItem.mIsPlayable)) {
                 rowBuilder.setOnClickListener(
-                        () -> screenManager.push(new TmaMediaPlayScreen(
-                                context, item, mediaSessionController, library)));
+                        () -> {
+                            MediaItem m = TmaMedia3ItemExtKt.toMediaItem(item.mItem, library,
+                                    item.mParentId);
+                            mediaSessionController.play(m);
+                            screenManager.push(TmaMediaPlayScreen.createScreenFromBrowse(
+                                    context, item, mediaSessionController, library));
+                        });
             }
             rowBuilder.setTitle(getMediaItemTitle(item));
             itemList.addItem(rowBuilder.build());
