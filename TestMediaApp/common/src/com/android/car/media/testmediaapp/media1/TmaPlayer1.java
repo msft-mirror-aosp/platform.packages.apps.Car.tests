@@ -19,7 +19,6 @@ package com.android.car.media.testmediaapp.media1;
 import static android.support.v4.media.session.PlaybackStateCompat.ACTION_PAUSE;
 import static android.support.v4.media.session.PlaybackStateCompat.ACTION_PLAY;
 import static android.support.v4.media.session.PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID;
-import static android.support.v4.media.session.PlaybackStateCompat.ACTION_PLAY_PAUSE;
 import static android.support.v4.media.session.PlaybackStateCompat.ACTION_PREPARE;
 import static android.support.v4.media.session.PlaybackStateCompat.ACTION_SEEK_TO;
 import static android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_NEXT;
@@ -245,8 +244,7 @@ public class TmaPlayer1 extends MediaSessionCompat.Callback implements TmaPlayer
         float speed = mFakePlayer.getPlaybackSpeed();
         PlaybackStateCompat.Builder state = new PlaybackStateCompat.Builder()
                 .setState(STATE_STOPPED, mFakePlayer.getPositionMs(), speed)
-                // TODO(media3) revert the use of ACTION_PLAY_PAUSE required b/369442714.
-                .setActions(addActions(ACTION_PLAY | ACTION_PLAY_PAUSE));
+                .setActions(addActions(ACTION_PLAY));
         setActiveItemState(state);
         mSession.setPlaybackState(state.build());
     }
@@ -366,8 +364,7 @@ public class TmaPlayer1 extends MediaSessionCompat.Callback implements TmaPlayer
                     pendingIntent);
             state.setExtras(extras);
         } else {
-            // TODO(media3) revert the use of ACTION_PLAY_PAUSE required b/369442714.
-            state.setActions(addActions(ACTION_PAUSE | ACTION_PLAY_PAUSE));
+            state.setActions(addActions(ACTION_PAUSE));
         }
 
         setActiveItemState(state);
@@ -395,8 +392,7 @@ public class TmaPlayer1 extends MediaSessionCompat.Callback implements TmaPlayer
             float speed = mFakePlayer.getPlaybackSpeed();
             PlaybackStateCompat.Builder state = new PlaybackStateCompat.Builder()
                     .setState(STATE_PAUSED, mFakePlayer.getPositionMs(), speed)
-                    // TODO(media3) revert the use of ACTION_PLAY_PAUSE required b/369442714.
-                    .setActions(addActions(ACTION_PLAY | ACTION_PLAY_PAUSE));
+                    .setActions(addActions(ACTION_PLAY));
             setActiveItemState(state);
             mSession.setPlaybackState(state.build());
         }
@@ -440,8 +436,7 @@ public class TmaPlayer1 extends MediaSessionCompat.Callback implements TmaPlayer
     public void sendPausePlaybackState() {
         PlaybackStateCompat.Builder state = new PlaybackStateCompat.Builder()
                 .setState(STATE_PAUSED, mFakePlayer.getPositionMs(), mFakePlayer.getPlaybackSpeed())
-                // TODO(media3) revert the use of ACTION_PLAY_PAUSE required b/369442714.
-                .setActions(addActions(ACTION_PLAY | ACTION_PLAY_PAUSE));
+                .setActions(addActions(ACTION_PLAY));
         setActiveItemState(state);
         mSession.setPlaybackState(state.build());
     }
