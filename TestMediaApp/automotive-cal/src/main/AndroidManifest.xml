@@ -25,6 +25,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION"/>
+    <uses-permission android:name="androidx.car.app.MEDIA_TEMPLATES"/>
 
     <uses-feature
         android:name="android.software.car.templates_host"
@@ -124,6 +125,7 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+                <action android:name="androidx.car.app.media.action.SHOW_MEDIA_PLAYBACK"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>

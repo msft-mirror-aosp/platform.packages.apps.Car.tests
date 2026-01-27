@@ -27,10 +27,20 @@ import androidx.appcompat.app.AppCompatActivity;
  */
 public class TmaLaunchableTrampoline extends AppCompatActivity {
 
+    private static final String SHOW_MEDIA_PLAYBACK =
+            "androidx.car.app.media.action.SHOW_MEDIA_PLAYBACK";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = new Intent(Intent.ACTION_MAIN);
+        Intent receivedIntent = getIntent();
+        String action;
+        if (SHOW_MEDIA_PLAYBACK.equals(receivedIntent.getAction())) {
+            action = SHOW_MEDIA_PLAYBACK;
+        } else {
+            action = Intent.ACTION_MAIN;
+        }
+        Intent intent = new Intent(action);
         intent.setClassName(getPackageName(),
                 "androidx.car.app.activity.CarAppActivity");
         startActivity(intent);

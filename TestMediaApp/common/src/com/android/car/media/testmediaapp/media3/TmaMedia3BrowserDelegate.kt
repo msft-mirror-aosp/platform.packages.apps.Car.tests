@@ -76,6 +76,10 @@ class TmaMedia3BrowserDelegate(context: Context) :
 
         /** Extras key to allow AAOS to identify the browse service from the media session. */
         private const val BROWSE_SERVICE_FOR_SESSION_KEY = "android.media.session.BROWSE_SERVICE"
+        /** Custom command to allow MediaSession client to request the [MediaSession.Token] */
+        const val GET_PLATFORM_TOKEN = "testmediapp.media3.GET_PLATFORM_TOKEN"
+        /** Extras key to retrieve the [MediaSession.Token] */
+        const val PLATFORM_TOKEN_KEY = "testmediaapp.media3.PLATFORM_TOKEN_KEY"
     }
 
     private val audioManager = context.getSystemService<AudioManager>(AudioManager::class.java)
@@ -171,6 +175,10 @@ class TmaMedia3BrowserDelegate(context: Context) :
         if (customCommand.customAction.startsWith(CUSTOM_PLAYBACK_ACTION_PREFIX)) {
             player.onCustomAction(customCommand.customAction, args)
             return Futures.immediateFuture(SessionResult(RESULT_SUCCESS))
+        } else if (customCommand.customAction == GET_PLATFORM_TOKEN) {
+            val platformToken = session.platformToken
+            val resultBundle = Bundle().apply { putParcelable(PLATFORM_TOKEN_KEY, platformToken) }
+            return Futures.immediateFuture(SessionResult(RESULT_SUCCESS, resultBundle))
         } else {
             val result: SettableFuture<SessionResult> = SettableFuture.create()
             handleCustomAction(
@@ -236,6 +244,7 @@ class TmaMedia3BrowserDelegate(context: Context) :
             commands.add(SessionCommand(Constants.ACTION_ANALYTICS, Bundle.EMPTY))
         }
 
+        commands.add(SessionCommand(GET_PLATFORM_TOKEN, Bundle.EMPTY))
         builder.addSessionCommands(commands)
         return builder.build()
     }
