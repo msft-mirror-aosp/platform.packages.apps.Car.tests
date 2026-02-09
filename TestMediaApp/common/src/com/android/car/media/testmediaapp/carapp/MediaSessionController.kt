@@ -17,33 +17,64 @@ package com.android.car.media.testmediaapp.carapp
 
 import android.content.ComponentName
 import android.content.Context
+import android.media.session.MediaSession
+import android.os.Bundle
 import android.util.Log
 import androidx.media3.common.MediaItem
 import androidx.media3.session.MediaController
+import androidx.media3.session.SessionCommand
+import androidx.media3.session.SessionResult
 import androidx.media3.session.SessionToken
+import com.android.car.media.testmediaapp.media3.TmaMedia3BrowserDelegate.Companion.GET_PLATFORM_TOKEN
+import com.android.car.media.testmediaapp.media3.TmaMedia3BrowserDelegate.Companion.PLATFORM_TOKEN_KEY
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 
 /** Creates a MediaSession and exposes Media Items of a Media Service */
-class MediaSessionController(context: Context, mediaSessionServiceClass: Class<*>) {
+class MediaSessionController(
+    context: Context,
+    mediaSessionServiceClass: Class<*>,
+    onControllerReady: (MediaSession.Token) -> Unit,
+) {
 
     private var controllerFuture: ListenableFuture<MediaController>
-    private var sessionToken: SessionToken
     private var mediaController: MediaController? = null
+    private val TAG = "MediaSessionController"
 
     init {
-        sessionToken = SessionToken(context, ComponentName(context, mediaSessionServiceClass))
+        val sessionToken = SessionToken(context, ComponentName(context, mediaSessionServiceClass))
         controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
         controllerFuture.addListener(
             {
                 try {
                     mediaController = controllerFuture.get()
-                } catch (e: Exception) {
-                    Log.e(
-                        "MediaSessionController",
-                        "Error getting MediaController: ${e.message}",
-                        e,
+                    val command = SessionCommand(GET_PLATFORM_TOKEN, Bundle.EMPTY)
+                    val commandFuture = mediaController?.sendCustomCommand(command, Bundle.EMPTY)
+
+                    commandFuture?.addListener(
+                        {
+                            try {
+                                val result: SessionResult = commandFuture.get()
+                                if (result.resultCode == SessionResult.RESULT_SUCCESS) {
+                                    val platformToken =
+                                        result.extras.getParcelable(
+                                            PLATFORM_TOKEN_KEY,
+                                            MediaSession.Token::class.java,
+                                        )
+                                    if (platformToken != null) {
+                                        onControllerReady(platformToken)
+                                    }
+                                } else {
+                                    Log.w(TAG, "Custom command failed: ${result.resultCode}")
+                                }
+                            } catch (e: Exception) {
+                                Log.e(TAG, "Error getting platform token: ${e.message}", e)
+                            }
+                        },
+                        MoreExecutors.directExecutor(),
                     )
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error getting MediaController: ${e.message}", e)
                 }
             },
             MoreExecutors.directExecutor(),

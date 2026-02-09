@@ -16,16 +16,27 @@
 package com.android.car.media.testmediacalapp;
 
 import android.content.Intent;
+import android.support.v4.media.session.MediaSessionCompat;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.OptIn;
 import androidx.car.app.Screen;
+import androidx.car.app.ScreenManager;
 import androidx.car.app.Session;
+import androidx.car.app.annotations.ExperimentalCarApi;
+import androidx.car.app.media.MediaPlaybackManager;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleEventObserver;
+import androidx.media3.common.util.UnstableApi;
 
 import com.android.car.media.testmediaapp.carapp.MediaSessionController;
+import com.android.car.media.testmediaapp.carapp.TmaMediaPlayScreen;
 import com.android.car.media.testmediaapp.carapp.TmaMediaTabScreen;
 import com.android.car.media.testmediaapp.carapp.TmaSettingsScreen;
 import com.android.car.media.testmediaapp.carapp.TmaSignInScreen;
 import com.android.car.media.testmediaapp.media3.TmaBrowser3;
+
+import kotlin.Unit;
 
 /**
  * {@link Session} for Test Media App car screens.
@@ -36,7 +47,34 @@ public final class TmaCalSession extends Session {
             "com.android.car.media.testmediaapp.carapp.SIGN_IN";
     public static final String SETTINGS_INTENT_ACTION =
             "com.android.car.media.testmediaapp.carapp.SETTINGS";
+    private static final String SHOW_MEDIA_PLAYBACK =
+            "androidx.car.app.media.action.SHOW_MEDIA_PLAYBACK";
+    private MediaSessionController mMediaSessionController = null;
 
+    @OptIn(markerClass = {ExperimentalCarApi.class, UnstableApi.class})
+    // TODO b/461579151: 3p apps should not follow this pattern of obtaining the media1 token.
+    //  Refactor this class to bind directly to the TmaBrowser3 and use its Player
+    //  (for play/pause commands) and platformToken (for MediaPlaybackTemplate creation) directly
+    public TmaCalSession() {
+        getLifecycle().addObserver((LifecycleEventObserver) (lifecycleOwner, event) -> {
+            if (event == Lifecycle.Event.ON_CREATE) {
+                if (mMediaSessionController == null) {
+                    mMediaSessionController = new MediaSessionController(
+                            getCarContext(),
+                            TmaBrowser3.class,
+                            token -> {
+                                MediaPlaybackManager manager = getCarContext().getCarService(
+                                        MediaPlaybackManager.class);
+                                manager.registerMediaPlaybackToken(
+                                        MediaSessionCompat.Token.fromToken(token));
+                                return Unit.INSTANCE;
+                            });
+                }
+            }
+        });
+    }
+
+    @OptIn(markerClass = UnstableApi.class)
     @NonNull
     @Override
     public Screen onCreateScreen(@NonNull Intent intent) {
@@ -45,8 +83,21 @@ public final class TmaCalSession extends Session {
         } else if (SETTINGS_INTENT_ACTION.equals(intent.getAction())) {
             return new TmaSettingsScreen(getCarContext());
         } else {
-            return new TmaMediaTabScreen(getCarContext(),
-                    new MediaSessionController(getCarContext(), TmaBrowser3.class));
+            return new TmaMediaTabScreen(getCarContext(), mMediaSessionController);
+        }
+    }
+
+    @Override
+    public void onNewIntent(@NonNull Intent intent) {
+        super.onNewIntent(intent);
+        if (mMediaSessionController != null && getCarContext().getCarAppApiLevel() >= 8
+                && SHOW_MEDIA_PLAYBACK.equals(intent.getAction())) {
+            ScreenManager screenManager = getCarContext().getCarService(ScreenManager.class);
+            if (screenManager.getTop() instanceof TmaMediaPlayScreen) {
+                return;
+            }
+            screenManager.push(TmaMediaPlayScreen.createScreenFromPlaying(
+                    getCarContext(), mMediaSessionController));
         }
     }
 }

@@ -16,9 +16,12 @@
 package com.android.car.media.testmediaapp.carapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.car.app.CarContext;
 import androidx.car.app.Screen;
+import androidx.car.app.media.model.MediaPlaybackTemplate;
 import androidx.car.app.model.Action;
+import androidx.car.app.model.Header;
 import androidx.car.app.model.MessageTemplate;
 import androidx.car.app.model.Template;
 import androidx.media3.common.MediaItem;
@@ -30,30 +33,57 @@ import com.android.car.media.testmediaapp.media3.TmaMedia3ItemExtKt;
 /** Displays a Play/Pause button for a {@link MediaItem} in a {@link MessageTemplate} */
 public class TmaMediaPlayScreen extends Screen {
 
-    private final TmaBrowsedMediaItem mMediaItem;
+    private final TmaBrowsedMediaItem mBrowsedMediaItem;
     private final MediaSessionController mMediaSessionController;
     private final TmaLibrary mLibrary;
 
-    public TmaMediaPlayScreen(@NonNull CarContext carContext,
-                                 @NonNull TmaBrowsedMediaItem mediaItem,
-                                 @NonNull MediaSessionController mediaSessionController,
-                                 @NonNull TmaLibrary library) {
+    private TmaMediaPlayScreen(@NonNull CarContext carContext,
+                              @Nullable TmaBrowsedMediaItem mediaItem,
+                              @NonNull MediaSessionController mediaSessionController,
+                              @Nullable TmaLibrary library) {
         super(carContext);
-        mMediaItem = mediaItem;
+        mBrowsedMediaItem = mediaItem;
         mMediaSessionController = mediaSessionController;
         mLibrary = library;
+    }
+
+    /** Launch a TmaMediaPlayScreen for the currently playing item */
+    public static TmaMediaPlayScreen createScreenFromBrowse(@NonNull CarContext carContext,
+            @NonNull TmaBrowsedMediaItem mediaItem,
+            @NonNull MediaSessionController mediaSessionController, @NonNull TmaLibrary library) {
+        return new TmaMediaPlayScreen(carContext, mediaItem, mediaSessionController, library);
+    }
+
+    /** Launch the TmaMediaPlayScreen after playing a browsed item */
+    public static TmaMediaPlayScreen createScreenFromPlaying(@NonNull CarContext carContext,
+            @NonNull MediaSessionController mediaSessionController) {
+        return new TmaMediaPlayScreen(carContext, /* mediaItem */ null, mediaSessionController,
+                /* library */ null);
     }
 
     @NonNull
     @Override
     public Template onGetTemplate() {
-        MediaItem m = TmaMedia3ItemExtKt.toMediaItem(mMediaItem.mItem, mLibrary,
-                mMediaItem.mParentId);
-        return new MessageTemplate.Builder("PLAYBACK").setHeaderAction(Action.BACK)
-                .setTitle(MediaScreenUtils.getMediaItemTitle(mMediaItem))
-                .addAction(new Action.Builder().setTitle("PLAY").setOnClickListener(
-                        () -> mMediaSessionController.play(m)).build())
-                .addAction(new Action.Builder().setTitle("Pause").setOnClickListener(
-                        mMediaSessionController::pause).build()).build();
+        if (getCarContext().getCarAppApiLevel() < 8) {
+            if (mBrowsedMediaItem != null && mLibrary != null) {
+                MediaItem m = TmaMedia3ItemExtKt.toMediaItem(mBrowsedMediaItem.mItem, mLibrary,
+                        mBrowsedMediaItem.mParentId);
+                return new MessageTemplate.Builder("PLAYBACK").setHeaderAction(Action.BACK)
+                        .setTitle(MediaScreenUtils.getMediaItemTitle(mBrowsedMediaItem))
+                        .addAction(new Action.Builder().setTitle("PLAY").setOnClickListener(
+                                () -> mMediaSessionController.play(m)).build())
+                        .addAction(new Action.Builder().setTitle("Pause").setOnClickListener(
+                                mMediaSessionController::pause).build()).build();
+            } else {
+                // We never push a TmaMediaPlayScreen from non-browse when the host level is < 8
+                return new MessageTemplate.Builder("Playback Screen not supported").build();
+            }
+        } else {
+            return new MediaPlaybackTemplate.Builder().setHeader(
+                    new Header.Builder().setStartHeaderAction(Action.APP_ICON).addEndHeaderAction(
+                            new Action.Builder().setTitle("Button").build()
+                    ).build()
+            ).build();
+        }
     }
 }
